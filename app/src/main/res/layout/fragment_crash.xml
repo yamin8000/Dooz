@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~     Dooz
-  ~     activity_main.xml Created by Yamin Siahmargooei at 2022/3/2
+  ~     fragment_crash.xml Created by Yamin Siahmargooei at 2022/3/2
   ~     This file is part of Dooz.
   ~     Copyright (C) 2022  Yamin Siahmargooei
   ~
@@ -19,19 +18,28 @@
   ~     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.MainActivity">
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/main_container"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/crash_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/main_nav_graph" />
+        android:layout_height="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/error_smiley" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <TextView
+        android:id="@+id/crash_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/app_crashed"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+</LinearLayout>

@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     BaseFragment.kt Created by Yamin Siahmargooei at 2022/3/2
+ *     CrashFragment.kt Created by Yamin Siahmargooei at 2022/3/2
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,31 +18,24 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.util
+package io.github.yamin8000.dooz.ui.base
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
+import io.github.yamin8000.dooz.databinding.FragmentCrashBinding
+import io.github.yamin8000.dooz.ui.util.BaseFragment
+import io.github.yamin8000.dooz.util.Constants
 
-typealias Inflater<VB> = (LayoutInflater) -> VB
+class CrashFragment : BaseFragment<FragmentCrashBinding>({ FragmentCrashBinding.inflate(it) }) {
 
-/**
- * Base fragment
- *
- * @param VB view binding
- *
- * @param inflater layout inflater lambda
- */
-abstract class BaseFragment<VB : ViewBinding>(inflater: Inflater<VB>) : Fragment() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    protected val binding: VB by lazy(LazyThreadSafetyMode.NONE) { inflater(layoutInflater) }
+        binding.crashImage.setOnClickListener { activity?.finish() }
+        binding.crashText.setOnClickListener { activity?.finish() }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        bundle: Bundle?
-    ): View = binding.root
+        arguments?.let {
+            val stacktrace = it.getString(Constants.STACKTRACE) ?: ""
+        }
+    }
 }

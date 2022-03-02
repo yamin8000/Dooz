@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~     Dooz
-  ~     ic_launcher_round.xml Created by Yamin Siahmargooei at 2022/3/2
+  ~     fragment_splash.xml Created by Yamin Siahmargooei at 2022/3/2
   ~     This file is part of Dooz.
   ~     Copyright (C) 2022  Yamin Siahmargooei
   ~
@@ -19,7 +19,15 @@
   ~     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-</adaptive-icon>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:contentDescription="@string/app_name"
+        app:srcCompat="@drawable/ic_launcher_foreground" />
+</FrameLayout>
