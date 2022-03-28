@@ -74,5 +74,5 @@ dependencies {
     //log/crash library
     implementation 'com.orhanobut:logger:2.2.0'
     //lottie
-    implementation 'com.airbnb.android:lottie:4.2.2'
+    implementation 'com.airbnb.android:lottie:5.0.3'
 }
