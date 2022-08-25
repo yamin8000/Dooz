@@ -23,14 +23,29 @@ package io.github.yamin8000.dooz
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import io.github.yamin8000.dooz.ui.HomeContent
+import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            DoozTheme {
-                
+        setContent { DoozTheme { MainContent() } }
+    }
+
+    @Composable
+    private fun MainContent() {
+        val navController = rememberNavController()
+        NavHost(
+            navController = navController,
+            startDestination = Nav.Routes.home
+        ) {
+            composable(Nav.Routes.home) {
+                HomeContent(navController)
             }
         }
     }
