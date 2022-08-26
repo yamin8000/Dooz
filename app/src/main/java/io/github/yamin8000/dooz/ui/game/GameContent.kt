@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     GameContent.kt Created by Yamin Siahmargooei at 2022/8/25
+ *     GameContent.kt Created by Yamin Siahmargooei at 2022/8/26
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui
+package io.github.yamin8000.dooz.ui.game
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,7 +45,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import io.github.yamin8000.dooz.ui.game.DoozCell
+import io.github.yamin8000.dooz.model.DoozCell
+import io.github.yamin8000.dooz.ui.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -68,31 +70,50 @@ fun GameContent(
             modifier = Modifier.fillMaxSize()
         ) {
             Column(
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = gameState.currentPlayer.value.name)
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .padding(boxPadding)
-                        .size(boxSize),
-                    columns = GridCells.Fixed(gameState.gameSize.value),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    userScrollEnabled = false
+                Row(
+                    modifier = Modifier.padding(32.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    gameState.gameCells.value.forEachIndexed { rowIndex, row ->
-                        itemsIndexed(row) { columnIndex, cell ->
-                            DoozItem(
-                                state = gameState,
-                                itemSize = boxItemSize,
-                                doozCell = cell,
-                                onClick = {
-                                    gameState.playItem(cell)
-                                    //gameState.changePlayer()
-                                    //Logger.d(gameState.currentPlayer)
-                                }
-                            )
+                    Button(
+                        onClick = {
+                            gameState.startGame()
+                        }) {
+                        Text(text = "New Game")
+                    }
+                    gameState.currentPlayer.value?.let {
+                        Text(text = it.name)
+                    }
+                    gameState.winner.value?.let {
+                        Text(text = "Winner is: ${it.name}")
+                    }
+                }
+                if (gameState.isGameStarted.value) {
+                    LazyVerticalGrid(
+                        modifier = Modifier
+                            .padding(boxPadding)
+                            .size(boxSize),
+                        columns = GridCells.Fixed(gameState.gameSize.value),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        userScrollEnabled = false
+                    ) {
+                        gameState.gameCells.value.forEachIndexed { rowIndex, row ->
+                            itemsIndexed(row) { columnIndex, cell ->
+                                DoozItem(
+                                    state = gameState,
+                                    itemSize = boxItemSize,
+                                    doozCell = cell,
+                                    onClick = {
+                                        gameState.playItem(cell)
+                                        //gameState.changePlayer()
+                                        //Logger.d(gameState.currentPlayer)
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -115,7 +136,8 @@ fun DoozItem(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
-                onClick = onClick
+                onClick = onClick,
+                enabled = !state.isGameFinished.value
             )
     ) {
         Box(

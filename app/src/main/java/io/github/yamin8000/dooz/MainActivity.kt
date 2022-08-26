@@ -30,7 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-import io.github.yamin8000.dooz.ui.GameContent
+import io.github.yamin8000.dooz.ui.game.GameContent
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 

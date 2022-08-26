@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     DoozItemOwner.kt Created by Yamin Siahmargooei at 2022/8/26
+ *     Player.kt Created by Yamin Siahmargooei at 2022/8/26
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,12 +18,14 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.game
+package io.github.yamin8000.dooz.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class DoozCellOwner : Parcelable {
-    P1, P2
-}
+data class Player(
+    val name: String,
+    val score: Int = 0,
+    val type: PlayerType = PlayerType.Human
+) : Parcelable
