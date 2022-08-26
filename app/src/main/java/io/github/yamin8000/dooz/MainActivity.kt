@@ -27,6 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.orhanobut.logger.AndroidLogAdapter
+import com.orhanobut.logger.Logger
+import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.yamin8000.dooz.ui.HomeContent
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
@@ -35,6 +38,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent { DoozTheme { MainContent() } }
+
+        prepareLogger()
     }
 
     @Composable
@@ -48,5 +53,14 @@ class MainActivity : ComponentActivity() {
                 HomeContent(navController)
             }
         }
+    }
+
+    private fun prepareLogger() {
+        Logger.addLogAdapter(
+            AndroidLogAdapter(
+                PrettyFormatStrategy.newBuilder().tag("<==>").build()
+            )
+        )
+        Logger.d("Application is Started!")
     }
 }

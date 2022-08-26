@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     HomeState.kt Created by Yamin Siahmargooei at 2022/8/25
+ *     GameType.kt Created by Yamin Siahmargooei at 2022/8/26
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,9 +18,12 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui
+package io.github.yamin8000.dooz.ui.game
 
-class HomeState(
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-) {
+@Parcelize
+enum class GameType : Parcelable {
+    PvP, PvC
 }

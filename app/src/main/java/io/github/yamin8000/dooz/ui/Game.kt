@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     Home.kt Created by Yamin Siahmargooei at 2022/8/25
+ *     Game.kt Created by Yamin Siahmargooei at 2022/8/25
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -23,15 +23,18 @@ package io.github.yamin8000.dooz.ui
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +44,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.orhanobut.logger.Logger
+import io.github.yamin8000.dooz.ui.game.DoozCell
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -50,13 +55,14 @@ fun HomeContent(
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
+    val gameState = rememberHomeState()
+
     val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
     val boxPadding = 16.dp
     val boxSize = screenWidth - (2 * boxPadding.value).dp
-    val boxItemSize = (boxSize.value / 3).dp
+    val boxItemSize = (boxSize.value / gameState.gameSize.value).dp
 
     DoozTheme {
         Surface(
@@ -66,20 +72,29 @@ fun HomeContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Hello there!")
+                Text(text = gameState.currentPlayer.value.name)
                 LazyVerticalGrid(
                     modifier = Modifier
                         .padding(boxPadding)
                         .size(boxSize),
-                    columns = GridCells.Fixed(3),
+                    columns = GridCells.Fixed(gameState.gameSize.value),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     userScrollEnabled = false
                 ) {
-                    itemsIndexed(listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)) { _, value ->
-                        if (value % 2 == 0)
-                            DoozItem(player = "player 1", itemSize = boxItemSize)
-                        else DoozItem(player = "player 2", itemSize = boxItemSize)
+                    gameState.gameCells.value.forEachIndexed { rowIndex, row ->
+                        itemsIndexed(row) { columnIndex, cell ->
+                            DoozItem(
+                                state = gameState,
+                                itemSize = boxItemSize,
+                                doozCell = cell,
+                                onClick = {
+                                    gameState.playItem(cell)
+                                    //gameState.changePlayer()
+                                    //Logger.d(gameState.currentPlayer)
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -87,17 +102,22 @@ fun HomeContent(
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun DoozItem(
+    state: GameState,
     itemSize: Dp = 50.dp,
-    isFilled: Boolean = false,
-    player: String = "-",
+    doozCell: DoozCell = DoozCell(0, 0),
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.Center)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(),
+                onClick = onClick
+            )
     ) {
         Box(
             modifier = Modifier
@@ -106,14 +126,13 @@ fun DoozItem(
                 .background(MaterialTheme.colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .size((itemSize.value / 2).dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.onSecondary),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = player, color = MaterialTheme.colorScheme.onSecondaryContainer)
+            doozCell.owner?.let { doozCellOwner ->
+                Box(
+                    modifier = Modifier
+                        .size((itemSize.value / 2).dp)
+                        .clip(state.getOwnerShape(doozCellOwner))
+                        .background(MaterialTheme.colorScheme.onSecondary),
+                )
             }
         }
     }
