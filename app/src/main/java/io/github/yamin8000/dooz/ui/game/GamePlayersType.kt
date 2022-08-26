@@ -24,6 +24,6 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class GameType : Parcelable {
+enum class GamePlayersType : Parcelable {
     PvP, PvC
 }

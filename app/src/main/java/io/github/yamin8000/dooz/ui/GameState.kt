@@ -28,16 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import io.github.yamin8000.dooz.ui.game.DoozCell
-import io.github.yamin8000.dooz.ui.game.DoozCellOwner
-import io.github.yamin8000.dooz.ui.game.GameType
+import io.github.yamin8000.dooz.ui.game.*
 
 class GameState(
-    var isGameStarted: MutableState<Boolean>,
-    var gameType: MutableState<GameType>,
     var gameCells: MutableState<List<List<DoozCell>>>,
     val gameSize: MutableState<Int>,
-    var currentPlayer: MutableState<DoozCellOwner>
+    var currentPlayer: MutableState<Player?>,
+    var playerPair: MutableState<Pair<Player, Player>>,
+    var game: MutableState<Game>
 ) {
     init {
         gameCells.value = getEmptyBoard()
@@ -54,13 +52,23 @@ class GameState(
         return list
     }
 
+    fun startGame() {
+        //preparePlayers()
+
+        game.value.isGameStarted = true
+    }
+
+    private fun preparePlayers() {
+        //if (game.value.gamePlayersType.)
+    }
+
     fun getOwnerShape(owner: DoozCellOwner): Shape {
         return if (owner == DoozCellOwner.P1) CircleShape else RectangleShape
     }
 
     fun changePlayer() {
-        if (currentPlayer.value == DoozCellOwner.P1) currentPlayer.value = DoozCellOwner.P2
-        else currentPlayer.value = DoozCellOwner.P1
+        //if (currentPlayer.value == DoozCellOwner.P1) currentPlayer.value = DoozCellOwner.P2
+        //else currentPlayer.value = DoozCellOwner.P1
     }
 
     fun playItem(
@@ -75,11 +83,13 @@ class GameState(
 
 @Composable
 fun rememberHomeState(
-    isGameStarted: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
-    gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.PvP) },
     doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
     gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(3) },
-    currentPlayer: MutableState<DoozCellOwner> = rememberSaveable { mutableStateOf(DoozCellOwner.P1) }
-) = remember(isGameStarted, gameType, doozCells, gameSize, currentPlayer) {
-    GameState(isGameStarted, gameType, doozCells, gameSize, currentPlayer)
+    currentPlayer: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
+    playerPair: MutableState<Pair<Player, Player>> = rememberSaveable {
+        mutableStateOf(Player("P1") to Player("P2"))
+    },
+    game: MutableState<Game> = rememberSaveable { mutableStateOf(Game(GamePlayersType.PvP)) }
+) = remember(doozCells, gameSize, currentPlayer, playerPair, game) {
+    GameState(doozCells, gameSize, currentPlayer, playerPair, game)
 }

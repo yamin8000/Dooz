@@ -22,7 +22,7 @@ package io.github.yamin8000.dooz.ui.navigation
 
 object Nav {
     object Routes {
-        const val home = "home"
+        const val game = "game"
     }
 
     object Arguments {

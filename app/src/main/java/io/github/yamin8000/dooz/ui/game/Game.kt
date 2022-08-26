@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     DoozItem.kt Created by Yamin Siahmargooei at 2022/8/26
+ *     Game.kt Created by Yamin Siahmargooei at 2022/8/26
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -24,8 +24,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class DoozCell(
-    val x: Int,
-    val y: Int,
-    var owner: Player? = null
+data class Game(
+    val gamePlayersType: GamePlayersType,
+    var isGameStarted: Boolean = false,
+    var isGameFinished: Boolean = false,
+    var winner: Player? = null
 ) : Parcelable

@@ -30,7 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-import io.github.yamin8000.dooz.ui.HomeContent
+import io.github.yamin8000.dooz.ui.GameContent
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
@@ -47,10 +47,10 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         NavHost(
             navController = navController,
-            startDestination = Nav.Routes.home
+            startDestination = Nav.Routes.game
         ) {
-            composable(Nav.Routes.home) {
-                HomeContent(navController)
+            composable(Nav.Routes.game) {
+                GameContent(navController)
             }
         }
     }

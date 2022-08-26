@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     Game.kt Created by Yamin Siahmargooei at 2022/8/25
+ *     GameContent.kt Created by Yamin Siahmargooei at 2022/8/25
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -44,13 +44,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.orhanobut.logger.Logger
 import io.github.yamin8000.dooz.ui.game.DoozCell
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun HomeContent(
+fun GameContent(
     navController: NavController? = null
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
