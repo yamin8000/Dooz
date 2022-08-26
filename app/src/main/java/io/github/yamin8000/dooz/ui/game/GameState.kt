@@ -55,6 +55,7 @@ class GameState(
     }
 
     private fun resetGame() {
+        winner.value = null
         filledCells = 0
         isGameFinished.value = false
         gameCells.value = getEmptyBoard()
@@ -98,6 +99,7 @@ class GameState(
             cell.owner = currentPlayer.value
             changePlayer()
         }
+        isGameFinished.value = checkIfGameIsFinished()
     }
 
     private fun checkIfGameIsFinished(): Boolean {
@@ -109,21 +111,20 @@ class GameState(
         var winner: Player? = null
         var p1Score = 0
         var p2Score = 0
-        gameCells.value.forEachIndexed { _, row ->
-            row.forEachIndexed { _, doozCell ->
-                if (doozCell.owner == players.value.first())
+        for (i in 0 until gameCells.value.size) {
+            for (j in 0 until gameCells.value[i].size) {
+                if (gameCells.value[i][j].owner == players.value.first())
                     p1Score++
-                else p2Score++
+                if (gameCells.value[i][j].owner == players.value.last())
+                    p2Score++
                 if (p1Score == 3) {
                     winner = players.value.first()
-                    return winner
+                    break
                 }
                 if (p2Score == 3) {
                     winner = players.value.last()
-                    return winner
+                    break
                 }
-                p1Score = 0
-                p2Score = 0
             }
         }
         return winner
