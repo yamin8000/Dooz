@@ -37,10 +37,11 @@ class GameState(
     val gameSize: MutableState<Int>,
     var currentPlayer: MutableState<Player?>,
     var players: MutableState<List<Player>>,
-    val gamePlayersType: MutableState<GamePlayersType>,
+    var gamePlayersType: MutableState<GamePlayersType>,
     var isGameStarted: MutableState<Boolean>,
     var isGameFinished: MutableState<Boolean>,
-    var winner: MutableState<Player?>
+    var winner: MutableState<Player?>,
+    var gameType: MutableState<GameType>
 ) {
 
     private var filledCells = 0
@@ -108,6 +109,12 @@ class GameState(
     }
 
     private fun findWinner(): Player? {
+        return when (gameType.value) {
+            GameType.Simple -> findSimpleGameWinner()
+        }
+    }
+
+    private fun findSimpleGameWinner(): Player? {
         var winner: Player? = null
         var p1Score = 0
         var p2Score = 0
@@ -126,6 +133,8 @@ class GameState(
                     break
                 }
             }
+            p1Score = 0
+            p2Score = 0
         }
         return winner
     }
@@ -144,7 +153,8 @@ fun rememberHomeState(
     },
     isGameStarted: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
     isGameFinished: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
-    winner: MutableState<Player?> = rememberSaveable { mutableStateOf(null) }
+    winner: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
+    gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) }
 ) = remember(
     doozCells,
     gameSize,
@@ -153,7 +163,8 @@ fun rememberHomeState(
     gamePlayersType,
     isGameStarted,
     isGameFinished,
-    winner
+    winner,
+    gameType
 ) {
     GameState(
         doozCells,
@@ -163,6 +174,7 @@ fun rememberHomeState(
         gamePlayersType,
         isGameStarted,
         isGameFinished,
-        winner
+        winner,
+        gameType
     )
 }
