@@ -59,6 +59,7 @@ class GameState(
         winner.value = null
         filledCells = 0
         isGameFinished.value = false
+        isGameStarted.value = false
         gameCells.value = getEmptyBoard()
     }
 
@@ -92,20 +93,32 @@ class GameState(
         else currentPlayer.value = players.value.first()
     }
 
-    fun playItem(
+    fun playItemByUser(
         cell: DoozCell
     ) {
-        isGameFinished.value = checkIfGameIsFinished()
-        if (cell.owner == null && !isGameFinished.value) {
+        checkIfGameIsFinished()
+        changeCellOwner(cell)
+        checkIfGameIsFinished()
+    }
+
+    private fun changeCellOwner(
+        cell: DoozCell
+    ) {
+        if (cell.owner == null && isGameStarted.value) {
             cell.owner = currentPlayer.value
             changePlayer()
         }
-        isGameFinished.value = checkIfGameIsFinished()
     }
 
-    private fun checkIfGameIsFinished(): Boolean {
+    private fun finishGame() {
+        isGameStarted.value = false
+    }
+
+    private fun checkIfGameIsFinished() {
         winner.value = findWinner()
-        return findWinner() != null
+        isGameFinished.value = winner.value != null
+        if (isGameFinished.value)
+            finishGame()
     }
 
     private fun findWinner(): Player? {
@@ -114,6 +127,10 @@ class GameState(
         }
     }
 
+    /**
+     * Probably a naive approach for:
+     * finding the winner in the most simple type of tic-tac-tao
+     */
     private fun findSimpleGameWinner(): Player? {
         var winner: Player? = null
         var p1Score = 0

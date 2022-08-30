@@ -20,4 +20,6 @@
 
 <resources>
     <string name="app_name">Dooz</string>
+    <string name="play_with_computer">بازی با کامپیوتر</string>
+    <string name="play_with_human">بازی با انسان</string>
 </resources>

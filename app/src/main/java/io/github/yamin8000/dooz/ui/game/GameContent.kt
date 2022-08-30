@@ -30,10 +30,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,11 +38,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.model.DoozCell
+import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.ui.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
@@ -70,55 +70,72 @@ fun GameContent(
             modifier = Modifier.fillMaxSize()
         ) {
             Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(vertical = 32.dp)
             ) {
-                Row(
-                    modifier = Modifier.padding(32.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = {
-                            gameState.startGame()
-                        }) {
-                        Text(text = "New Game")
+                Button(
+                    onClick = {
+                        gameState.startGame()
                     }
-                    gameState.currentPlayer.value?.let {
-                        Text(text = it.name)
-                    }
-                    gameState.winner.value?.let {
-                        Text(text = "Winner is: ${it.name}")
-                    }
+                ) { Text(text = "New Game") }
+                gameState.currentPlayer.value?.let {
+                    Text(text = it.name)
                 }
-                if (gameState.isGameStarted.value) {
-                    LazyVerticalGrid(
-                        modifier = Modifier
-                            .padding(boxPadding)
-                            .size(boxSize),
-                        columns = GridCells.Fixed(gameState.gameSize.value),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                        userScrollEnabled = false
-                    ) {
-                        gameState.gameCells.value.forEachIndexed { rowIndex, row ->
-                            itemsIndexed(row) { columnIndex, cell ->
-                                DoozItem(
-                                    state = gameState,
-                                    itemSize = boxItemSize,
-                                    doozCell = cell,
-                                    onClick = {
-                                        gameState.playItem(cell)
-                                        //gameState.changePlayer()
-                                        //Logger.d(gameState.currentPlayer)
-                                    }
-                                )
-                            }
+                gameState.winner.value?.let {
+                    Text(text = "Winner is: ${it.name}")
+                }
+                GamePlayersTypeSwitch(gameState)
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .padding(boxPadding)
+                        .size(boxSize),
+                    columns = GridCells.Fixed(gameState.gameSize.value),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    userScrollEnabled = false
+                ) {
+                    gameState.gameCells.value.forEachIndexed { _, row ->
+                        itemsIndexed(row) { _, cell ->
+                            DoozItem(
+                                state = gameState,
+                                itemSize = boxItemSize,
+                                doozCell = cell,
+                                onClick = {
+                                    gameState.playItemByUser(cell)
+                                    //gameState.changePlayer()
+                                    //Logger.d(gameState.currentPlayer)
+                                }
+                            )
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun GamePlayersTypeSwitch(
+    gameState: GameState
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text =
+            if (gameState.gamePlayersType.value == GamePlayersType.PvP) stringResource(R.string.play_with_human)
+            else stringResource(R.string.play_with_computer)
+        )
+        Switch(
+            checked = gameState.gamePlayersType.value == GamePlayersType.PvP,
+            enabled = !gameState.isGameStarted.value,
+            onCheckedChange = { isChecked ->
+                if (isChecked) gameState.gamePlayersType.value = GamePlayersType.PvP
+                else gameState.gamePlayersType.value = GamePlayersType.PvC
+            }
+        )
     }
 }
 
@@ -137,7 +154,7 @@ fun DoozItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
                 onClick = onClick,
-                enabled = !state.isGameFinished.value
+                enabled = state.isGameStarted.value
             )
     ) {
         Box(
