@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.model.DoozCell
-import io.github.yamin8000.dooz.model.GamePlayersType
+import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.ui.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 

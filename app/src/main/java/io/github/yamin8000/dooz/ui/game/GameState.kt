@@ -28,9 +28,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
+import io.github.yamin8000.dooz.game.GamePlayersType
+import io.github.yamin8000.dooz.game.GameType
 import io.github.yamin8000.dooz.model.DoozCell
-import io.github.yamin8000.dooz.model.GamePlayersType
-import io.github.yamin8000.dooz.model.GameType
 import io.github.yamin8000.dooz.model.Player
 
 class GameState(
@@ -142,16 +143,23 @@ class GameState(
         var p1Score = 0
         var p2Score = 0
         for (i in 0 until gameCells.value.size) {
+//            if (gameCells.value[i][0].owner == null)
+//                break
             for (j in 0 until gameCells.value[i].size) {
+//                if (j + 1 in gameCells.value.indices) {
+//                    if (gameCells.value[i][j].owner == gameCells.value[i][j + 1].owner) {
+//                        //gameCells.value[i][j].owner?.score++
+//                    } else break
+//                }
                 if (gameCells.value[i][j].owner == players.value.first())
                     p1Score++
                 if (gameCells.value[i][j].owner == players.value.last())
                     p2Score++
-                if (p1Score == 3) {
+                if (p1Score == gameCells.value.size) {
                     winner = players.value.first()
                     break
                 }
-                if (p2Score == 3) {
+                if (p2Score == gameCells.value.size) {
                     winner = players.value.last()
                     break
                 }
@@ -166,7 +174,7 @@ class GameState(
 @Composable
 fun rememberHomeState(
     doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
-    gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(3) },
+    gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(gameDefaultSize) },
     currentPlayer: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
     playerPair: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {

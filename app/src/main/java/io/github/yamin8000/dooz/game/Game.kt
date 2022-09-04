@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     Game.kt Created by Yamin Siahmargooei at 2022/8/26
+ *     Game.kt Created/Updated by Yamin Siahmargooei at 2022/9/4
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,10 +18,9 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.model
+package io.github.yamin8000.dooz.game
 
 import android.os.Parcelable
-import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.model.Player
 import kotlinx.parcelize.Parcelize
 

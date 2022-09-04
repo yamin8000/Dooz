@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.model
+package io.github.yamin8000.dooz.game
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
