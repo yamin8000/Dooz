@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.GamePlayersType
+import io.github.yamin8000.dooz.model.GameType
 import io.github.yamin8000.dooz.model.Player
 
 class GameState(
@@ -64,14 +65,14 @@ class GameState(
     }
 
     private fun getEmptyBoard(): List<List<DoozCell>> {
-        val list = mutableListOf<List<DoozCell>>()
+        val columns = mutableListOf<List<DoozCell>>()
         for (x in 0 until gameSize.value) {
-            val row: MutableList<DoozCell> = mutableListOf()
+            val row = mutableListOf<DoozCell>()
             for (y in 0 until gameSize.value)
                 row.add(DoozCell(x, y))
-            list.add(row)
+            columns.add(row)
         }
-        return list
+        return columns
     }
 
     fun startGame() {
@@ -80,8 +81,13 @@ class GameState(
     }
 
     private fun preparePlayers() {
-        players.value = listOf(Player("P1"), Player("P2"))
+        if (players.value.isEmpty())
+            players.value = getDefaultPlayers()
         currentPlayer.value = players.value.first()
+    }
+
+    private fun getDefaultPlayers(): List<Player> {
+        return listOf(Player("Player 1"), Player("Player 2"))
     }
 
     fun getOwnerShape(owner: Player): Shape {
@@ -110,15 +116,15 @@ class GameState(
         }
     }
 
-    private fun finishGame() {
-        isGameStarted.value = false
-    }
-
     private fun checkIfGameIsFinished() {
         winner.value = findWinner()
-        isGameFinished.value = winner.value != null
-        if (isGameFinished.value)
+        if (winner.value != null)
             finishGame()
+    }
+
+    private fun finishGame() {
+        isGameFinished.value = true
+        isGameStarted.value = false
     }
 
     private fun findWinner(): Player? {
