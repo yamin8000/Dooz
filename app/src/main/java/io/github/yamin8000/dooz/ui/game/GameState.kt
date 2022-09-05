@@ -140,34 +140,53 @@ class GameState(
      */
     private fun findSimpleGameWinner(): Player? {
         var winner: Player? = null
-        var p1Score = 0
-        var p2Score = 0
-        for (i in 0 until gameCells.value.size) {
-//            if (gameCells.value[i][0].owner == null)
-//                break
-            for (j in 0 until gameCells.value[i].size) {
-//                if (j + 1 in gameCells.value.indices) {
-//                    if (gameCells.value[i][j].owner == gameCells.value[i][j + 1].owner) {
-//                        //gameCells.value[i][j].owner?.score++
-//                    } else break
-//                }
-                if (gameCells.value[i][j].owner == players.value.first())
-                    p1Score++
-                if (gameCells.value[i][j].owner == players.value.last())
-                    p2Score++
-                if (p1Score == gameCells.value.size) {
-                    winner = players.value.first()
-                    break
-                }
-                if (p2Score == gameCells.value.size) {
-                    winner = players.value.last()
-                    break
+
+        winner = findSimpleGameHorizontalWinner()
+        if (winner != null) return winner
+
+        winner = findSimpleGameVerticalWinner()
+        if (winner != null) return winner
+
+        winner = findSimpleGameDiagonalWinner()
+        if (winner != null) return winner
+
+        return winner
+    }
+
+    private fun findSimpleGameDiagonalWinner(
+        index: Int = 0
+    ): Player? {
+        /*val row = gameCells.value[index]
+        if (index + 1 in gameCells.value.indices) {
+            val nextRow = gameCells.value[index + 1]
+            if (index == 0) {
+                if (index + 1 in row.indices) {
+                    if (row[index].owner == row[index + 1].owner)
+                        continue
+                } else {
+
                 }
             }
-            p1Score = 0
-            p2Score = 0
+        } else return null*/
+
+        return null
+    }
+
+    private fun findSimpleGameVerticalWinner(): Player? {
+
+
+        return null
+    }
+
+    private fun findSimpleGameHorizontalWinner(): Player? {
+        for (i in gameCells.value.indices) {
+            val row = gameCells.value[i]
+            if (row.isNotEmpty() && row.any { it.owner == null })
+                break
+            if (row.isNotEmpty() && row.all { it.owner == row.first().owner })
+                return row.first().owner
         }
-        return winner
+        return null
     }
 }
 
