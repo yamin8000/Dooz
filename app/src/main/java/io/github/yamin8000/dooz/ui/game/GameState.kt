@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.Shape
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.GameType
+import io.github.yamin8000.dooz.game.logic.GameLogic
+import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 
@@ -45,21 +47,39 @@ class GameState(
     var winner: MutableState<Player?>,
     var gameType: MutableState<GameType>
 ) {
-
-    private var filledCells = 0
+    private var gameLogic: GameLogic? = null
 
     init {
         newGame()
     }
 
+    fun startGame() {
+        newGame()
+        isGameStarted.value = true
+    }
+
+    fun playItemByUser(
+        cell: DoozCell
+    ) {
+        checkIfGameIsFinished()
+        changeCellOwner(cell)
+        checkIfGameIsFinished()
+    }
+
     private fun newGame() {
         resetGame()
         preparePlayers()
+        prepareGameLogic()
+    }
+
+    private fun prepareGameLogic() {
+        when (gameType.value) {
+            GameType.Simple -> gameLogic = SimpleGameLogic(gameCells.value, gameSize.value)
+        }
     }
 
     private fun resetGame() {
         winner.value = null
-        filledCells = 0
         isGameFinished.value = false
         isGameStarted.value = false
         gameCells.value = getEmptyBoard()
@@ -74,11 +94,6 @@ class GameState(
             columns.add(row)
         }
         return columns
-    }
-
-    fun startGame() {
-        newGame()
-        isGameStarted.value = true
     }
 
     private fun preparePlayers() {
@@ -98,14 +113,6 @@ class GameState(
     private fun changePlayer() {
         if (currentPlayer.value == players.value.first()) currentPlayer.value = players.value.last()
         else currentPlayer.value = players.value.first()
-    }
-
-    fun playItemByUser(
-        cell: DoozCell
-    ) {
-        checkIfGameIsFinished()
-        changeCellOwner(cell)
-        checkIfGameIsFinished()
     }
 
     private fun changeCellOwner(
@@ -130,81 +137,8 @@ class GameState(
 
     private fun findWinner(): Player? {
         return when (gameType.value) {
-            GameType.Simple -> findSimpleGameWinner()
+            GameType.Simple -> gameLogic?.findWinner()
         }
-    }
-
-    /**
-     * Probably a naive approach for:
-     * finding the winner in the most simple type of tic-tac-tao
-     */
-    private fun findSimpleGameWinner(): Player? {
-        var winner: Player? = null
-
-        winner = findSimpleGameHorizontalWinner()
-        if (winner != null) return winner
-
-        winner = findSimpleGameVerticalWinner()
-        if (winner != null) return winner
-
-        winner = findSimpleGameDiagonalWinner()
-        if (winner != null) return winner
-
-        return winner
-    }
-
-    private fun findSimpleGameDiagonalWinner(): Player? {
-        val firstRow = gameCells.value.first()
-
-        if (firstRow.first().owner == null && firstRow.last().owner == null)
-            return null
-
-        if (firstRow.first().owner != null) {
-            val diagonals = mutableListOf<Player?>()
-            diagonals.add(firstRow.first().owner)
-            for (i in 1 until gameSize.value) {
-                val next = gameCells.value[i][i].owner
-                if (next != null) diagonals.add(next) else break
-                if (next != diagonals.last()) break
-            }
-            if (diagonals.isNotEmpty() && diagonals.size == gameSize.value && diagonals.all { it == firstRow.first().owner })
-                return firstRow.first().owner
-        }
-
-        if (firstRow.last().owner != null) {
-            val diagonals = mutableListOf<Player?>()
-            diagonals.add(firstRow.last().owner)
-            var i = 1
-            var j = gameSize.value - 2
-            while (j > -1) {
-                val next = gameCells.value[i][j].owner
-                if (next != null) diagonals.add(next) else break
-                if (next != diagonals.last()) break
-                i++
-                j--
-            }
-            if (diagonals.isNotEmpty() && diagonals.size == gameSize.value && diagonals.all { it == firstRow.last().owner })
-                return firstRow.last().owner
-        }
-
-        return null
-    }
-
-    private fun findSimpleGameVerticalWinner(): Player? {
-
-
-        return null
-    }
-
-    private fun findSimpleGameHorizontalWinner(): Player? {
-        for (i in gameCells.value.indices) {
-            val row = gameCells.value[i]
-            if (row.isNotEmpty() && row.any { it.owner == null })
-                break
-            if (row.isNotEmpty() && row.all { it.owner == row.first().owner })
-                return row.first().owner
-        }
-        return null
     }
 }
 
