@@ -153,21 +153,39 @@ class GameState(
         return winner
     }
 
-    private fun findSimpleGameDiagonalWinner(
-        index: Int = 0
-    ): Player? {
-        /*val row = gameCells.value[index]
-        if (index + 1 in gameCells.value.indices) {
-            val nextRow = gameCells.value[index + 1]
-            if (index == 0) {
-                if (index + 1 in row.indices) {
-                    if (row[index].owner == row[index + 1].owner)
-                        continue
-                } else {
+    private fun findSimpleGameDiagonalWinner(): Player? {
+        val firstRow = gameCells.value.first()
 
-                }
+        if (firstRow.first().owner == null && firstRow.last().owner == null)
+            return null
+
+        if (firstRow.first().owner != null) {
+            val diagonals = mutableListOf<Player?>()
+            diagonals.add(firstRow.first().owner)
+            for (i in 1 until gameSize.value) {
+                val next = gameCells.value[i][i].owner
+                if (next != null) diagonals.add(next) else break
+                if (next != diagonals.last()) break
             }
-        } else return null*/
+            if (diagonals.isNotEmpty() && diagonals.size == gameSize.value && diagonals.all { it == firstRow.first().owner })
+                return firstRow.first().owner
+        }
+
+        if (firstRow.last().owner != null) {
+            val diagonals = mutableListOf<Player?>()
+            diagonals.add(firstRow.last().owner)
+            var i = 1
+            var j = gameSize.value - 2
+            while (j > -1) {
+                val next = gameCells.value[i][j].owner
+                if (next != null) diagonals.add(next) else break
+                if (next != diagonals.last()) break
+                i++
+                j--
+            }
+            if (diagonals.isNotEmpty() && diagonals.size == gameSize.value && diagonals.all { it == firstRow.last().owner })
+                return firstRow.last().owner
+        }
 
         return null
     }
