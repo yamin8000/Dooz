@@ -45,9 +45,10 @@ class GameState(
     var isGameStarted: MutableState<Boolean>,
     var isGameFinished: MutableState<Boolean>,
     var winner: MutableState<Player?>,
-    var gameType: MutableState<GameType>
+    var gameType: MutableState<GameType>,
+    var isGameDrew: MutableState<Boolean>
 ) {
-    private var gameLogic: GameLogic? = null
+    var gameLogic: GameLogic? = null
 
     init {
         newGame()
@@ -82,6 +83,7 @@ class GameState(
         winner.value = null
         isGameFinished.value = false
         isGameStarted.value = false
+        isGameDrew.value = false
         gameCells.value = getEmptyBoard()
     }
 
@@ -128,6 +130,13 @@ class GameState(
         winner.value = findWinner()
         if (winner.value != null)
             finishGame()
+        if (gameLogic?.isGameDrew() == true)
+            handleDrewGame()
+    }
+
+    private fun handleDrewGame() {
+        finishGame()
+        isGameDrew.value = true
     }
 
     private fun finishGame() {
@@ -156,7 +165,8 @@ fun rememberHomeState(
     isGameStarted: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
     isGameFinished: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
     winner: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
-    gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) }
+    gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) },
+    isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
 ) = remember(
     doozCells,
     gameSize,
@@ -166,7 +176,8 @@ fun rememberHomeState(
     isGameStarted,
     isGameFinished,
     winner,
-    gameType
+    gameType,
+    isGameDrew
 ) {
     GameState(
         doozCells,
@@ -177,6 +188,7 @@ fun rememberHomeState(
         isGameStarted,
         isGameFinished,
         winner,
-        gameType
+        gameType,
+        isGameDrew
     )
 }

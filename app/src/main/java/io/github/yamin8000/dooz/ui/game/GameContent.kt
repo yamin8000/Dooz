@@ -44,8 +44,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.game.GamePlayersType
+import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.ui.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
@@ -80,10 +80,13 @@ fun GameContent(
                     }
                 ) { Text(text = "New Game") }
                 gameState.currentPlayer.value?.let {
-                    Text(text = it.name)
+                    Text(text = "Current Player is: ${it.name}")
                 }
                 gameState.winner.value?.let {
                     Text(text = "Winner is: ${it.name}")
+                }
+                if (gameState.isGameDrew.value) {
+                    Text(text = "Game is Drew!")
                 }
                 GamePlayersTypeSwitch(gameState)
                 LazyVerticalGrid(
