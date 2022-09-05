@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     Nav.kt Created by Yamin Siahmargooei at 2022/8/25
+ *     SettingsState.kt Created/Updated by Yamin Siahmargooei at 2022/9/6
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,15 +18,19 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.navigation
+package io.github.yamin8000.dooz.ui.settings
 
-object Nav {
-    object Routes {
-        const val game = "game"
-        const val settings = "settings"
-    }
+import androidx.compose.runtime.Composable
 
-    object Arguments {
+class SettingsState(
 
-    }
+) {
+
+}
+
+@Composable
+fun rememberSettingsState(
+
+) {
+
 }

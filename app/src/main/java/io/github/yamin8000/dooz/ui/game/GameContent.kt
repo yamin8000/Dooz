@@ -47,6 +47,7 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.ui.LockScreenOrientation
+import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -79,6 +80,11 @@ fun GameContent(
                         gameState.startGame()
                     }
                 ) { Text(text = "New Game") }
+                Button(
+                    onClick = {
+                        navController?.navigate(Nav.Routes.settings)
+                    }
+                ) { Text("Settings") }
                 gameState.currentPlayer.value?.let {
                     Text(text = "Current Player is: ${it.name}")
                 }

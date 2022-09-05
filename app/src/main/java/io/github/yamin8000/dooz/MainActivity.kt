@@ -32,6 +32,7 @@ import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.yamin8000.dooz.ui.game.GameContent
 import io.github.yamin8000.dooz.ui.navigation.Nav
+import io.github.yamin8000.dooz.ui.settings.SettingsContent
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,6 +52,10 @@ class MainActivity : ComponentActivity() {
         ) {
             composable(Nav.Routes.game) {
                 GameContent(navController)
+            }
+
+            composable(Nav.Routes.settings) {
+                SettingsContent(navController)
             }
         }
     }
