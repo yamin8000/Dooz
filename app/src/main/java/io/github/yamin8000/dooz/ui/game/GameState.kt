@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
@@ -41,6 +42,8 @@ import io.github.yamin8000.dooz.game.logic.GameLogic
 import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.ui.RingShape
+import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.settings.settings
 import io.github.yamin8000.dooz.util.Constants
 import kotlinx.coroutines.flow.first
@@ -83,10 +86,10 @@ class GameState(
 
     private fun newGame() {
         resetGame()
-        preparePlayers()
         coroutineScope.launch {
             prepareGameRules()
             prepareGameLogic()
+            preparePlayers()
         }
     }
 
@@ -123,18 +126,19 @@ class GameState(
         return columns
     }
 
-    private fun preparePlayers() {
-        if (players.value.isEmpty())
-            players.value = getDefaultPlayers()
+    private suspend fun preparePlayers() {
+        val firstPlayer = withContext(coroutineScope.coroutineContext) {
+            getFirstPlayerName()
+        } ?: "Player 1"
+        val secondPlayer = withContext(coroutineScope.coroutineContext) {
+            getSecondPlayerName()
+        } ?: "Player 2"
+        players.value = listOf(Player(firstPlayer), Player(secondPlayer))
         currentPlayer.value = players.value.first()
     }
 
-    private fun getDefaultPlayers(): List<Player> {
-        return listOf(Player("Player 1"), Player("Player 2"))
-    }
-
     fun getOwnerShape(owner: Player?): Shape {
-        return if (owner == players.value.first()) CircleShape else RectangleShape
+        return if (owner == players.value.first()) RingShape else XShape
     }
 
     private fun changePlayer() {
@@ -166,13 +170,28 @@ class GameState(
 
     private fun finishGame() {
         isGameFinished.value = true
-        //isGameStarted.value = false
     }
 
     private fun findWinner(): Player? {
         return when (gameType.value) {
             GameType.Simple -> gameLogic?.findWinner()
         }
+    }
+
+    private suspend fun getSecondPlayerName(): String? {
+        return getPlayerName(Constants.secondPlayerName)
+    }
+
+    private suspend fun getFirstPlayerName(): String? {
+        return getPlayerName(Constants.firstPlayerName)
+    }
+
+    private suspend fun getPlayerName(
+        player: String
+    ): String? {
+        return context.settings.data.map {
+            it[stringPreferencesKey(player)]
+        }.first()
     }
 }
 
