@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
@@ -59,7 +60,43 @@ fun SettingsContent(
                     fontSize = 20.sp
                 )
                 GamePlayersTypeSwitch(settingsState)
-                GameSizeChanger(settingsState)
+                GameSizeChanger(
+                    gameSize = settingsState.gameSize.value,
+                    onGameSizeIncrease = { settingsState.increaseGameSize() },
+                    onGameSizeDecrease = { settingsState.decreaseGameSize() }
+                )
+                PlayerNameInputs(settingsState)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PlayerNameInputs(
+    settingsState: SettingsState
+) {
+    Card {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PersianText(
+                text = stringResource(R.string.player_names),
+                fontSize = 16.sp
+            )
+            TextField(
+                value = settingsState.firstPlayerName.value,
+                onValueChange = { settingsState.firstPlayerName.value = it })
+            TextField(
+                value = settingsState.secondPlayerName.value,
+                onValueChange = { settingsState.secondPlayerName.value = it })
+            Button(
+                onClick = {
+                    settingsState.savePlayerNames()
+                }) {
+                PersianText(text = stringResource(R.string.save))
             }
         }
     }
@@ -67,7 +104,9 @@ fun SettingsContent(
 
 @Composable
 private fun GameSizeChanger(
-    settingsState: SettingsState
+    gameSize: Int = GameConstants.gameDefaultSize,
+    onGameSizeIncrease: () -> Unit = {},
+    onGameSizeDecrease: () -> Unit = {}
 ) {
     Card {
         Column(
@@ -83,15 +122,14 @@ private fun GameSizeChanger(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                IconButton(onClick = { settingsState.increaseGameSize() }) {
+                IconButton(onClick = onGameSizeIncrease) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add),
                         contentDescription = stringResource(R.string.increase)
                     )
                 }
-                val size = settingsState.gameSize.value.toString()
-                Text("$size*$size")
-                IconButton(onClick = { settingsState.decreaseGameSize() }) {
+                Text("$gameSize*$gameSize")
+                IconButton(onClick = onGameSizeDecrease) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_remove),
                         contentDescription = stringResource(R.string.decrease)

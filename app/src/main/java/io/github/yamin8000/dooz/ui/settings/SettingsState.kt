@@ -49,13 +49,34 @@ class SettingsState(
     private val context: Context,
     private val coroutineScope: LifecycleCoroutineScope,
     var gamePlayersType: MutableState<GamePlayersType>,
-    var gameSize: MutableState<Int>
+    var gameSize: MutableState<Int>,
+    var firstPlayerName: MutableState<String>,
+    var secondPlayerName: MutableState<String>
 ) {
     init {
         coroutineScope.launch {
             gamePlayersType.value = GamePlayersType.valueOf(getPlayersType() ?: "PvC")
             gameSize.value = getGameSize() ?: GameConstants.gameDefaultSize
+            firstPlayerName.value = getFirstPlayerName() ?: "Player 1"
+            secondPlayerName.value = getSecondPlayerName() ?: "Player 2"
         }
+    }
+
+
+    private suspend fun getSecondPlayerName(): String? {
+        return getPlayerName(Constants.secondPlayerName)
+    }
+
+    private suspend fun getFirstPlayerName(): String? {
+        return getPlayerName(Constants.firstPlayerName)
+    }
+
+    private suspend fun getPlayerName(
+        player: String
+    ): String? {
+        return context.settings.data.map {
+            it[stringPreferencesKey(player)]
+        }.first()
     }
 
     fun setPlayersType() {
@@ -75,6 +96,15 @@ class SettingsState(
         if (gameSize.value > GameConstants.gameDefaultSize) {
             gameSize.value = gameSize.value - 1
             setGameSize()
+        }
+    }
+
+    fun savePlayerNames() {
+        coroutineScope.launch {
+            context.settings.edit {
+                it[stringPreferencesKey(Constants.firstPlayerName)] = firstPlayerName.value
+                it[stringPreferencesKey(Constants.secondPlayerName)] = secondPlayerName.value
+            }
         }
     }
 
@@ -106,7 +136,23 @@ fun rememberSettingsState(
             GamePlayersType.PvC
         )
     },
-    gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(GameConstants.gameDefaultSize) }
-) = remember(context, coroutineScope, gamePlayersType, gameSize) {
-    SettingsState(context, coroutineScope, gamePlayersType, gameSize)
+    gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(GameConstants.gameDefaultSize) },
+    firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 1") },
+    secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 2") }
+) = remember(
+    context,
+    coroutineScope,
+    gamePlayersType,
+    gameSize,
+    firstPlayerName,
+    secondPlayerName
+) {
+    SettingsState(
+        context,
+        coroutineScope,
+        gamePlayersType,
+        gameSize,
+        firstPlayerName,
+        secondPlayerName
+    )
 }

@@ -26,4 +26,6 @@
     <string name="decrease">کم کردن</string>
     <string name="increase">اضافه کردن</string>
     <string name="game_board_size">اندازه زمین بازی</string>
+    <string name="player_names">نام بازیکن ها</string>
+    <string name="save">ذخیره</string>
 </resources>

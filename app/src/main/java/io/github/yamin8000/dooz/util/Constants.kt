@@ -23,4 +23,6 @@ package io.github.yamin8000.dooz.util
 object Constants {
     const val gameSize = "gameSize"
     const val gamePlayersType = "gamePlayersType"
+    const val firstPlayerName = "firstPlayerName"
+    const val secondPlayerName = "secondPlayerName"
 }
