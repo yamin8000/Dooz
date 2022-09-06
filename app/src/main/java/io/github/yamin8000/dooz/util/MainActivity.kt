@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz
+package io.github.yamin8000.dooz.util
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

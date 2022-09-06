@@ -29,7 +29,7 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.Dooz">
         <activity
-            android:name=".MainActivity"
+            android:name=".util.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Dooz">
             <intent-filter>

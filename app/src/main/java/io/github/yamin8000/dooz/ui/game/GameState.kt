@@ -20,6 +20,7 @@
 
 package io.github.yamin8000.dooz.ui.game
 
+import android.content.Context
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -28,6 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.GameType
@@ -35,8 +41,16 @@ import io.github.yamin8000.dooz.game.logic.GameLogic
 import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.ui.settings.settings
+import io.github.yamin8000.dooz.util.Constants
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GameState(
+    val context: Context,
+    val coroutineScope: LifecycleCoroutineScope,
     var gameCells: MutableState<List<List<DoozCell>>>,
     val gameSize: MutableState<Int>,
     var currentPlayer: MutableState<Player?>,
@@ -48,7 +62,7 @@ class GameState(
     var gameType: MutableState<GameType>,
     var isGameDrew: MutableState<Boolean>
 ) {
-    var gameLogic: GameLogic? = null
+    private var gameLogic: GameLogic? = null
 
     init {
         newGame()
@@ -70,7 +84,18 @@ class GameState(
     private fun newGame() {
         resetGame()
         preparePlayers()
-        prepareGameLogic()
+        coroutineScope.launch {
+            prepareGameRules()
+            prepareGameLogic()
+        }
+    }
+
+    private suspend fun prepareGameRules() {
+        gameSize.value = withContext(coroutineScope.coroutineContext) {
+            context.settings.data.map {
+                it[intPreferencesKey(Constants.gameSize)]
+            }.first()
+        } ?: gameDefaultSize
     }
 
     private fun prepareGameLogic() {
@@ -108,7 +133,7 @@ class GameState(
         return listOf(Player("Player 1"), Player("Player 2"))
     }
 
-    fun getOwnerShape(owner: Player): Shape {
+    fun getOwnerShape(owner: Player?): Shape {
         return if (owner == players.value.first()) CircleShape else RectangleShape
     }
 
@@ -141,7 +166,7 @@ class GameState(
 
     private fun finishGame() {
         isGameFinished.value = true
-        isGameStarted.value = false
+        //isGameStarted.value = false
     }
 
     private fun findWinner(): Player? {
@@ -153,13 +178,15 @@ class GameState(
 
 @Composable
 fun rememberHomeState(
+    context: Context = LocalContext.current,
+    coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
     doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
     gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(gameDefaultSize) },
     currentPlayer: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
     playerPair: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(
-            GamePlayersType.PvP
+            GamePlayersType.PvC
         )
     },
     isGameStarted: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
@@ -168,6 +195,8 @@ fun rememberHomeState(
     gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) },
     isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
 ) = remember(
+    context,
+    coroutineScope,
     doozCells,
     gameSize,
     currentPlayer,
@@ -180,6 +209,8 @@ fun rememberHomeState(
     isGameDrew
 ) {
     GameState(
+        context,
+        coroutineScope,
         doozCells,
         gameSize,
         currentPlayer,

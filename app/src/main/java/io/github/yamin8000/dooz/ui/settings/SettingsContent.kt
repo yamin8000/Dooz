@@ -20,39 +20,29 @@
 
 package io.github.yamin8000.dooz.ui.settings
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-
-val Context.settings: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 @Preview(showBackground = true)
 @Composable
 fun SettingsContent(
     navController: NavController? = null
 ) {
-    //val playersType = getPlayersType()
+    val settingsState = rememberSettingsState()
 
     DoozTheme {
         Surface(
@@ -61,46 +51,86 @@ fun SettingsContent(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 32.dp)
+                modifier = Modifier.padding(16.dp)
             ) {
                 PersianText(
-                    text = "تنظیمات",
+                    text = stringResource(R.string.settings),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp
                 )
-                //GamePlayersTypeSwitch(gamePlayersType = )
+                GamePlayersTypeSwitch(settingsState)
+                GameSizeChanger(settingsState)
             }
         }
     }
 }
 
-//private suspend fun getPlayersType(
-//    context: Context
-//): Flow<String> {
-//    val type = context.settings.data.map {
-//        it[stringPreferencesKey("")]
-//    }
-//}
+@Composable
+private fun GameSizeChanger(
+    settingsState: SettingsState
+) {
+    Card {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PersianText(
+                text = stringResource(R.string.game_board_size),
+                fontSize = 18.sp
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                IconButton(onClick = { settingsState.increaseGameSize() }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add),
+                        contentDescription = stringResource(R.string.increase)
+                    )
+                }
+                val size = settingsState.gameSize.value.toString()
+                Text("$size*$size")
+                IconButton(onClick = { settingsState.decreaseGameSize() }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_remove),
+                        contentDescription = stringResource(R.string.decrease)
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 private fun GamePlayersTypeSwitch(
-    gamePlayersType: GamePlayersType
+    settingsState: SettingsState
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text =
-            if (gamePlayersType == GamePlayersType.PvP) stringResource(R.string.play_with_human)
-            else stringResource(R.string.play_with_computer)
-        )
+        PersianText(switchText(settingsState.gamePlayersType.value))
         Switch(
-            checked = gamePlayersType == GamePlayersType.PvP,
-            onCheckedChange = { isChecked ->
-                //if (isChecked) gamePlayersType = GamePlayersType.PvP
-                //else gamePlayersType = GamePlayersType.PvC
-            }
+            checked = settingsState.gamePlayersType.value == GamePlayersType.PvP,
+            onCheckedChange = { isChecked -> onSwitchCheckedChanged(isChecked, settingsState) }
         )
     }
+}
+
+private fun onSwitchCheckedChanged(
+    isChecked: Boolean,
+    settingsState: SettingsState
+) {
+    if (isChecked) settingsState.gamePlayersType.value = GamePlayersType.PvP
+    else settingsState.gamePlayersType.value = GamePlayersType.PvC
+    settingsState.setPlayersType()
+}
+
+@Composable
+private fun switchText(
+    gamePlayersType: GamePlayersType
+): String {
+    return if (gamePlayersType == GamePlayersType.PvP) stringResource(R.string.play_with_human)
+    else stringResource(R.string.play_with_computer)
 }

@@ -30,21 +30,22 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.ui.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.navigation.Nav
@@ -59,13 +60,6 @@ fun GameContent(
 
     val gameState = rememberHomeState()
 
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-
-    val boxPadding = 16.dp
-    val boxSize = screenWidth - (2 * boxPadding.value).dp
-    val boxItemSize = (boxSize.value / gameState.gameSize.value).dp
-
     DoozTheme {
         Surface(
             modifier = Modifier.fillMaxSize()
@@ -73,7 +67,7 @@ fun GameContent(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 32.dp)
+                modifier = Modifier.padding(vertical = 16.dp)
             ) {
                 Button(
                     onClick = {
@@ -94,63 +88,51 @@ fun GameContent(
                 if (gameState.isGameDrew.value) {
                     Text(text = "Game is Drew!")
                 }
-                GamePlayersTypeSwitch(gameState)
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .padding(boxPadding)
-                        .size(boxSize),
-                    columns = GridCells.Fixed(gameState.gameSize.value),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    userScrollEnabled = false
-                ) {
-                    gameState.gameCells.value.forEachIndexed { _, row ->
-                        itemsIndexed(row) { _, cell ->
-                            DoozItem(
-                                state = gameState,
-                                itemSize = boxItemSize,
-                                doozCell = cell,
-                                onClick = {
-                                    gameState.playItemByUser(cell)
-                                    //gameState.changePlayer()
-                                    //Logger.d(gameState.currentPlayer)
-                                }
-                            )
-                        }
-                    }
-                }
+                if (gameState.isGameStarted.value)
+                    GameBoard(gameState)
             }
         }
     }
 }
 
 @Composable
-private fun GamePlayersTypeSwitch(
+private fun GameBoard(
     gameState: GameState
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val boxPadding = 16.dp
+    val boxSize = screenWidth - (2 * boxPadding.value).dp
+    val itemMargin = 8.dp
+    val boxItemSize =
+        ((boxSize.value - ((itemMargin.value * (gameState.gameSize.value - 1)))) / gameState.gameSize.value).dp
+    LazyVerticalGrid(
+        modifier = Modifier
+            .padding(boxPadding)
+            .size(boxSize),
+        columns = GridCells.Fixed(gameState.gameSize.value),
+        horizontalArrangement = Arrangement.spacedBy(itemMargin),
+        verticalArrangement = Arrangement.spacedBy(itemMargin),
+        userScrollEnabled = false
     ) {
-        Text(
-            text =
-            if (gameState.gamePlayersType.value == GamePlayersType.PvP) stringResource(R.string.play_with_human)
-            else stringResource(R.string.play_with_computer)
-        )
-        Switch(
-            checked = gameState.gamePlayersType.value == GamePlayersType.PvP,
-            enabled = !gameState.isGameStarted.value,
-            onCheckedChange = { isChecked ->
-                if (isChecked) gameState.gamePlayersType.value = GamePlayersType.PvP
-                else gameState.gamePlayersType.value = GamePlayersType.PvC
+        gameState.gameCells.value.forEachIndexed { _, row ->
+            itemsIndexed(row) { _, cell ->
+                DoozItem(
+                    clickable = !gameState.isGameFinished.value,
+                    shape = gameState.getOwnerShape(cell.owner),
+                    itemSize = boxItemSize,
+                    doozCell = cell,
+                    onClick = { gameState.playItemByUser(cell) }
+                )
             }
-        )
+        }
     }
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun DoozItem(
-    state: GameState,
+    shape: Shape = RectangleShape,
+    clickable: Boolean = true,
     itemSize: Dp = 50.dp,
     doozCell: DoozCell = DoozCell(0, 0),
     onClick: () -> Unit = {}
@@ -163,7 +145,7 @@ fun DoozItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
                 onClick = onClick,
-                enabled = state.isGameStarted.value
+                enabled = clickable
             )
     ) {
         Box(
@@ -173,11 +155,11 @@ fun DoozItem(
                 .background(MaterialTheme.colorScheme.secondary),
             contentAlignment = Alignment.Center
         ) {
-            doozCell.owner?.let { doozCellOwner ->
+            doozCell.owner?.let {
                 Box(
                     modifier = Modifier
                         .size((itemSize.value / 2).dp)
-                        .clip(state.getOwnerShape(doozCellOwner))
+                        .clip(shape)
                         .background(MaterialTheme.colorScheme.onSecondary),
                 )
             }
