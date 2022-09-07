@@ -18,12 +18,13 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.settings
+package io.github.yamin8000.dooz.content.settings
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -70,16 +71,21 @@ fun SettingsContent(
                     onGameSizeIncrease = { settingsState.increaseGameSize() },
                     onGameSizeDecrease = { settingsState.decreaseGameSize() }
                 )
-                PlayerNameInputs(settingsState)
+                PlayerNameInputs(
+                    firstPlayerName = settingsState.firstPlayerName,
+                    secondPlayerName = settingsState.secondPlayerName,
+                    onSave = { settingsState.savePlayerNames() }
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerNameInputs(
-    settingsState: SettingsState
+    firstPlayerName: MutableState<String>,
+    secondPlayerName: MutableState<String>,
+    onSave: () -> Unit
 ) {
     Card {
         Column(
@@ -100,21 +106,19 @@ fun PlayerNameInputs(
                     modifier = Modifier.weight(1f),
                     label = stringResource(R.string.second_player_name),
                     placeholder = stringResource(R.string.enter_name),
-                    value = settingsState.secondPlayerName.value,
-                    onValueChange = { settingsState.secondPlayerName.value = it }
+                    value = secondPlayerName.value,
+                    onValueChange = { secondPlayerName.value = it }
                 )
                 NameField(
                     modifier = Modifier.weight(1f),
                     label = stringResource(R.string.first_player_name),
                     placeholder = stringResource(R.string.enter_name),
-                    value = settingsState.firstPlayerName.value,
-                    onValueChange = { settingsState.firstPlayerName.value = it }
+                    value = firstPlayerName.value,
+                    onValueChange = { firstPlayerName.value = it }
                 )
             }
             Button(
-                onClick = {
-                    settingsState.savePlayerNames()
-                }) {
+                onClick = { onSave() }) {
                 PersianText(text = stringResource(R.string.save))
             }
         }

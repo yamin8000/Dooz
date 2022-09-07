@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.settings
+package io.github.yamin8000.dooz.content.settings
 
 import android.content.Context
 import androidx.compose.runtime.Composable

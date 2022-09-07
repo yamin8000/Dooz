@@ -25,4 +25,13 @@ object Constants {
     const val gamePlayersType = "gamePlayersType"
     const val firstPlayerName = "firstPlayerName"
     const val secondPlayerName = "secondPlayerName"
+
+    object Shapes {
+        const val firstPlayerShape = "firstPlayerShape"
+        const val secondPlayerShape = "secondPlayerShape"
+        const val circleShape = "circleShape"
+        const val xShape = "xShape"
+        const val triangleShape = "triangleShape"
+        const val rectangleShape = "rectangleShape"
+    }
 }

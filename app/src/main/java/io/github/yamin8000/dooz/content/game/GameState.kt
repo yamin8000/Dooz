@@ -18,16 +18,14 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.game
+package io.github.yamin8000.dooz.content.game
 
 import android.content.Context
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -44,7 +42,7 @@ import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 import io.github.yamin8000.dooz.ui.RingShape
 import io.github.yamin8000.dooz.ui.XShape
-import io.github.yamin8000.dooz.ui.settings.settings
+import io.github.yamin8000.dooz.content.settings.settings
 import io.github.yamin8000.dooz.util.Constants
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

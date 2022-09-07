@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.game
+package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
