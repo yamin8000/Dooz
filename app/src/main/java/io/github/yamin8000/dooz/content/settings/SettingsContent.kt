@@ -21,12 +21,14 @@
 package io.github.yamin8000.dooz.content.settings
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -40,6 +42,10 @@ import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
+import io.github.yamin8000.dooz.ui.ClickableShapes
+import io.github.yamin8000.dooz.ui.RingShape
+import io.github.yamin8000.dooz.ui.TriangleShape
+import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.ui.theme.Samim
@@ -71,7 +77,7 @@ fun SettingsContent(
                     onGameSizeIncrease = { settingsState.increaseGameSize() },
                     onGameSizeDecrease = { settingsState.decreaseGameSize() }
                 )
-                PlayerNameInputs(
+                PlayerCustomization(
                     firstPlayerName = settingsState.firstPlayerName,
                     secondPlayerName = settingsState.secondPlayerName,
                     onSave = { settingsState.savePlayerNames() }
@@ -82,7 +88,7 @@ fun SettingsContent(
 }
 
 @Composable
-fun PlayerNameInputs(
+fun PlayerCustomization(
     firstPlayerName: MutableState<String>,
     secondPlayerName: MutableState<String>,
     onSave: () -> Unit
@@ -116,6 +122,18 @@ fun PlayerNameInputs(
                     value = firstPlayerName.value,
                     onValueChange = { firstPlayerName.value = it }
                 )
+            }
+            PersianText(
+                text = stringResource(R.string.player_shapes),
+                fontSize = 16.sp
+            )
+            ClickableShapes(
+                shapes = listOf(
+                    CircleShape, RectangleShape, TriangleShape, RingShape,
+                    XShape
+                )
+            ) { index, shape ->
+
             }
             Button(
                 onClick = { onSave() }) {

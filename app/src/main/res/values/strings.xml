@@ -34,4 +34,5 @@
     <string name="first_player_name">اسم بازیکن اول</string>
     <string name="enter_name">نامی بنویسید</string>
     <string name="second_player_name">نام بازیکن دوم</string>
+    <string name="player_shapes">نماد بازیکن ها</string>
 </resources>

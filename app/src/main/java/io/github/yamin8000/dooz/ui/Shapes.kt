@@ -21,21 +21,29 @@
 package io.github.yamin8000.dooz.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.GenericShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathOperation
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
@@ -81,6 +89,74 @@ val RingShape = object : Shape {
         return Outline.Generic(ring)
     }
 
+}
+
+
+@Composable
+fun ClickableShapes(
+    shapes: List<Shape>,
+    size: Dp = 50.dp,
+    backgroundColor: Color = MaterialTheme.colorScheme.secondary,
+    onShapeSelected: (Int, Shape) -> Unit
+) {
+    val selectedIndex = remember { mutableStateOf(-1) }
+    val colors = remember { mutableStateOf(listOf<Color>()) }
+    colors.value = buildList {
+        for (i in shapes.indices)
+            add(backgroundColor)
+    }
+
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        itemsIndexed(shapes) { index, shape ->
+            ClickableShape(
+                shape = shape,
+                backgroundColor = colors.value[index],
+                size = size
+            ) {
+                selectedIndex.value = index
+                if (selectedIndex.value != -1 && selectedIndex.value == index) {
+                    onShapeSelected(index, shapes[index])
+                    colors.value = buildList {
+                        for (i in shapes.indices) {
+                            if (i == selectedIndex.value)
+                                add(backgroundColor.copy(alpha = 0.5f))
+                            else add(backgroundColor)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ClickableShape(
+    shape: Shape,
+    modifier: Modifier = Modifier,
+    size: Dp = 50.dp,
+    backgroundColor: Color = MaterialTheme.colorScheme.secondary,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(),
+                onClick = onClick
+            )
+    ) {
+        Box(
+            modifier = modifier
+                .size(size)
+                .clip(shape)
+                .background(backgroundColor)
+        )
+    }
 }
 
 @Preview(showBackground = true)
