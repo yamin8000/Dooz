@@ -26,6 +26,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Player(
     val name: String,
+    val shape: String? = null,
     var score: Int = 0,
     val type: PlayerType = PlayerType.Human
 ) : Parcelable

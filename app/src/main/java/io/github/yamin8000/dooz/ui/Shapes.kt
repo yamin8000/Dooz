@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,29 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import io.github.yamin8000.dooz.util.Constants
+
+fun Shape.toName(): String? {
+    return when (this) {
+        TriangleShape -> Constants.Shapes.triangleShape
+        CircleShape -> Constants.Shapes.circleShape
+        RectangleShape -> Constants.Shapes.rectangleShape
+        XShape -> Constants.Shapes.xShape
+        RingShape -> Constants.Shapes.ringShape
+        else -> null
+    }
+}
+
+fun String.toShape(): Shape? {
+    return when (this) {
+        Constants.Shapes.triangleShape -> TriangleShape
+        Constants.Shapes.circleShape -> CircleShape
+        Constants.Shapes.rectangleShape -> RectangleShape
+        Constants.Shapes.xShape -> XShape
+        Constants.Shapes.ringShape -> RingShape
+        else -> null
+    }
+}
 
 val TriangleShape = GenericShape { size, _ ->
     moveTo(size.width / 2f, 0f)
@@ -95,17 +119,21 @@ val RingShape = object : Shape {
 @Composable
 fun ClickableShapes(
     shapes: List<Shape>,
-    size: Dp = 50.dp,
+    lastSelectedShape: Shape? = null,
+    size: Dp = 30.dp,
     backgroundColor: Color = MaterialTheme.colorScheme.secondary,
-    onShapeSelected: (Int, Shape) -> Unit
+    header: (@Composable () -> Unit) = {},
+    onShapeSelected: (Shape) -> Unit
 ) {
     val selectedIndex = remember { mutableStateOf(-1) }
     val colors = remember { mutableStateOf(listOf<Color>()) }
     colors.value = buildList {
-        for (i in shapes.indices)
-            add(backgroundColor)
+        shapes.forEach {
+            if (it == lastSelectedShape)
+                add(backgroundColor.copy(alpha = 0.5f))
+            else add(backgroundColor)
+        }
     }
-
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -119,7 +147,7 @@ fun ClickableShapes(
             ) {
                 selectedIndex.value = index
                 if (selectedIndex.value != -1 && selectedIndex.value == index) {
-                    onShapeSelected(index, shapes[index])
+                    onShapeSelected(shapes[index])
                     colors.value = buildList {
                         for (i in shapes.indices) {
                             if (i == selectedIndex.value)
@@ -130,6 +158,7 @@ fun ClickableShapes(
                 }
             }
         }
+        item { header() }
     }
 }
 

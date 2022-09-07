@@ -33,6 +33,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
+import io.github.yamin8000.dooz.content.settings.settings
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.GameType
@@ -42,7 +43,8 @@ import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 import io.github.yamin8000.dooz.ui.RingShape
 import io.github.yamin8000.dooz.ui.XShape
-import io.github.yamin8000.dooz.content.settings.settings
+import io.github.yamin8000.dooz.ui.toName
+import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -50,17 +52,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class GameState(
-    val context: Context,
-    val coroutineScope: LifecycleCoroutineScope,
+    private val context: Context,
+    private val coroutineScope: LifecycleCoroutineScope,
     var gameCells: MutableState<List<List<DoozCell>>>,
     val gameSize: MutableState<Int>,
     var currentPlayer: MutableState<Player?>,
-    var players: MutableState<List<Player>>,
+    private var players: MutableState<List<Player>>,
     var gamePlayersType: MutableState<GamePlayersType>,
     var isGameStarted: MutableState<Boolean>,
     var isGameFinished: MutableState<Boolean>,
     var winner: MutableState<Player?>,
-    var gameType: MutableState<GameType>,
+    private var gameType: MutableState<GameType>,
     var isGameDrew: MutableState<Boolean>
 ) {
     private var gameLogic: GameLogic? = null
@@ -125,18 +127,33 @@ class GameState(
     }
 
     private suspend fun preparePlayers() {
-        val firstPlayer = withContext(coroutineScope.coroutineContext) {
+        val firstPlayerName = withContext(coroutineScope.coroutineContext) {
             getFirstPlayerName()
         } ?: "Player 1"
-        val secondPlayer = withContext(coroutineScope.coroutineContext) {
+        val secondPlayerName = withContext(coroutineScope.coroutineContext) {
             getSecondPlayerName()
         } ?: "Player 2"
-        players.value = listOf(Player(firstPlayer), Player(secondPlayer))
+
+        val firstPlayerShape = withContext(coroutineScope.coroutineContext) {
+            getFirstPlayerShape()?.toShape()
+        } ?: RingShape
+
+        val secondPlayerShape = withContext(coroutineScope.coroutineContext) {
+            getSecondPlayerShape()?.toShape()
+        } ?: XShape
+
+        players.value = listOf(
+            Player(firstPlayerName, firstPlayerShape.toName()),
+            Player(secondPlayerName, secondPlayerShape.toName())
+        )
         currentPlayer.value = players.value.first()
     }
 
-    fun getOwnerShape(owner: Player?): Shape {
-        return if (owner == players.value.first()) RingShape else XShape
+    fun getOwnerShape(
+        owner: Player?
+    ): Shape {
+        return if (owner == players.value.first()) owner.shape?.toShape() ?: RingShape
+        else owner?.shape?.toShape() ?: XShape
     }
 
     private fun changePlayer() {
@@ -176,19 +193,19 @@ class GameState(
         }
     }
 
-    private suspend fun getSecondPlayerName(): String? {
-        return getPlayerName(Constants.secondPlayerName)
-    }
+    private suspend fun getFirstPlayerShape() = getData(Constants.firstPlayerShape)
 
-    private suspend fun getFirstPlayerName(): String? {
-        return getPlayerName(Constants.firstPlayerName)
-    }
+    private suspend fun getSecondPlayerShape() = getData(Constants.secondPlayerShape)
 
-    private suspend fun getPlayerName(
-        player: String
+    private suspend fun getSecondPlayerName() = getData(Constants.secondPlayerName)
+
+    private suspend fun getFirstPlayerName() = getData(Constants.firstPlayerName)
+
+    private suspend fun getData(
+        key: String
     ): String? {
         return context.settings.data.map {
-            it[stringPreferencesKey(player)]
+            it[stringPreferencesKey(key)]
         }.first()
     }
 }

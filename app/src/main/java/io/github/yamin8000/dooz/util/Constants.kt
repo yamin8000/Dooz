@@ -23,12 +23,15 @@ package io.github.yamin8000.dooz.util
 object Constants {
     const val gameSize = "gameSize"
     const val gamePlayersType = "gamePlayersType"
+
     const val firstPlayerName = "firstPlayerName"
     const val secondPlayerName = "secondPlayerName"
 
+    const val firstPlayerShape = "firstPlayerShape"
+    const val secondPlayerShape = "secondPlayerShape"
+
     object Shapes {
-        const val firstPlayerShape = "firstPlayerShape"
-        const val secondPlayerShape = "secondPlayerShape"
+        const val ringShape = "ringShape"
         const val circleShape = "circleShape"
         const val xShape = "xShape"
         const val triangleShape = "triangleShape"

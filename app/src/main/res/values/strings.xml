@@ -35,4 +35,8 @@
     <string name="enter_name">نامی بنویسید</string>
     <string name="second_player_name">نام بازیکن دوم</string>
     <string name="player_shapes">نماد بازیکن ها</string>
+    <string name="player_shapes_equal">نماد بازیکن ها نمیتواند یکی باشد</string>
+    <string name="player_names_equal">نام بازیکن ها نمیتواند یکی باشد</string>
+    <string name="second_player_shape">نماد بازیکن دوم</string>
+    <string name="first_player_shape">نماد بازیکن اول</string>
 </resources>

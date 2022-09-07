@@ -42,13 +42,11 @@ import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
-import io.github.yamin8000.dooz.ui.ClickableShapes
-import io.github.yamin8000.dooz.ui.RingShape
-import io.github.yamin8000.dooz.ui.TriangleShape
-import io.github.yamin8000.dooz.ui.XShape
+import io.github.yamin8000.dooz.ui.*
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.ui.theme.Samim
+import io.github.yamin8000.dooz.util.Constants
 
 @Preview(showBackground = true)
 @Composable
@@ -80,7 +78,10 @@ fun SettingsContent(
                 PlayerCustomization(
                     firstPlayerName = settingsState.firstPlayerName,
                     secondPlayerName = settingsState.secondPlayerName,
-                    onSave = { settingsState.savePlayerNames() }
+                    firstPlayerShape = settingsState.firstPlayerShape,
+                    secondPlayerShape = settingsState.secondPlayerShape,
+                    errorText = settingsState.errorText,
+                    onSave = { settingsState.savePlayerInfo() }
                 )
             }
         }
@@ -91,6 +92,9 @@ fun SettingsContent(
 fun PlayerCustomization(
     firstPlayerName: MutableState<String>,
     secondPlayerName: MutableState<String>,
+    firstPlayerShape: MutableState<String>,
+    secondPlayerShape: MutableState<String>,
+    errorText: MutableState<String?>,
     onSave: () -> Unit
 ) {
     Card {
@@ -131,13 +135,27 @@ fun PlayerCustomization(
                 shapes = listOf(
                     CircleShape, RectangleShape, TriangleShape, RingShape,
                     XShape
-                )
-            ) { index, shape ->
-
-            }
+                ),
+                lastSelectedShape = firstPlayerShape.value.toShape(),
+                header = { PersianText(stringResource(R.string.first_player_shape)) }
+            ) { shape -> firstPlayerShape.value = shape.toName() ?: Constants.Shapes.ringShape }
+            ClickableShapes(
+                shapes = listOf(
+                    CircleShape, RectangleShape, TriangleShape, RingShape,
+                    XShape
+                ),
+                lastSelectedShape = secondPlayerShape.value.toShape(),
+                header = { PersianText(stringResource(R.string.second_player_shape)) }
+            ) { shape -> secondPlayerShape.value = shape.toName() ?: Constants.Shapes.xShape }
             Button(
                 onClick = { onSave() }) {
                 PersianText(text = stringResource(R.string.save))
+            }
+            errorText.value?.let { it ->
+                PersianText(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
