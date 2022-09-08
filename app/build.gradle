@@ -88,7 +88,7 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.0.0-beta01"
     implementation "androidx.compose.material3:material3-window-size-class:1.0.0-beta01"
     //navigation
-    def nav_version = "2.5.1"
+    def nav_version = "2.5.2"
     implementation "androidx.navigation:navigation-compose:$nav_version"
     //log/crash library
     implementation 'com.orhanobut:logger:2.2.0'
