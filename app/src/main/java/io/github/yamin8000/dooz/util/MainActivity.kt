@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
             }
 
             composable(Nav.Routes.settings) {
-                SettingsContent(navController)
+                SettingsContent()
             }
         }
     }

@@ -137,7 +137,7 @@ fun ClickableShapes(
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         itemsIndexed(shapes) { index, shape ->
             ClickableShape(
@@ -198,3 +198,7 @@ private fun ShapePreview() {
             .background(MaterialTheme.colorScheme.secondary)
     )
 }
+
+val shapes = listOf(
+    CircleShape, RectangleShape, TriangleShape, RingShape, XShape
+)
