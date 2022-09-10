@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     GameLogic.kt Created/Updated by Yamin Siahmargooei at 2022/9/5
+ *     PreviewProviders.kt Created/Updated by Yamin Siahmargooei at 2022/9/10
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,23 +18,19 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.game.logic
+package io.github.yamin8000.dooz.ui.composables
 
-import io.github.yamin8000.dooz.model.DoozCell
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.util.Constants
 
-abstract class GameLogic {
+class TextProvider : PreviewParameterProvider<String> {
+    override val values = listOf("سلام", "یمین").asSequence()
+}
 
-    abstract var winner: Player?
-
-    abstract var winnerCells : List<DoozCell>
-
-    abstract fun findWinner(): Player?
-
-    abstract fun isGameDrew(): Boolean
-
-    fun isGameHasWinner(): Boolean {
-        winner = findWinner()
-        return winner != null
-    }
+class PlayerProvider : PreviewParameterProvider<Player> {
+    override val values = listOf(
+        Player("Player 1", Constants.Shapes.xShape),
+        Player("Player 2", Constants.Shapes.ringShape)
+    ).asSequence()
 }

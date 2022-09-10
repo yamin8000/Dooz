@@ -21,7 +21,6 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -36,11 +35,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -48,11 +49,13 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 import io.github.yamin8000.dooz.ui.LockScreenOrientation
+import io.github.yamin8000.dooz.ui.ShapePreview
 import io.github.yamin8000.dooz.ui.composables.PersianText
+import io.github.yamin8000.dooz.ui.composables.PlayerProvider
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
+import io.github.yamin8000.dooz.ui.toShape
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun GameContent(
     navController: NavController? = null
@@ -92,6 +95,7 @@ fun GameContent(
                     GameBoard(
                         gameSize = gameState.gameSize.value,
                         gameCells = gameState.gameCells.value,
+                        winnerCells = gameState.winnerCells.value,
                         isGameFinished = gameState.isGameFinished.value,
                         shapeProvider = { gameState.getOwnerShape(it) },
                         onItemClick = { gameState.playItemByUser(it) }
@@ -102,12 +106,23 @@ fun GameContent(
     }
 }
 
+@Preview
 @Composable
 fun CurrentPlayerCard(
+    @PreviewParameter(PlayerProvider::class)
     player: Player?
 ) {
-    Card {
-        player?.let { PersianText(stringResource(R.string.player_turn, it.name)) }
+    OutlinedCard {
+        player?.let {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                player.shape?.toShape()?.let { shape -> ShapePreview(shape, 25.dp) }
+                PersianText(stringResource(R.string.player_turn, it.name))
+            }
+        }
     }
 }
 
@@ -115,6 +130,7 @@ fun CurrentPlayerCard(
 private fun GameBoard(
     gameSize: Int,
     gameCells: List<List<DoozCell>>,
+    winnerCells: List<DoozCell>,
     isGameFinished: Boolean,
     shapeProvider: (Player?) -> Shape,
     onItemClick: (DoozCell) -> Unit
@@ -136,26 +152,36 @@ private fun GameBoard(
     ) {
         gameCells.forEachIndexed { _, row ->
             itemsIndexed(row) { _, cell ->
+                val colors = if (cell in winnerCells) listOf(
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.onSecondary
+                ) else listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.onPrimary
+                )
                 DoozItem(
                     clickable = !isGameFinished,
                     shape = shapeProvider(cell.owner),
                     itemSize = boxItemSize,
                     doozCell = cell,
-                    onClick = { onItemClick(cell) }
+                    onClick = { onItemClick(cell) },
+                    itemBackgroundColor = colors.first(),
+                    itemContentColor = colors.component2()
                 )
             }
         }
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun DoozItem(
-    shape: Shape = RectangleShape,
-    clickable: Boolean = true,
-    itemSize: Dp = 50.dp,
-    doozCell: DoozCell = DoozCell(0, 0),
-    onClick: () -> Unit = {}
+    shape: Shape,
+    clickable: Boolean,
+    itemSize: Dp,
+    doozCell: DoozCell,
+    itemBackgroundColor: Color,
+    itemContentColor: Color,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -172,7 +198,7 @@ fun DoozItem(
             modifier = Modifier
                 .size(itemSize)
                 .clip(RectangleShape)
-                .background(MaterialTheme.colorScheme.secondary),
+                .background(itemBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
             doozCell.owner?.let {
@@ -180,7 +206,7 @@ fun DoozItem(
                     modifier = Modifier
                         .size((itemSize.value / 2).dp)
                         .clip(shape)
-                        .background(MaterialTheme.colorScheme.onSecondary),
+                        .background(itemContentColor),
                 )
             }
         }

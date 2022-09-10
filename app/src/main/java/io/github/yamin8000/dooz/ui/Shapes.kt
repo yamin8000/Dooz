@@ -190,11 +190,14 @@ fun ClickableShape(
 
 @Preview(showBackground = true)
 @Composable
-private fun ShapePreview() {
+fun ShapePreview(
+    shape : Shape = RingShape,
+    size : Dp = 50.dp
+) {
     Box(
         modifier = Modifier
-            .size(50.dp)
-            .clip(RingShape)
+            .size(size)
+            .clip(shape)
             .background(MaterialTheme.colorScheme.secondary)
     )
 }

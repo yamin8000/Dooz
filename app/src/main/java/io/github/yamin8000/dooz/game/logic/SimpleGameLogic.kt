@@ -28,6 +28,8 @@ class SimpleGameLogic(
     private val gameSize: Int
 ) : GameLogic() {
 
+    override var winnerCells = listOf<DoozCell>()
+
     override var winner: Player? = null
 
     override fun findWinner(): Player? {
@@ -62,15 +64,17 @@ class SimpleGameLogic(
          *  x x x
          */
         if (firstRow.first().owner != null) {
-            val diagonals = mutableListOf<Player?>()
-            diagonals.add(firstRow.first().owner)
+            val diagonals = mutableListOf<DoozCell>()
+            diagonals.add(firstRow.first())
             for (i in 1 until gameSize) {
-                val nextOwner = gameCells[i][i].owner
-                if (nextOwner != null) diagonals.add(nextOwner) else break
-                if (nextOwner != diagonals.last()) break
+                val nextCell = gameCells[i][i]
+                if (nextCell.owner != null) diagonals.add(nextCell) else break
+                if (nextCell != diagonals.last()) break
             }
-            if (diagonals.isNotEmpty() && diagonals.size == gameSize && diagonals.all { it == firstRow.first().owner })
+            if (diagonals.isNotEmpty() && diagonals.size == gameSize && diagonals.all { it.owner == firstRow.first().owner }) {
+                winnerCells = diagonals
                 return firstRow.first().owner
+            }
         }
 
         /**
@@ -101,17 +105,19 @@ class SimpleGameLogic(
         val firstRow = gameCells.first()
 
         for (j in gameCells.indices) {
-            val column = mutableListOf<Player?>()
-            column.add(firstRow[j].owner)
+            val column = mutableListOf<DoozCell>()
+            column.add(firstRow[j])
             if (firstRow[j].owner != null) {
                 for (i in 1 until gameSize) {
-                    val nextOwner = gameCells[i][j].owner
-                    if (nextOwner != null) column.add(nextOwner) else break
-                    if (nextOwner != column.last()) break
+                    val nextCell = gameCells[i][j]
+                    if (nextCell.owner != null) column.add(nextCell) else break
+                    if (nextCell != column.last()) break
                 }
             } else continue
-            if (column.isNotEmpty() && column.size == gameSize && column.all { it == firstRow[j].owner })
+            if (column.isNotEmpty() && column.size == gameSize && column.all { it.owner == firstRow[j].owner }) {
+                winnerCells = column
                 return firstRow[j].owner
+            }
         }
 
         return null
@@ -122,8 +128,10 @@ class SimpleGameLogic(
             val row = gameCells[i]
             if (row.isNotEmpty() && row.any { it.owner == null })
                 continue
-            if (row.isNotEmpty() && row.all { it.owner == row.first().owner })
+            if (row.isNotEmpty() && row.all { it.owner == row.first().owner }) {
+                winnerCells = row
                 return row.first().owner
+            }
         }
         return null
     }

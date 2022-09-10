@@ -63,7 +63,8 @@ class GameState(
     var isGameFinished: MutableState<Boolean>,
     var winner: MutableState<Player?>,
     private var gameType: MutableState<GameType>,
-    var isGameDrew: MutableState<Boolean>
+    var isGameDrew: MutableState<Boolean>,
+    var winnerCells: MutableState<List<DoozCell>>
 ) {
     private var gameLogic: GameLogic? = null
 
@@ -113,6 +114,7 @@ class GameState(
         isGameStarted.value = false
         isGameDrew.value = false
         gameCells.value = getEmptyBoard()
+        winnerCells.value = listOf()
     }
 
     private fun getEmptyBoard(): List<List<DoozCell>> {
@@ -185,6 +187,7 @@ class GameState(
 
     private fun finishGame() {
         isGameFinished.value = true
+        winnerCells.value = gameLogic?.winnerCells ?: listOf()
     }
 
     private fun findWinner(): Player? {
@@ -227,7 +230,8 @@ fun rememberHomeState(
     isGameFinished: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
     winner: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
     gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) },
-    isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
+    isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
+    winnerCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(emptyList()) }
 ) = remember(
     context,
     coroutineScope,
@@ -240,7 +244,8 @@ fun rememberHomeState(
     isGameFinished,
     winner,
     gameType,
-    isGameDrew
+    isGameDrew,
+    winnerCells
 ) {
     GameState(
         context,
@@ -254,6 +259,7 @@ fun rememberHomeState(
         isGameFinished,
         winner,
         gameType,
-        isGameDrew
+        isGameDrew,
+        winnerCells
     )
 }

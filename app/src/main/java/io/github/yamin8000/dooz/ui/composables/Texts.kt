@@ -28,14 +28,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.ui.theme.Samim
-
-class TextProvider : PreviewParameterProvider<String> {
-    override val values = listOf("سلام", "یمین").asSequence()
-}
 
 @Preview(showBackground = true)
 @Composable
