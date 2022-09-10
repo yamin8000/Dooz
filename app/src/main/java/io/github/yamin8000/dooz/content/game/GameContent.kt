@@ -39,19 +39,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
-import io.github.yamin8000.dooz.ui.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.ShapePreview
+import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.PlayerProvider
+import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.ui.toShape
@@ -84,13 +88,21 @@ fun GameContent(
                         onClick = { navController?.navigate(Nav.Routes.settings) }
                     ) { PersianText(stringResource(R.string.settings)) }
                 }
-                if (gameState.isGameStarted.value)
-                    CurrentPlayerCard(gameState.currentPlayer.value)
-                gameState.winner.value?.let {
-                    Text(text = "Winner is: ${it.name}")
+
+                if (gameState.isGameStarted.value) {
+                    GameInfoCard(
+                        gameState.winner.value,
+                        gameState.isGameDrew.value,
+                        gameState.gamePlayersType.value
+                    )
+                    if (gameState.players.value.isNotEmpty()) {
+                        PlayerCards(
+                            gameState.players.value,
+                            gameState.currentPlayer.value
+                        )
+                    }
                 }
-                if (gameState.isGameDrew.value)
-                    PersianText(stringResource(R.string.game_is_drew))
+
                 if (gameState.isGameStarted.value) {
                     GameBoard(
                         gameSize = gameState.gameSize.value,
@@ -106,22 +118,81 @@ fun GameContent(
     }
 }
 
+@Composable
+fun PlayerCards(
+    players: List<Player>,
+    currentPlayer: Player?
+) {
+    val firstPlayer = players[0]
+    val secondPlayer = players[1]
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        PlayerCard(firstPlayer, firstPlayer == currentPlayer)
+        PlayerCard(secondPlayer, secondPlayer == currentPlayer)
+    }
+}
+
 @Preview
 @Composable
-fun CurrentPlayerCard(
+fun PlayerCard(
     @PreviewParameter(PlayerProvider::class)
-    player: Player?
+    player: Player,
+    isCurrentPlayer: Boolean = true
 ) {
     OutlinedCard {
-        player?.let {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                player.shape?.toShape()?.let { shape -> ShapePreview(shape, 25.dp) }
-                PersianText(stringResource(R.string.player_turn, it.name))
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_dice_6),
+                contentDescription = stringResource(R.string.player_turn),
+                tint = if (isCurrentPlayer) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSecondary
+            )
+            player.shape?.toShape()?.let { shape -> ShapePreview(shape, 25.dp) }
+            PersianText(player.name)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun GameInfoCard(
+    @PreviewParameter(PlayerProvider::class)
+    winner: Player?,
+    isGameDrew: Boolean = true,
+    playersType: GamePlayersType = GamePlayersType.PvP
+) {
+    Card {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            PersianText(
+                text = stringResource(R.string.game_info),
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Row {
+                PersianText(getGamePlayersTypeCaption(playersType))
+                PersianText("نوع بازیکن ها")
             }
+
+            winner?.let {
+                PersianText(stringResource(R.string.x_is_winner, it.name))
+            }
+
+            if (isGameDrew)
+                PersianText(stringResource(R.string.game_is_drew))
         }
     }
 }

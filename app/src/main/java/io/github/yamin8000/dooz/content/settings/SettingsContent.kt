@@ -44,6 +44,7 @@ import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.ui.ClickableShapes
 import io.github.yamin8000.dooz.ui.composables.PersianText
+import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
 import io.github.yamin8000.dooz.ui.shapes
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.ui.theme.Samim
@@ -269,7 +270,7 @@ private fun GamePlayersTypeSwitch(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        PersianText(switchText(settingsState.gamePlayersType.value))
+        PersianText(getGamePlayersTypeCaption(settingsState.gamePlayersType.value))
         Switch(
             checked = settingsState.gamePlayersType.value == GamePlayersType.PvP,
             onCheckedChange = { isChecked -> onSwitchCheckedChanged(isChecked, settingsState) }
@@ -284,12 +285,4 @@ private fun onSwitchCheckedChanged(
     if (isChecked) settingsState.gamePlayersType.value = GamePlayersType.PvP
     else settingsState.gamePlayersType.value = GamePlayersType.PvC
     settingsState.setPlayersType()
-}
-
-@Composable
-private fun switchText(
-    gamePlayersType: GamePlayersType
-): String {
-    return if (gamePlayersType == GamePlayersType.PvP) stringResource(R.string.play_with_human)
-    else stringResource(R.string.play_with_computer)
 }

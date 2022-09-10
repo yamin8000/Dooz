@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui
+package io.github.yamin8000.dooz.ui.composables
 
 import android.app.Activity
 import android.content.Context
@@ -26,6 +26,9 @@ import android.content.ContextWrapper
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.game.GamePlayersType
 
 @Composable
 fun LockScreenOrientation(orientation: Int) {
@@ -39,6 +42,14 @@ fun LockScreenOrientation(orientation: Int) {
             activity.requestedOrientation = originalOrientation
         }
     }
+}
+
+@Composable
+fun getGamePlayersTypeCaption(
+    gamePlayersType: GamePlayersType
+): String {
+    return if (gamePlayersType == GamePlayersType.PvP) stringResource(R.string.play_with_human)
+    else stringResource(R.string.play_with_computer)
 }
 
 fun Context.findActivity(): Activity? = when (this) {

@@ -33,7 +33,6 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
-import io.github.yamin8000.dooz.content.settings.settings
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.GameType
@@ -46,6 +45,8 @@ import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
+import io.github.yamin8000.dooz.util.DataStoreHelper
+import io.github.yamin8000.dooz.util.settings
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -57,7 +58,7 @@ class GameState(
     var gameCells: MutableState<List<List<DoozCell>>>,
     val gameSize: MutableState<Int>,
     var currentPlayer: MutableState<Player?>,
-    private var players: MutableState<List<Player>>,
+    var players: MutableState<List<Player>>,
     var gamePlayersType: MutableState<GamePlayersType>,
     var isGameStarted: MutableState<Boolean>,
     var isGameFinished: MutableState<Boolean>,
@@ -67,6 +68,7 @@ class GameState(
     var winnerCells: MutableState<List<DoozCell>>
 ) {
     private var gameLogic: GameLogic? = null
+    private val datastore = DataStoreHelper(context.settings)
 
     init {
         newGame()
@@ -220,7 +222,7 @@ fun rememberHomeState(
     doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
     gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(gameDefaultSize) },
     currentPlayer: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
-    playerPair: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
+    players: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(
             GamePlayersType.PvC
@@ -238,7 +240,7 @@ fun rememberHomeState(
     doozCells,
     gameSize,
     currentPlayer,
-    playerPair,
+    players,
     gamePlayersType,
     isGameStarted,
     isGameFinished,
@@ -253,7 +255,7 @@ fun rememberHomeState(
         doozCells,
         gameSize,
         currentPlayer,
-        playerPair,
+        players,
         gamePlayersType,
         isGameStarted,
         isGameFinished,

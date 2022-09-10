@@ -28,9 +28,12 @@ class TextProvider : PreviewParameterProvider<String> {
     override val values = listOf("سلام", "یمین").asSequence()
 }
 
+class BooleanProvider : PreviewParameterProvider<Boolean> {
+    override val values: Sequence<Boolean> = listOf(true, false).asSequence()
+}
+
 class PlayerProvider : PreviewParameterProvider<Player> {
     override val values = listOf(
-        Player("Player 1", Constants.Shapes.xShape),
-        Player("Player 2", Constants.Shapes.ringShape)
+        Player("یمین", Constants.Shapes.xShape)
     ).asSequence()
 }

@@ -83,19 +83,21 @@ class SimpleGameLogic(
          *  x x x
          */
         if (firstRow.last().owner != null) {
-            val diagonals = mutableListOf<Player?>()
-            diagonals.add(firstRow.last().owner)
+            val diagonals = mutableListOf<DoozCell>()
+            diagonals.add(firstRow.last())
             var i = 1
             var j = gameSize - 2
             while (j > -1) {
-                val nextOwner = gameCells[i][j].owner
-                if (nextOwner != null) diagonals.add(nextOwner) else break
-                if (nextOwner != diagonals.last()) break
+                val nextCell = gameCells[i][j]
+                if (nextCell.owner != null) diagonals.add(nextCell) else break
+                if (nextCell != diagonals.last()) break
                 i++
                 j--
             }
-            if (diagonals.isNotEmpty() && diagonals.size == gameSize && diagonals.all { it == firstRow.last().owner })
+            if (diagonals.isNotEmpty() && diagonals.size == gameSize && diagonals.all { it.owner == firstRow.last().owner }) {
+                winnerCells = diagonals
                 return firstRow.last().owner
+            }
         }
 
         return null

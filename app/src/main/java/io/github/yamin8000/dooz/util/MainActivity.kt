@@ -20,10 +20,14 @@
 
 package io.github.yamin8000.dooz.util
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,9 +35,11 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.yamin8000.dooz.content.game.GameContent
-import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.content.settings.SettingsContent
+import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
+
+val Context.settings: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

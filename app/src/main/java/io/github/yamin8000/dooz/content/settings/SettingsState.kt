@@ -28,23 +28,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.util.Constants
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import io.github.yamin8000.dooz.util.DataStoreHelper
+import io.github.yamin8000.dooz.util.settings
 import kotlinx.coroutines.launch
-
-val Context.settings: DataStore<Preferences> by preferencesDataStore(name = "settings")
+import kotlinx.coroutines.withContext
 
 class SettingsState(
     private val context: Context,
@@ -57,32 +52,25 @@ class SettingsState(
     var secondPlayerShape: MutableState<String>,
     val errorText: MutableState<String?>
 ) {
+
+    private val dataStore = DataStoreHelper(context.settings)
+
     init {
         coroutineScope.launch {
             gamePlayersType.value = GamePlayersType.valueOf(getPlayersType() ?: "PvC")
             gameSize.value = getGameSize() ?: GameConstants.gameDefaultSize
-            firstPlayerName.value = getData(Constants.firstPlayerName) ?: "Player 1"
-            secondPlayerName.value = getData(Constants.secondPlayerName) ?: "Player 2"
+            firstPlayerName.value = dataStore.getString(Constants.firstPlayerName) ?: "Player 1"
+            secondPlayerName.value = dataStore.getString(Constants.secondPlayerName) ?: "Player 2"
             firstPlayerShape.value =
-                getData(Constants.firstPlayerShape) ?: Constants.Shapes.ringShape
+                dataStore.getString(Constants.firstPlayerShape) ?: Constants.Shapes.ringShape
             secondPlayerShape.value =
-                getData(Constants.secondPlayerShape) ?: Constants.Shapes.xShape
+                dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.xShape
         }
-    }
-
-    private suspend fun getData(
-        key: String
-    ): String? {
-        return context.settings.data.map {
-            it[stringPreferencesKey(key)]
-        }.first()
     }
 
     fun setPlayersType() {
         coroutineScope.launch {
-            context.settings.edit {
-                it[stringPreferencesKey(Constants.gamePlayersType)] = gamePlayersType.value.name
-            }
+            dataStore.setString(Constants.gamePlayersType, gamePlayersType.value.name)
         }
     }
 
@@ -120,21 +108,17 @@ class SettingsState(
 
     private fun setGameSize() {
         coroutineScope.launch {
-            context.settings.edit {
-                it[intPreferencesKey(Constants.gameSize)] = gameSize.value
-            }
+            dataStore.setInt(Constants.gameSize, gameSize.value)
         }
     }
 
-    private suspend fun getGameSize(): Int? {
-        return context.settings.data.map {
-            it[intPreferencesKey(Constants.gameSize)]
-        }.first()
+    private suspend fun getGameSize() = withContext(coroutineScope.coroutineContext) {
+        dataStore.getInt(Constants.gameSize)
     }
 
-    private suspend fun getPlayersType() = context.settings.data.map {
-        it[stringPreferencesKey(Constants.gamePlayersType)]
-    }.first()
+    private suspend fun getPlayersType() = withContext(coroutineScope.coroutineContext) {
+        dataStore.getString(Constants.gamePlayersType)
+    }
 }
 
 @Composable

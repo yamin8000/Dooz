@@ -27,14 +27,9 @@ abstract class GameLogic {
 
     abstract var winner: Player?
 
-    abstract var winnerCells : List<DoozCell>
+    abstract var winnerCells: List<DoozCell>
 
     abstract fun findWinner(): Player?
 
     abstract fun isGameDrew(): Boolean
-
-    fun isGameHasWinner(): Boolean {
-        winner = findWinner()
-        return winner != null
-    }
 }

@@ -29,8 +29,8 @@
     <string name="player_names">نام بازیکن ها</string>
     <string name="save">ذخیره</string>
     <string name="start_game">شروع بازی</string>
-    <string name="player_turn">نوبت: %s</string>
-    <string name="game_is_drew">بازی مساوی شد!</string>
+    <string name="player_turn">نوبت بازیکن</string>
+    <string name="game_is_drew">بازی مساوی شد</string>
     <string name="first_player_name">اسم بازیکن اول</string>
     <string name="enter_name">نامی بنویسید</string>
     <string name="second_player_name">نام بازیکن دوم</string>
@@ -39,4 +39,6 @@
     <string name="player_names_equal">نام بازیکن ها نمیتواند یکی باشد</string>
     <string name="second_player_shape">نماد بازیکن دوم</string>
     <string name="first_player_shape">نماد بازیکن اول</string>
+    <string name="x_is_winner">برنده بازی %s بود</string>
+    <string name="game_info">اطلاعات بازی</string>
 </resources>
