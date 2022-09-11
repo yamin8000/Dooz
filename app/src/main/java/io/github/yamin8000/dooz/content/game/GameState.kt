@@ -84,12 +84,13 @@ class GameState(
     ) {
         checkIfGameIsFinished()
         changeCellOwner(cell)
+        checkIfGameIsFinished()
         playCellByAi()
         checkIfGameIsFinished()
     }
 
     private fun playCellByAi() {
-        if (currentPlayer.value?.type == PlayerType.Computer)
+        if (currentPlayer.value?.type == PlayerType.Computer && !isGameFinished.value)
             gameLogic?.ai?.play()?.let { playCell(it) }
     }
 

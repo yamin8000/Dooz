@@ -37,6 +37,7 @@ class SimpleGameAi(
         }
     }
 
+    //mitigate possible stack overflow
     private fun easyPlay(): DoozCell {
         val row = gameCells[Random.nextInt(gameCells.indices)]
         val cell = row[Random.nextInt(row.indices)]
