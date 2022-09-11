@@ -73,7 +73,10 @@ fun SettingsContent(
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
                 )
-                GamePlayersTypeSwitch(settingsState)
+                GamePlayersTypeSwitch(
+                    gamePlayersType = settingsState.gamePlayersType,
+                    onCheckedChanged = { settingsState.setPlayersType() }
+                )
                 GameSizeChanger(
                     gameSize = settingsState.gameSize.value,
                     onGameSizeIncrease = { settingsState.increaseGameSize() },
@@ -264,25 +267,28 @@ private fun GameSizeChanger(
 
 @Composable
 private fun GamePlayersTypeSwitch(
-    settingsState: SettingsState
+    gamePlayersType: MutableState<GamePlayersType>,
+    onCheckedChanged: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        PersianText(getGamePlayersTypeCaption(settingsState.gamePlayersType.value))
+        PersianText(getGamePlayersTypeCaption(gamePlayersType.value))
         Switch(
-            checked = settingsState.gamePlayersType.value == GamePlayersType.PvP,
-            onCheckedChange = { isChecked -> onSwitchCheckedChanged(isChecked, settingsState) }
+            checked = gamePlayersType.value == GamePlayersType.PvP,
+            onCheckedChange = { isChecked ->
+                onSwitchCheckedChanged(isChecked, gamePlayersType)
+                onCheckedChanged()
+            }
         )
     }
 }
 
 private fun onSwitchCheckedChanged(
     isChecked: Boolean,
-    settingsState: SettingsState
+    gamePlayersType: MutableState<GamePlayersType>,
 ) {
-    if (isChecked) settingsState.gamePlayersType.value = GamePlayersType.PvP
-    else settingsState.gamePlayersType.value = GamePlayersType.PvC
-    settingsState.setPlayersType()
+    if (isChecked) gamePlayersType.value = GamePlayersType.PvP
+    else gamePlayersType.value = GamePlayersType.PvC
 }

@@ -25,8 +25,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.singleOrNull
 
 class DataStoreHelper(
     private val datastore: DataStore<Preferences>
@@ -36,7 +36,7 @@ class DataStoreHelper(
         key: String
     ) = datastore.data.map {
         it[stringPreferencesKey(key)]
-    }.singleOrNull()
+    }.firstOrNull()
 
     suspend fun setString(
         key: String,
@@ -51,7 +51,7 @@ class DataStoreHelper(
         key: String
     ) = datastore.data.map {
         it[intPreferencesKey(key)]
-    }.singleOrNull()
+    }.firstOrNull()
 
     suspend fun setInt(
         key: String,
