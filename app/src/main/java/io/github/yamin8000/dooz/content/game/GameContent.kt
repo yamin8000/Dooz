@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -51,6 +52,7 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.model.PlayerType
 import io.github.yamin8000.dooz.ui.ShapePreview
 import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
@@ -109,8 +111,9 @@ fun GameContent(
                         gameCells = gameState.gameCells.value,
                         winnerCells = gameState.winnerCells.value,
                         isGameFinished = gameState.isGameFinished.value,
+                        currentPlayer = gameState.currentPlayer.value,
                         shapeProvider = { gameState.getOwnerShape(it) },
-                        onItemClick = { gameState.playItemByUser(it) }
+                        onItemClick = { gameState.playCell(it) }
                     )
                 }
             }
@@ -145,21 +148,48 @@ fun PlayerCard(
     player: Player,
     isCurrentPlayer: Boolean = true
 ) {
-    OutlinedCard {
+    val iconTint =
+        if (isCurrentPlayer) MaterialTheme.colorScheme.secondary
+        else MaterialTheme.colorScheme.onSecondary
+
+    val borderColor =
+        if (isCurrentPlayer) MaterialTheme.colorScheme.outline
+        else MaterialTheme.colorScheme.outlineVariant
+
+    OutlinedCard(
+        border = BorderStroke(1.dp, borderColor)
+    ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_dice_6),
-                contentDescription = stringResource(R.string.player_turn),
-                tint = if (isCurrentPlayer) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSecondary
-            )
-            player.shape?.toShape()?.let { shape -> ShapePreview(shape, 25.dp) }
+            PlayerDice(iconTint = iconTint, diceIndex = player.diceIndex)
+            player.shape?.toShape()?.let { shape -> ShapePreview(shape, 30.dp, iconTint) }
             PersianText(player.name)
         }
     }
+}
+
+@Composable
+private fun PlayerDice(
+    iconTint: Color,
+    diceIndex: Int = 1
+) {
+    val icon = when (diceIndex) {
+        1 -> R.drawable.ic_dice_1
+        2 -> R.drawable.ic_dice_2
+        3 -> R.drawable.ic_dice_3
+        4 -> R.drawable.ic_dice_4
+        5 -> R.drawable.ic_dice_5
+        6 -> R.drawable.ic_dice_6
+        else -> R.drawable.ic_dice_1
+    }
+    Icon(
+        painter = painterResource(icon),
+        contentDescription = stringResource(R.string.player_turn),
+        tint = iconTint
+    )
 }
 
 @Preview
@@ -200,6 +230,7 @@ private fun GameBoard(
     gameCells: List<List<DoozCell>>,
     winnerCells: List<DoozCell>,
     isGameFinished: Boolean,
+    currentPlayer: Player?,
     shapeProvider: (Player?) -> Shape,
     onItemClick: (DoozCell) -> Unit
 ) {
@@ -228,7 +259,7 @@ private fun GameBoard(
                     MaterialTheme.colorScheme.onPrimary
                 )
                 DoozItem(
-                    clickable = !isGameFinished,
+                    clickable = !isGameFinished && currentPlayer?.type == PlayerType.Human,
                     shape = shapeProvider(cell.owner),
                     itemSize = boxItemSize,
                     doozCell = cell,

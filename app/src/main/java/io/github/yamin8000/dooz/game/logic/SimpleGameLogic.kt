@@ -20,6 +20,8 @@
 
 package io.github.yamin8000.dooz.game.logic
 
+import io.github.yamin8000.dooz.game.ai.GameAi
+import io.github.yamin8000.dooz.game.ai.SimpleGameAi
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 
@@ -29,6 +31,8 @@ class SimpleGameLogic(
 ) : GameLogic() {
 
     override var winnerCells = listOf<DoozCell>()
+
+    override var ai: GameAi = SimpleGameAi(gameCells)
 
     override var winner: Player? = null
 

@@ -20,6 +20,7 @@
 
 package io.github.yamin8000.dooz.game.logic
 
+import io.github.yamin8000.dooz.game.ai.GameAi
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 
@@ -28,6 +29,8 @@ abstract class GameLogic {
     abstract var winner: Player?
 
     abstract var winnerCells: List<DoozCell>
+
+    abstract var ai : GameAi
 
     abstract fun findWinner(): Player?
 

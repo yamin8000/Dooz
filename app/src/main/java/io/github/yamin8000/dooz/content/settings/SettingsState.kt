@@ -127,7 +127,7 @@ fun rememberSettingsState(
     coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(
-            GamePlayersType.PvC
+            GamePlayersType.PvP
         )
     },
     gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(GameConstants.gameDefaultSize) },

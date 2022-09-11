@@ -29,9 +29,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
+import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.GameType
@@ -39,6 +39,7 @@ import io.github.yamin8000.dooz.game.logic.GameLogic
 import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.model.PlayerType
 import io.github.yamin8000.dooz.ui.RingShape
 import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.toName
@@ -46,10 +47,9 @@ import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 import io.github.yamin8000.dooz.util.settings
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 class GameState(
     private val context: Context,
@@ -76,22 +76,29 @@ class GameState(
     fun startGame() {
         newGame()
         isGameStarted.value = true
+        playCellByAi()
     }
 
-    fun playItemByUser(
+    fun playCell(
         cell: DoozCell
     ) {
         checkIfGameIsFinished()
         changeCellOwner(cell)
+        playCellByAi()
         checkIfGameIsFinished()
+    }
+
+    private fun playCellByAi() {
+        if (currentPlayer.value?.type == PlayerType.Computer)
+            gameLogic?.ai?.play()?.let { playCell(it) }
     }
 
     private fun newGame() {
         resetGame()
+        prepareGameLogic()
         coroutineScope.launch {
-            prepareGameRules()
-            prepareGameLogic()
-            preparePlayers()
+            coroutineScope.launch { prepareGameRules() }.join()
+            coroutineScope.launch { preparePlayers() }.join()
         }
     }
 
@@ -129,26 +136,39 @@ class GameState(
     }
 
     private suspend fun preparePlayers() {
-        val firstPlayerName = withContext(coroutineScope.coroutineContext) {
-            getFirstPlayerName()
-        } ?: "Player 1"
-        val secondPlayerName = withContext(coroutineScope.coroutineContext) {
-            getSecondPlayerName()
-        } ?: "Player 2"
+        val firstPlayerName = datastore.getString(Constants.firstPlayerName) ?: "Player 1"
+        val secondPlayerName = datastore.getString(Constants.secondPlayerName) ?: "Player 2"
 
-        val firstPlayerShape = withContext(coroutineScope.coroutineContext) {
-            getFirstPlayerShape()?.toShape()
-        } ?: RingShape
+        val firstPlayerShape =
+            datastore.getString(Constants.firstPlayerShape)?.toShape() ?: RingShape
+        val secondPlayerShape =
+            datastore.getString(Constants.secondPlayerShape)?.toShape() ?: XShape
 
-        val secondPlayerShape = withContext(coroutineScope.coroutineContext) {
-            getSecondPlayerShape()?.toShape()
-        } ?: XShape
+        val firstPlayerDice = Random.nextInt(1..6)
+        val secondPlayerDice = Random.nextInt(1..6)
 
-        players.value = listOf(
-            Player(firstPlayerName, firstPlayerShape.toName()),
-            Player(secondPlayerName, secondPlayerShape.toName())
-        )
-        currentPlayer.value = players.value.first()
+        players.value = buildList {
+            add(Player(firstPlayerName, firstPlayerShape.toName(), diceIndex = firstPlayerDice))
+            if (gamePlayersType.value == GamePlayersType.PvC) {
+                add(
+                    Player(
+                        name = context.getString(R.string.computer),
+                        shape = secondPlayerShape.toName(),
+                        type = PlayerType.Computer,
+                        diceIndex = secondPlayerDice
+                    )
+                )
+            } else add(
+                Player(
+                    secondPlayerName,
+                    secondPlayerShape.toName(),
+                    diceIndex = secondPlayerDice
+                )
+            )
+        }
+        currentPlayer.value = players.value.reduce { first, second ->
+            if (first.diceIndex > second.diceIndex) first else second
+        }
     }
 
     fun getOwnerShape(
@@ -195,22 +215,6 @@ class GameState(
             GameType.Simple -> gameLogic?.findWinner()
         }
     }
-
-    private suspend fun getFirstPlayerShape() = getData(Constants.firstPlayerShape)
-
-    private suspend fun getSecondPlayerShape() = getData(Constants.secondPlayerShape)
-
-    private suspend fun getSecondPlayerName() = getData(Constants.secondPlayerName)
-
-    private suspend fun getFirstPlayerName() = getData(Constants.firstPlayerName)
-
-    private suspend fun getData(
-        key: String
-    ): String? {
-        return context.settings.data.map {
-            it[stringPreferencesKey(key)]
-        }.first()
-    }
 }
 
 @Composable
@@ -223,7 +227,7 @@ fun rememberHomeState(
     players: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(
-            GamePlayersType.PvC
+            GamePlayersType.PvP
         )
     },
     isGameStarted: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },

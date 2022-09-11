@@ -41,4 +41,5 @@
     <string name="first_player_shape">نماد بازیکن اول</string>
     <string name="x_is_winner">برنده بازی %s بود</string>
     <string name="game_info">اطلاعات بازی</string>
+    <string name="computer">کامپیوتر</string>
 </resources>

@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     Player.kt Created by Yamin Siahmargooei at 2022/8/26
+ *     AiDifficulty.kt Created/Updated by Yamin Siahmargooei at 2022/9/11
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,15 +18,8 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.model
+package io.github.yamin8000.dooz.game.ai
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class Player(
-    val name: String,
-    val shape: String? = null,
-    var diceIndex: Int = 0,
-    val type: PlayerType = PlayerType.Human
-) : Parcelable
+enum class AiDifficulty {
+    Easy, Medium, Hard
+}
