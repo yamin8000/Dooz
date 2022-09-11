@@ -182,10 +182,7 @@ fun GameInfoCard(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Row {
-                PersianText(getGamePlayersTypeCaption(playersType))
-                PersianText("نوع بازیکن ها")
-            }
+            PersianText(getGamePlayersTypeCaption(playersType))
 
             winner?.let {
                 PersianText(stringResource(R.string.x_is_winner, it.name))

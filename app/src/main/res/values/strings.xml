@@ -20,8 +20,8 @@
 
 <resources>
     <string name="app_name">Dooz</string>
-    <string name="play_with_computer">بازی با کامپیوتر</string>
-    <string name="play_with_human">بازی با انسان</string>
+    <string name="play_with_computer">بازی یک نفره</string>
+    <string name="play_with_human">بازی دو نفره</string>
     <string name="settings">تنظیمات</string>
     <string name="decrease">کم کردن</string>
     <string name="increase">اضافه کردن</string>

@@ -29,7 +29,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
@@ -97,11 +96,10 @@ class GameState(
     }
 
     private suspend fun prepareGameRules() {
-        gameSize.value = withContext(coroutineScope.coroutineContext) {
-            context.settings.data.map {
-                it[intPreferencesKey(Constants.gameSize)]
-            }.first()
-        } ?: gameDefaultSize
+        gameSize.value = datastore.getInt(Constants.gameSize) ?: gameDefaultSize
+        gamePlayersType.value = GamePlayersType.valueOf(
+            datastore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvP.name
+        )
     }
 
     private fun prepareGameLogic() {
