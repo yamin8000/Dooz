@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.GameType
@@ -46,7 +47,6 @@ import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
-import io.github.yamin8000.dooz.util.settings
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -86,12 +86,15 @@ class GameState(
         changeCellOwner(cell)
         checkIfGameIsFinished()
         playCellByAi()
-        checkIfGameIsFinished()
     }
 
     private fun playCellByAi() {
-        if (currentPlayer.value?.type == PlayerType.Computer && !isGameFinished.value)
-            gameLogic?.ai?.play()?.let { playCell(it) }
+        if (currentPlayer.value?.type == PlayerType.Computer && !isGameFinished.value && isGameStarted.value)
+            gameLogic?.ai?.play()?.let {
+                checkIfGameIsFinished()
+                changeCellOwner(it)
+                checkIfGameIsFinished()
+            }
     }
 
     private fun newGame() {

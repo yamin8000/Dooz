@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     MainActivity.kt Created by Yamin Siahmargooei at 2022/3/31
+ *     MainActivity.kt Created/Updated by Yamin Siahmargooei at 2022/9/14
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.util
+package io.github.yamin8000.dooz.content
 
 import android.content.Context
 import android.os.Bundle

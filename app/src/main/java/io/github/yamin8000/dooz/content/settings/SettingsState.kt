@@ -33,11 +33,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
-import io.github.yamin8000.dooz.util.settings
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
