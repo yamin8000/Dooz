@@ -20,6 +20,10 @@
 
 package io.github.yamin8000.dooz.game.ai
 
-enum class AiDifficulty(val persianName: String) {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class AiDifficulty(val persianName: String) : Parcelable {
     Easy("آسان"), Medium("معمولی"), Hard("سخت")
 }

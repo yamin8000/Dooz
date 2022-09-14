@@ -30,7 +30,7 @@ import io.github.yamin8000.dooz.util.Utility.rotated
 class SimpleGameLogic(
     private val gameCells: List<List<DoozCell>>,
     private val gameSize: Int,
-    private val aiDifficulty: AiDifficulty
+    aiDifficulty: AiDifficulty
 ) : GameLogic() {
 
     override var winnerCells = listOf<DoozCell>()
