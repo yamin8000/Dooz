@@ -150,7 +150,7 @@ fun PlayerCard(
 ) {
     val iconTint =
         if (isCurrentPlayer) MaterialTheme.colorScheme.secondary
-        else MaterialTheme.colorScheme.onSecondary
+        else MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
 
     val borderColor =
         if (isCurrentPlayer) MaterialTheme.colorScheme.outline

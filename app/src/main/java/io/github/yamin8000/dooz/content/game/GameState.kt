@@ -76,7 +76,9 @@ class GameState(
     fun startGame() {
         newGame()
         isGameStarted.value = true
-        playCellByAi()
+
+        if (isAiTurnToPlay())
+            playCellByAi()
     }
 
     fun playCell(
@@ -85,16 +87,22 @@ class GameState(
         checkIfGameIsFinished()
         changeCellOwner(cell)
         checkIfGameIsFinished()
-        playCellByAi()
+
+        if (isAiTurnToPlay())
+            playCellByAi()
     }
 
     private fun playCellByAi() {
-        if (currentPlayer.value?.type == PlayerType.Computer && !isGameFinished.value && isGameStarted.value)
-            gameLogic?.ai?.play()?.let {
-                checkIfGameIsFinished()
-                changeCellOwner(it)
-                checkIfGameIsFinished()
-            }
+        checkIfGameIsFinished()
+        gameLogic?.ai?.play()?.let { changeCellOwner(it) }
+        checkIfGameIsFinished()
+    }
+
+    private fun isAiTurnToPlay(): Boolean {
+        return gamePlayersType.value == GamePlayersType.PvC &&
+                currentPlayer.value?.type == PlayerType.Computer &&
+                !isGameFinished.value &&
+                isGameStarted.value
     }
 
     private fun newGame() {
