@@ -42,4 +42,6 @@
     <string name="x_is_winner">برنده بازی %s بود</string>
     <string name="game_info">اطلاعات بازی</string>
     <string name="computer">کامپیوتر</string>
+    <string name="ai_difficulty_var">درجه دشواری: %s</string>
+    <string name="ai_difficulty">درجه دشواری</string>
 </resources>

@@ -22,15 +22,21 @@ package io.github.yamin8000.dooz.content.settings
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +48,7 @@ import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
+import io.github.yamin8000.dooz.game.ai.AiDifficulty
 import io.github.yamin8000.dooz.ui.ClickableShapes
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
@@ -66,7 +73,9 @@ fun SettingsContent(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 PersianText(
                     text = stringResource(R.string.settings),
@@ -82,6 +91,10 @@ fun SettingsContent(
                     onGameSizeIncrease = { settingsState.increaseGameSize() },
                     onGameSizeDecrease = { settingsState.decreaseGameSize() }
                 )
+                AiDifficultyCard(
+                    aiDifficulty = settingsState.aiDifficulty,
+                    onDifficultyChanged = { settingsState.setAiDifficulty() }
+                )
                 PlayerCustomization(
                     firstPlayerName = settingsState.firstPlayerName,
                     secondPlayerName = settingsState.secondPlayerName,
@@ -92,6 +105,66 @@ fun SettingsContent(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun AiDifficultyCard(
+    aiDifficulty: MutableState<AiDifficulty>,
+    onDifficultyChanged: () -> Unit
+) {
+    val radioOptions = listOf(AiDifficulty.Hard, AiDifficulty.Medium, AiDifficulty.Easy)
+    val (selectedOption, onOptionSelected) = remember { mutableStateOf(aiDifficulty.value) }
+    Card {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
+            PersianText(
+                text = stringResource(R.string.ai_difficulty),
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Row(
+                modifier = Modifier
+                    .selectableGroup()
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                radioOptions.forEach { difficulty ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier
+                            .selectable(
+                                selected = (difficulty == selectedOption),
+                                onClick = {
+                                    onOptionSelected(difficulty)
+                                    aiDifficulty.value = difficulty
+                                    onDifficultyChanged()
+                                },
+                                role = Role.RadioButton
+                            )
+                    ) {
+                        PersianText(
+                            text = difficulty.persianName,
+                            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
+                        )
+                        RadioButton(
+                            selected = (difficulty == selectedOption),
+                            onClick = null,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                    }
+                }
+            }
+        }
+
     }
 }
 
@@ -232,7 +305,9 @@ private fun GameSizeChanger(
 ) {
     Card {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

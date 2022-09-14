@@ -20,6 +20,6 @@
 
 package io.github.yamin8000.dooz.game.ai
 
-enum class AiDifficulty {
-    Easy, Medium, Hard
+enum class AiDifficulty(val persianName: String) {
+    Easy("آسان"), Medium("معمولی"), Hard("سخت")
 }

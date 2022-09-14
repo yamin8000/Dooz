@@ -30,6 +30,8 @@ object Constants {
     const val firstPlayerShape = "firstPlayerShape"
     const val secondPlayerShape = "secondPlayerShape"
 
+    const val aiDifficulty = "aiDifficulty"
+
     object Shapes {
         const val ringShape = "ringShape"
         const val circleShape = "circleShape"

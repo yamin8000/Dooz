@@ -21,9 +21,7 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -50,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.GamePlayersType
+import io.github.yamin8000.dooz.game.ai.AiDifficulty
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 import io.github.yamin8000.dooz.model.PlayerType
@@ -77,7 +76,9 @@ fun GameContent(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 16.dp)
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -95,7 +96,8 @@ fun GameContent(
                     GameInfoCard(
                         gameState.winner.value,
                         gameState.isGameDrew.value,
-                        gameState.gamePlayersType.value
+                        gameState.gamePlayersType.value,
+                        gameState.aiDifficulty.value
                     )
                     if (gameState.players.value.isNotEmpty()) {
                         PlayerCards(
@@ -198,7 +200,8 @@ fun GameInfoCard(
     @PreviewParameter(PlayerProvider::class)
     winner: Player?,
     isGameDrew: Boolean = true,
-    playersType: GamePlayersType = GamePlayersType.PvP
+    playersType: GamePlayersType = GamePlayersType.PvP,
+    aiDifficulty: AiDifficulty = AiDifficulty.Easy
 ) {
     Card {
         Column(
@@ -213,6 +216,9 @@ fun GameInfoCard(
             )
 
             PersianText(getGamePlayersTypeCaption(playersType))
+
+            if (playersType == GamePlayersType.PvC)
+                PersianText(stringResource(R.string.ai_difficulty_var, aiDifficulty.persianName))
 
             winner?.let {
                 PersianText(stringResource(R.string.x_is_winner, it.name))

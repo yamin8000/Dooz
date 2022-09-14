@@ -20,15 +20,30 @@
 
 package io.github.yamin8000.dooz.util
 
-import io.github.yamin8000.dooz.model.DoozCell
-
 object Utility {
 
-    /*fun List<List<DoozCell>>.rotate(): List<List<DoozCell>> {
-        var rotated = mutableListOf<List<DoozCell>>()
+    //simple 90 degrees rotation
+    fun <T> List<List<T>>.rotated(): List<List<T>> {
+        val rotated = mutableListOf<List<T>>()
 
-        this.reversed().forEach { row ->
-
+        for (j in this.indices) {
+            val newRow = mutableListOf<T>()
+            for (i in this.indices)
+                newRow.add(this[i][j])
+            rotated.add(newRow.reversed())
         }
-    }*/
+
+        return rotated
+    }
+
+    fun <T> List<List<T>>.diagonals(): Pair<List<T>, List<T>> {
+        return this.diagonal() to this.rotated().diagonal()
+    }
+
+    private fun <T> List<List<T>>.diagonal(): List<T> {
+        val diagonal = mutableListOf<T>()
+        for (i in this.indices)
+            diagonal.add(this[i][i])
+        return diagonal
+    }
 }

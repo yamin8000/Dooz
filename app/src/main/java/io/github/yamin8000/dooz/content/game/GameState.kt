@@ -36,6 +36,7 @@ import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.GameType
+import io.github.yamin8000.dooz.game.ai.AiDifficulty
 import io.github.yamin8000.dooz.game.logic.GameLogic
 import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
 import io.github.yamin8000.dooz.model.DoozCell
@@ -64,7 +65,8 @@ class GameState(
     var winner: MutableState<Player?>,
     private var gameType: MutableState<GameType>,
     var isGameDrew: MutableState<Boolean>,
-    var winnerCells: MutableState<List<DoozCell>>
+    var winnerCells: MutableState<List<DoozCell>>,
+    val aiDifficulty: MutableState<AiDifficulty>
 ) {
     private var gameLogic: GameLogic? = null
     private val datastore = DataStoreHelper(context.settings)
@@ -107,10 +109,10 @@ class GameState(
 
     private fun newGame() {
         resetGame()
-        prepareGameLogic()
         coroutineScope.launch {
             coroutineScope.launch { prepareGameRules() }.join()
             coroutineScope.launch { preparePlayers() }.join()
+            prepareGameLogic()
         }
     }
 
@@ -119,11 +121,15 @@ class GameState(
         gamePlayersType.value = GamePlayersType.valueOf(
             datastore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvP.name
         )
+        aiDifficulty.value = AiDifficulty.valueOf(
+            datastore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
+        )
     }
 
     private fun prepareGameLogic() {
         when (gameType.value) {
-            GameType.Simple -> gameLogic = SimpleGameLogic(gameCells.value, gameSize.value)
+            GameType.Simple -> gameLogic =
+                SimpleGameLogic(gameCells.value, gameSize.value, aiDifficulty.value)
         }
     }
 
@@ -247,7 +253,8 @@ fun rememberHomeState(
     winner: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
     gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) },
     isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
-    winnerCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(emptyList()) }
+    winnerCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(emptyList()) },
+    aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) }
 ) = remember(
     context,
     coroutineScope,
@@ -261,7 +268,8 @@ fun rememberHomeState(
     winner,
     gameType,
     isGameDrew,
-    winnerCells
+    winnerCells,
+    aiDifficulty
 ) {
     GameState(
         context,
@@ -276,6 +284,7 @@ fun rememberHomeState(
         winner,
         gameType,
         isGameDrew,
-        winnerCells
+        winnerCells,
+        aiDifficulty
     )
 }

@@ -20,27 +20,30 @@
 
 package io.github.yamin8000.dooz.game.logic
 
+import io.github.yamin8000.dooz.game.ai.AiDifficulty
 import io.github.yamin8000.dooz.game.ai.GameAi
 import io.github.yamin8000.dooz.game.ai.SimpleGameAi
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.util.Utility.rotated
 
 class SimpleGameLogic(
     private val gameCells: List<List<DoozCell>>,
-    private val gameSize: Int
+    private val gameSize: Int,
+    private val aiDifficulty: AiDifficulty
 ) : GameLogic() {
 
     override var winnerCells = listOf<DoozCell>()
 
-    override var ai: GameAi = SimpleGameAi(gameCells)
+    override var ai: GameAi = SimpleGameAi(gameCells, aiDifficulty)
 
     override var winner: Player? = null
 
     override fun findWinner(): Player? {
-        winner = findHorizontalWinner()
+        winner = findRowOrColumnWinner(gameCells)
         if (winner != null) return winner
 
-        winner = findVerticalWinner()
+        winner = findRowOrColumnWinner(gameCells.rotated())
         if (winner != null) return winner
 
         winner = findDiagonalWinner()
@@ -56,6 +59,21 @@ class SimpleGameLogic(
         return false
     }
 
+    private fun findRowOrColumnWinner(
+        gameCells: List<List<DoozCell>>
+    ): Player? {
+        for (i in gameCells.indices) {
+            val row = gameCells[i]
+            if (row.isNotEmpty() && row.any { it.owner == null })
+                continue
+            if (row.isNotEmpty() && row.all { it.owner == row.first().owner }) {
+                winnerCells = row
+                return row.first().owner
+            }
+        }
+        return null
+    }
+
     private fun findDiagonalWinner(): Player? {
         val firstRow = gameCells.first()
 
@@ -64,8 +82,8 @@ class SimpleGameLogic(
 
         /**
          *  a x x
-         *  x x x
-         *  x x x
+         *  x a x
+         *  x x a
          */
         if (firstRow.first().owner != null) {
             val diagonals = mutableListOf<DoozCell>()
@@ -83,8 +101,8 @@ class SimpleGameLogic(
 
         /**
          *  x x a
-         *  x x x
-         *  x x x
+         *  x a x
+         *  a x x
          */
         if (firstRow.last().owner != null) {
             val diagonals = mutableListOf<DoozCell>()
@@ -104,41 +122,6 @@ class SimpleGameLogic(
             }
         }
 
-        return null
-    }
-
-    private fun findVerticalWinner(): Player? {
-        val firstRow = gameCells.first()
-
-        for (j in gameCells.indices) {
-            val column = mutableListOf<DoozCell>()
-            column.add(firstRow[j])
-            if (firstRow[j].owner != null) {
-                for (i in 1 until gameSize) {
-                    val nextCell = gameCells[i][j]
-                    if (nextCell.owner != null) column.add(nextCell) else break
-                    if (nextCell != column.last()) break
-                }
-            } else continue
-            if (column.isNotEmpty() && column.size == gameSize && column.all { it.owner == firstRow[j].owner }) {
-                winnerCells = column
-                return firstRow[j].owner
-            }
-        }
-
-        return null
-    }
-
-    private fun findHorizontalWinner(): Player? {
-        for (i in gameCells.indices) {
-            val row = gameCells[i]
-            if (row.isNotEmpty() && row.any { it.owner == null })
-                continue
-            if (row.isNotEmpty() && row.all { it.owner == row.first().owner }) {
-                winnerCells = row
-                return row.first().owner
-            }
-        }
         return null
     }
 }

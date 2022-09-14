@@ -36,6 +36,7 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
+import io.github.yamin8000.dooz.game.ai.AiDifficulty
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 import kotlinx.coroutines.launch
@@ -50,14 +51,16 @@ class SettingsState(
     var secondPlayerName: MutableState<String>,
     var firstPlayerShape: MutableState<String>,
     var secondPlayerShape: MutableState<String>,
-    val errorText: MutableState<String?>
+    val errorText: MutableState<String?>,
+    var aiDifficulty: MutableState<AiDifficulty>
 ) {
 
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
         coroutineScope.launch {
-            gamePlayersType.value = GamePlayersType.valueOf(getPlayersType() ?: "PvC")
+            gamePlayersType.value =
+                GamePlayersType.valueOf(getPlayersType() ?: GamePlayersType.PvC.name)
             gameSize.value = getGameSize() ?: GameConstants.gameDefaultSize
             firstPlayerName.value = dataStore.getString(Constants.firstPlayerName) ?: "Player 1"
             secondPlayerName.value = dataStore.getString(Constants.secondPlayerName) ?: "Player 2"
@@ -65,6 +68,7 @@ class SettingsState(
                 dataStore.getString(Constants.firstPlayerShape) ?: Constants.Shapes.ringShape
             secondPlayerShape.value =
                 dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.xShape
+            aiDifficulty.value = AiDifficulty.valueOf(getAiDifficulty() ?: AiDifficulty.Easy.name)
         }
     }
 
@@ -119,6 +123,16 @@ class SettingsState(
     private suspend fun getPlayersType() = withContext(coroutineScope.coroutineContext) {
         dataStore.getString(Constants.gamePlayersType)
     }
+
+    fun setAiDifficulty() {
+        coroutineScope.launch {
+            dataStore.setString(Constants.aiDifficulty, aiDifficulty.value.name)
+        }
+    }
+
+    private suspend fun getAiDifficulty() = withContext(coroutineScope.coroutineContext) {
+        dataStore.getString(Constants.aiDifficulty)
+    }
 }
 
 @Composable
@@ -135,7 +149,8 @@ fun rememberSettingsState(
     secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 2") },
     firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
     secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
-    errorText: MutableState<String?> = rememberSaveable { mutableStateOf(null) }
+    errorText: MutableState<String?> = rememberSaveable { mutableStateOf(null) },
+    aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) }
 ) = remember(
     context,
     coroutineScope,
@@ -145,7 +160,8 @@ fun rememberSettingsState(
     secondPlayerName,
     firstPlayerShape,
     secondPlayerShape,
-    errorText
+    errorText,
+    aiDifficulty
 ) {
     SettingsState(
         context,
@@ -156,6 +172,7 @@ fun rememberSettingsState(
         secondPlayerName,
         firstPlayerShape,
         secondPlayerShape,
-        errorText
+        errorText,
+        aiDifficulty
     )
 }
