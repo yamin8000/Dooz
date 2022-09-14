@@ -119,7 +119,7 @@ class GameState(
     private suspend fun prepareGameRules() {
         gameSize.value = datastore.getInt(Constants.gameSize) ?: gameDefaultSize
         gamePlayersType.value = GamePlayersType.valueOf(
-            datastore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvP.name
+            datastore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
         )
         aiDifficulty.value = AiDifficulty.valueOf(
             datastore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
@@ -245,7 +245,7 @@ fun rememberHomeState(
     players: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(
-            GamePlayersType.PvP
+            GamePlayersType.PvC
         )
     },
     isGameStarted: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },

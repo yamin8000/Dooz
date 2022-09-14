@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.game.GamePlayersType
 import io.github.yamin8000.dooz.game.ai.AiDifficulty
 import io.github.yamin8000.dooz.ui.ClickableShapes
@@ -213,11 +212,10 @@ fun PlayerCustomization(
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun PlayerShapesCustomizer(
-    firstPlayerShape: MutableState<String> = mutableStateOf(Constants.Shapes.xShape),
-    secondPlayerShape: MutableState<String> = mutableStateOf(Constants.Shapes.ringShape)
+    firstPlayerShape: MutableState<String>,
+    secondPlayerShape: MutableState<String>
 ) {
     ClickableShapes(
         shapes = shapes,
@@ -231,11 +229,10 @@ private fun PlayerShapesCustomizer(
     ) { shape -> secondPlayerShape.value = shape.toName() ?: Constants.Shapes.xShape }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 private fun PlayerNamesCustomizer(
-    firstPlayerName: MutableState<String> = mutableStateOf("Player 1"),
-    secondPlayerName: MutableState<String> = mutableStateOf("Player 2")
+    firstPlayerName: MutableState<String>,
+    secondPlayerName: MutableState<String>
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -296,12 +293,11 @@ private fun NameFieldChildArranger(
     ) { content() }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun GameSizeChanger(
-    gameSize: Int = GameConstants.gameDefaultSize,
-    onGameSizeIncrease: () -> Unit = {},
-    onGameSizeDecrease: () -> Unit = {}
+    gameSize: Int,
+    onGameSizeIncrease: () -> Unit,
+    onGameSizeDecrease: () -> Unit
 ) {
     Card {
         Column(
