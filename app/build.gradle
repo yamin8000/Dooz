@@ -25,6 +25,7 @@ plugins {
 }
 
 android {
+    namespace 'io.github.yamin8000.dooz'
     compileSdk 33
 
     defaultConfig {
