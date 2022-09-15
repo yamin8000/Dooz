@@ -20,6 +20,8 @@
 
 package io.github.yamin8000.dooz.util
 
+import io.github.yamin8000.dooz.model.AiDifficulty
+
 object Constants {
     const val gameSize = "gameSize"
     const val gamePlayersType = "gamePlayersType"
@@ -39,4 +41,6 @@ object Constants {
         const val triangleShape = "triangleShape"
         const val rectangleShape = "rectangleShape"
     }
+
+    val difficulties = listOf(AiDifficulty.Hard, AiDifficulty.Medium, AiDifficulty.Easy)
 }

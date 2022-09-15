@@ -20,6 +20,7 @@
 
 package io.github.yamin8000.dooz.game.ai
 
+import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.PlayerType
 import io.github.yamin8000.dooz.util.Utility.diagonals
@@ -82,21 +83,25 @@ class SimpleGameAi(
 
     private fun cornerPlay(): DoozCell? {
         val corners = buildList {
-            add(gameCells.first().first())
-            add(gameCells.first().last())
-            add(gameCells.last().last())
-            add(gameCells.last().first())
-        }.filter { it.owner == null }
+            add(gameCells.firstOrNull()?.firstOrNull())
+            add(gameCells.firstOrNull()?.lastOrNull())
+            add(gameCells.lastOrNull()?.lastOrNull())
+            add(gameCells.lastOrNull()?.firstOrNull())
+        }.filter { it?.owner == null }
         if (corners.isEmpty()) return null
         val cell = when {
-            gameCells.first().first().owner?.type == PlayerType.Human -> gameCells.last()
-                .last()
-            gameCells.first().last().owner?.type == PlayerType.Human -> gameCells.last()
-                .first()
-            gameCells.last().last().owner?.type == PlayerType.Human -> gameCells.first()
-                .first()
-            gameCells.last().first().owner?.type == PlayerType.Human -> gameCells.first()
-                .last()
+            gameCells.firstOrNull()
+                ?.firstOrNull()?.owner?.type == PlayerType.Human -> gameCells.lastOrNull()
+                ?.lastOrNull()
+            gameCells.firstOrNull()
+                ?.lastOrNull()?.owner?.type == PlayerType.Human -> gameCells.lastOrNull()
+                ?.firstOrNull()
+            gameCells.lastOrNull()
+                ?.lastOrNull()?.owner?.type == PlayerType.Human -> gameCells.firstOrNull()
+                ?.firstOrNull()
+            gameCells.lastOrNull()
+                ?.firstOrNull()?.owner?.type == PlayerType.Human -> gameCells.firstOrNull()
+                ?.lastOrNull()
             else -> corners.getOrNull(random.nextInt(corners.indices))
         } ?: return null
         return if (cell.owner == null) cell
@@ -106,7 +111,7 @@ class SimpleGameAi(
     private fun centerPlay(): DoozCell? {
         val center = gameSize / 2
         return if (gameSize % 2 != 0) {
-            val cell = gameCells[center][center]
+            val cell = gameCells.getOrNull(center)?.getOrNull(center) ?: return null
             if (cell.owner == null) cell
             else null
         } else null
@@ -142,15 +147,15 @@ class SimpleGameAi(
         intersectingRows: List<List<DoozCell>>
     ): DoozCell? {
         for (i in gameCells.indices) {
-            val row = gameCells[i]
-            if (row.filter { it.owner != null }.size != gameSize - 2) continue
+            val row = gameCells.getOrNull(i)
+            if (row?.filter { it.owner != null }?.size != gameSize - 2) continue
             for (j in intersectingRows.indices) {
                 val column = intersectingRows[j]
                 if (column.filter { it.owner != null }.size != gameSize - 2) continue
                 if (row.find { it.owner != null }?.owner == column.find { it.owner != null }?.owner) {
                     val cell = row.filter { it.owner == null }
                         .intersect(column.filter { it.owner == null }.toSet())
-                        .singleOrNull()
+                        .firstOrNull()
                     if (cell != null && cell.owner == null)
                         return cell
                 }
@@ -163,7 +168,8 @@ class SimpleGameAi(
         gameCells: List<List<DoozCell>>
     ): DoozCell? {
         for (i in gameCells.indices) {
-            val cell = winOrWinBlockRowScanner(gameCells[i])
+            val row = gameCells.getOrNull(i) ?: return null
+            val cell = winOrWinBlockRowScanner(row)
             if (cell != null) return cell
         }
         return null
@@ -206,7 +212,7 @@ class SimpleGameAi(
         val leftPart = row.takeWhile { it.owner?.type == playerType }
         val rightPart = row.takeLastWhile { it.owner?.type == playerType }
         if (leftPart.size + rightPart.size == gameSize - 1)
-            cell = row.minus(leftPart.toSet()).minus(rightPart.toSet()).first()
+            cell = row.minus(leftPart.toSet()).minus(rightPart.toSet()).firstOrNull()
         return if (cell?.owner?.type == playerType) null else cell
     }
 }

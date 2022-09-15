@@ -20,7 +20,7 @@
 
 package io.github.yamin8000.dooz.game.logic
 
-import io.github.yamin8000.dooz.game.ai.AiDifficulty
+import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.game.ai.GameAi
 import io.github.yamin8000.dooz.game.ai.SimpleGameAi
 import io.github.yamin8000.dooz.model.DoozCell

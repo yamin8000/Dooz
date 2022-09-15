@@ -34,14 +34,9 @@ import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
-import io.github.yamin8000.dooz.game.GamePlayersType
-import io.github.yamin8000.dooz.game.GameType
-import io.github.yamin8000.dooz.game.ai.AiDifficulty
 import io.github.yamin8000.dooz.game.logic.GameLogic
 import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
-import io.github.yamin8000.dooz.model.DoozCell
-import io.github.yamin8000.dooz.model.Player
-import io.github.yamin8000.dooz.model.PlayerType
+import io.github.yamin8000.dooz.model.*
 import io.github.yamin8000.dooz.ui.RingShape
 import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.toName
@@ -72,16 +67,27 @@ class GameState(
     private var gameLogic: GameLogic? = null
     private val datastore = DataStoreHelper(context.settings)
 
-    init {
-        newGame()
+    fun newGame() {
+        resetGame()
+        coroutineScope.launch {
+            withContext(coroutineScope.coroutineContext) { prepareGameRules() }
+            withContext(coroutineScope.coroutineContext) { preparePlayers() }
+            prepareGameLogic()
+
+            isGameStarted.value = true
+
+            if (isAiTurnToPlay())
+                playCellByAi()
+        }
     }
 
-    fun startGame() {
-        newGame()
-        isGameStarted.value = true
-
-        if (isAiTurnToPlay())
-            playCellByAi()
+    private fun resetGame() {
+        winner.value = null
+        isGameFinished.value = false
+        isGameStarted.value = false
+        isGameDrew.value = false
+        gameCells.value = getEmptyBoard()
+        winnerCells.value = listOf()
     }
 
     fun playCell(
@@ -97,7 +103,8 @@ class GameState(
 
     private fun playCellByAi() {
         checkIfGameIsFinished()
-        gameLogic?.ai?.play()?.let { changeCellOwner(it) }
+        val cell = gameLogic?.ai?.play()
+        if (cell != null) changeCellOwner(cell)
         checkIfGameIsFinished()
     }
 
@@ -106,15 +113,6 @@ class GameState(
                 currentPlayer.value?.type == PlayerType.Computer &&
                 !isGameFinished.value &&
                 isGameStarted.value
-    }
-
-    private fun newGame() {
-        resetGame()
-        coroutineScope.launch {
-            withContext(coroutineScope.coroutineContext) { prepareGameRules() }
-            withContext(coroutineScope.coroutineContext) { preparePlayers() }
-            prepareGameLogic()
-        }
     }
 
     private suspend fun prepareGameRules() {
@@ -132,15 +130,6 @@ class GameState(
             GameType.Simple -> gameLogic =
                 SimpleGameLogic(gameCells.value, gameSize.value, aiDifficulty.value)
         }
-    }
-
-    private fun resetGame() {
-        winner.value = null
-        isGameFinished.value = false
-        isGameStarted.value = false
-        isGameDrew.value = false
-        gameCells.value = getEmptyBoard()
-        winnerCells.value = listOf()
     }
 
     private fun getEmptyBoard(): List<List<DoozCell>> {

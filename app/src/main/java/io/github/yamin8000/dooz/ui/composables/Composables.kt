@@ -28,7 +28,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.game.GamePlayersType
+import io.github.yamin8000.dooz.model.GamePlayersType
 
 @Composable
 fun LockScreenOrientation(orientation: Int) {

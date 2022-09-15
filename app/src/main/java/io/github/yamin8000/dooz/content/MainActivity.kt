@@ -57,7 +57,9 @@ class MainActivity : ComponentActivity() {
             startDestination = Nav.Routes.game
         ) {
             composable(Nav.Routes.game) {
-                GameContent(navController)
+                GameContent() {
+                    navController.navigate(Nav.Routes.settings)
+                }
             }
 
             composable(Nav.Routes.settings) {

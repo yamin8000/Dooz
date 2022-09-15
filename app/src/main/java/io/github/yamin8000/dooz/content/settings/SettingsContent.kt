@@ -30,8 +30,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -44,10 +42,9 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.game.GamePlayersType
-import io.github.yamin8000.dooz.game.ai.AiDifficulty
+import io.github.yamin8000.dooz.model.AiDifficulty
+import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.ui.ClickableShapes
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
@@ -60,9 +57,7 @@ import io.github.yamin8000.dooz.util.Constants
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun SettingsContent(
-    navController: NavController? = null
-) {
+fun SettingsContent() {
     val settingsState = rememberSettingsState()
 
     DoozTheme {
@@ -112,8 +107,6 @@ fun AiDifficultyCard(
     aiDifficulty: MutableState<AiDifficulty>,
     onDifficultyChanged: () -> Unit
 ) {
-    val radioOptions = listOf(AiDifficulty.Hard, AiDifficulty.Medium, AiDifficulty.Easy)
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(aiDifficulty.value) }
     Card {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -135,15 +128,14 @@ fun AiDifficultyCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                radioOptions.forEach { difficulty ->
+                Constants.difficulties.forEach { difficulty ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier
                             .selectable(
-                                selected = (difficulty == selectedOption),
+                                selected = (difficulty == aiDifficulty.value),
                                 onClick = {
-                                    onOptionSelected(difficulty)
                                     aiDifficulty.value = difficulty
                                     onDifficultyChanged()
                                 },
@@ -155,7 +147,7 @@ fun AiDifficultyCard(
                             modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
                         )
                         RadioButton(
-                            selected = (difficulty == selectedOption),
+                            selected = (difficulty == aiDifficulty.value),
                             onClick = null,
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
@@ -163,7 +155,6 @@ fun AiDifficultyCard(
                 }
             }
         }
-
     }
 }
 

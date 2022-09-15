@@ -45,25 +45,19 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.game.GamePlayersType
-import io.github.yamin8000.dooz.game.ai.AiDifficulty
-import io.github.yamin8000.dooz.model.DoozCell
-import io.github.yamin8000.dooz.model.Player
-import io.github.yamin8000.dooz.model.PlayerType
+import io.github.yamin8000.dooz.model.*
 import io.github.yamin8000.dooz.ui.ShapePreview
 import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.PlayerProvider
 import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
-import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.ui.toShape
 
 @Composable
 fun GameContent(
-    navController: NavController? = null
+    onNavigateToSettings: () -> Unit
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
@@ -85,10 +79,10 @@ fun GameContent(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Button(
-                        onClick = { gameState.startGame() }
+                        onClick = { gameState.newGame() }
                     ) { PersianText(stringResource(R.string.start_game)) }
                     Button(
-                        onClick = { navController?.navigate(Nav.Routes.settings) }
+                        onClick = onNavigateToSettings
                     ) { PersianText(stringResource(R.string.settings)) }
                 }
 

@@ -19,5 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class io.github.yamin8000.dooz.model.** { <fields>; }
--keep class io.github.yamin8000.dooz.game.** { <fields>; }
+#-keep class io.github.yamin8000.dooz.model.** { *; }
+#-dontobfuscate
+#-keepclassmembers class * implements android.os.Parcelable {
+#  public static final android.os.Parcelable$Creator CREATOR;
+#}
+#-keep @kotlinx.android.parcel.Parcelize public class *
+#-keepnames class * implements android.os.Parcelable {
+#    public static final ** CREATOR;
+#}
+#-keepclassmembers class * implements android.os.Parcelable {
+#    public static final android.os.Parcelable$Creator *;
+#}

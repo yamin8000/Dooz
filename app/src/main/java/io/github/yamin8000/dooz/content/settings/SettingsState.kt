@@ -35,8 +35,8 @@ import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.GameConstants
-import io.github.yamin8000.dooz.game.GamePlayersType
-import io.github.yamin8000.dooz.game.ai.AiDifficulty
+import io.github.yamin8000.dooz.model.GamePlayersType
+import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 import kotlinx.coroutines.launch

@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.game
 
 import android.os.Parcelable
+import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.model.Player
 import kotlinx.parcelize.Parcelize
 

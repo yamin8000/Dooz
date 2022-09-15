@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     GameType.kt Created by Yamin Siahmargooei at 2022/8/30
+ *     AiDifficulty.kt Created/Updated by Yamin Siahmargooei at 2022/9/11
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,8 +18,14 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.game
+package io.github.yamin8000.dooz.model
 
-enum class GameType {
-    Simple
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class AiDifficulty(
+    val persianName: String
+) : Parcelable {
+    Easy("آسان"), Medium("معمولی"), Hard("سخت")
 }
