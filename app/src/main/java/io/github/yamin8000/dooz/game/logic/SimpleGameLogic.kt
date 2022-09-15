@@ -20,9 +20,9 @@
 
 package io.github.yamin8000.dooz.game.logic
 
-import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.game.ai.GameAi
 import io.github.yamin8000.dooz.game.ai.SimpleGameAi
+import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.model.DoozCell
 import io.github.yamin8000.dooz.model.Player
 import io.github.yamin8000.dooz.util.Utility.rotated
@@ -49,7 +49,7 @@ class SimpleGameLogic(
         winner = findDiagonalWinner()
         if (winner != null) return winner
 
-        return winner
+        return null
     }
 
     override fun isGameDrew(): Boolean {

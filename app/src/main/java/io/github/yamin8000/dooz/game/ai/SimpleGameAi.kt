@@ -182,7 +182,7 @@ class SimpleGameAi(
         if (cell != null) return cell
         cell = findCellForWinBlockMove(row)
         if (cell != null) return cell
-        return cell
+        return null
     }
 
     private fun winOrWinBlockDiagonalScanner(): DoozCell? {
