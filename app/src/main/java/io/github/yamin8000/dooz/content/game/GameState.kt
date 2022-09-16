@@ -44,7 +44,6 @@ import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -67,18 +66,26 @@ class GameState(
     private var gameLogic: GameLogic? = null
     private val datastore = DataStoreHelper(context.settings)
 
+    init {
+        coroutineScope.launch { prepareGame() }
+    }
+
     fun newGame() {
-        resetGame()
         coroutineScope.launch {
-            withContext(coroutineScope.coroutineContext) { prepareGameRules() }
-            withContext(coroutineScope.coroutineContext) { preparePlayers() }
-            prepareGameLogic()
+            prepareGame()
 
             isGameStarted.value = true
 
             if (isAiTurnToPlay())
                 playCellByAi()
         }
+    }
+
+    private suspend fun prepareGame() {
+        resetGame()
+        prepareGameRules()
+        preparePlayers()
+        prepareGameLogic()
     }
 
     private fun resetGame() {

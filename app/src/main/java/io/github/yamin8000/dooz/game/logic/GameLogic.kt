@@ -30,7 +30,7 @@ abstract class GameLogic {
 
     abstract var winnerCells: List<DoozCell>
 
-    abstract var ai : GameAi
+    abstract var ai: GameAi
 
     abstract fun findWinner(): Player?
 
