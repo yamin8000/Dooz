@@ -23,6 +23,9 @@ package io.github.yamin8000.dooz.util
 import io.github.yamin8000.dooz.model.AiDifficulty
 
 object Constants {
+    const val firstPlayerDefaultName = "بازیکن اول"
+    const val secondPlayerDefaultName = "بازیکن دوم"
+
     const val gameSize = "gameSize"
     const val gamePlayersType = "gamePlayersType"
 

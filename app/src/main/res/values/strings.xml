@@ -44,4 +44,6 @@
     <string name="computer">کامپیوتر</string>
     <string name="ai_difficulty_var">درجه دشواری: %s</string>
     <string name="ai_difficulty">درجه دشواری</string>
+    <string name="undefined">نامشخص</string>
+    <string name="game_result">:نتیجه بازی</string>
 </resources>

@@ -43,6 +43,7 @@ import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -61,7 +62,8 @@ class GameState(
     private var gameType: MutableState<GameType>,
     var isGameDrew: MutableState<Boolean>,
     var winnerCells: MutableState<List<DoozCell>>,
-    val aiDifficulty: MutableState<AiDifficulty>
+    val aiDifficulty: MutableState<AiDifficulty>,
+    val isRollingDices: MutableState<Boolean>
 ) {
     private var gameLogic: GameLogic? = null
     private val datastore = DataStoreHelper(context.settings)
@@ -75,6 +77,8 @@ class GameState(
             prepareGame()
 
             isGameStarted.value = true
+
+            dummyDiceRolling()
 
             if (isAiTurnToPlay())
                 playCellByAi()
@@ -151,8 +155,10 @@ class GameState(
     }
 
     private suspend fun preparePlayers() {
-        val firstPlayerName = datastore.getString(Constants.firstPlayerName) ?: "Player 1"
-        val secondPlayerName = datastore.getString(Constants.secondPlayerName) ?: "Player 2"
+        val firstPlayerName =
+            datastore.getString(Constants.firstPlayerName) ?: Constants.firstPlayerDefaultName
+        val secondPlayerName =
+            datastore.getString(Constants.secondPlayerName) ?: Constants.secondPlayerDefaultName
 
         val firstPlayerShape =
             datastore.getString(Constants.firstPlayerShape)?.toShape() ?: RingShape
@@ -184,6 +190,40 @@ class GameState(
         currentPlayer.value = players.value.reduce { first, second ->
             if (first.diceIndex > second.diceIndex) first else second
         }
+    }
+
+    private suspend fun dummyDiceRolling() {
+        isRollingDices.value = true
+
+        val firstPlayerDice = players.value.first().diceIndex
+        val secondPlayerDice = players.value.last().diceIndex
+
+        repeat(5) {
+            players.value = buildList {
+                add(players.value.first().copy(diceIndex = Random.nextInt(1..6)))
+                add(players.value.last().copy(diceIndex = Random.nextInt(1..6)))
+            }
+            delay(100)
+        }
+        players.value = buildList {
+            add(players.value.first().copy(diceIndex = firstPlayerDice))
+            add(players.value.last().copy(diceIndex = secondPlayerDice))
+        }
+        delay(100)
+//        var dice by remember { mutableStateOf(player.diceIndex) }
+//        dice = player.diceIndex
+//
+//        LaunchedEffect(dice) {
+//            val backup = dice
+//            repeat(5) {
+//                dice = Random.nextInt(1..6)
+//                delay(100)
+//            }
+//            dice = backup
+//        }
+
+        delay(500)
+        isRollingDices.value = false
     }
 
     fun getOwnerShape(
@@ -251,7 +291,8 @@ fun rememberHomeState(
     gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) },
     isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
     winnerCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(emptyList()) },
-    aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) }
+    aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
+    isRollingDices: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
 ) = remember(
     context,
     coroutineScope,
@@ -266,7 +307,8 @@ fun rememberHomeState(
     gameType,
     isGameDrew,
     winnerCells,
-    aiDifficulty
+    aiDifficulty,
+    isRollingDices
 ) {
     GameState(
         context,
@@ -282,6 +324,7 @@ fun rememberHomeState(
         gameType,
         isGameDrew,
         winnerCells,
-        aiDifficulty
+        aiDifficulty,
+        isRollingDices
     )
 }

@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
+import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -48,13 +49,11 @@ import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.model.*
 import io.github.yamin8000.dooz.ui.ShapePreview
-import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
-import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.PlayerProvider
-import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
+import io.github.yamin8000.dooz.ui.composables.*
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.ui.toShape
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun GameContent(
     onNavigateToSettings: () -> Unit
@@ -86,22 +85,34 @@ fun GameContent(
                     ) { PersianText(stringResource(R.string.settings)) }
                 }
 
-                if (gameState.isGameStarted.value) {
+                AnimatedVisibility(
+                    visible = gameState.isGameStarted.value,
+                    enter = slideInHorizontally { -it }
+                ) {
                     GameInfoCard(
                         gameState.winner.value,
                         gameState.isGameDrew.value,
                         gameState.gamePlayersType.value,
-                        gameState.aiDifficulty.value
+                        gameState.aiDifficulty.value,
                     )
-                    if (gameState.players.value.isNotEmpty()) {
-                        PlayerCards(
-                            gameState.players.value,
-                            gameState.currentPlayer.value
-                        )
-                    }
                 }
 
-                if (gameState.isGameStarted.value) {
+                AnimatedVisibility(
+                    visible = gameState.isGameStarted.value,
+                    enter = slideInHorizontally { it }
+                ) {
+                    PlayerCards(
+                        gameState.players.value,
+                        gameState.currentPlayer.value,
+                        gameState.isRollingDices.value
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = gameState.isGameStarted.value && !gameState.isRollingDices.value,
+                    enter = scaleIn(),
+                    exit = scaleOut()
+                ) {
                     GameBoard(
                         gameSize = gameState.gameSize.value,
                         gameCells = gameState.gameCells.value,
@@ -120,7 +131,8 @@ fun GameContent(
 @Composable
 fun PlayerCards(
     players: List<Player>,
-    currentPlayer: Player?
+    currentPlayer: Player?,
+    isRollingDices: Boolean
 ) {
     val firstPlayer = players[0]
     val secondPlayer = players[1]
@@ -132,8 +144,8 @@ fun PlayerCards(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        PlayerCard(firstPlayer, firstPlayer == currentPlayer)
-        PlayerCard(secondPlayer, secondPlayer == currentPlayer)
+        PlayerCard(firstPlayer, firstPlayer == currentPlayer, isRollingDices)
+        PlayerCard(secondPlayer, secondPlayer == currentPlayer, isRollingDices)
     }
 }
 
@@ -142,7 +154,8 @@ fun PlayerCards(
 fun PlayerCard(
     @PreviewParameter(PlayerProvider::class)
     player: Player,
-    isCurrentPlayer: Boolean = true
+    isCurrentPlayer: Boolean = true,
+    isRollingDices: Boolean = true
 ) {
     val iconTint =
         if (isCurrentPlayer) MaterialTheme.colorScheme.secondary
@@ -195,33 +208,43 @@ fun GameInfoCard(
     winner: Player?,
     isGameDrew: Boolean = true,
     playersType: GamePlayersType = GamePlayersType.PvP,
-    aiDifficulty: AiDifficulty = AiDifficulty.Easy
+    aiDifficulty: AiDifficulty = AiDifficulty.Easy,
 ) {
-    Card {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+    InfoCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        columnModifier = Modifier.fillMaxWidth(),
+        header = {
             PersianText(
                 text = stringResource(R.string.game_info),
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.primary
             )
-
+        },
+        content = {
             PersianText(getGamePlayersTypeCaption(playersType))
 
             if (playersType == GamePlayersType.PvC)
                 PersianText(stringResource(R.string.ai_difficulty_var, aiDifficulty.persianName))
-
-            winner?.let {
-                PersianText(stringResource(R.string.x_is_winner, it.name))
+        },
+        footer = {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (isGameDrew)
+                    PersianText(stringResource(R.string.game_is_drew))
+                winner?.let {
+                    PersianText(stringResource(R.string.x_is_winner, it.name))
+                }
+                if (!isGameDrew && winner == null)
+                    PersianText(stringResource(R.string.undefined))
+                PersianText(
+                    text = stringResource(R.string.game_result),
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
-
-            if (isGameDrew)
-                PersianText(stringResource(R.string.game_is_drew))
-        }
-    }
+        })
 }
 
 @Composable

@@ -23,12 +23,45 @@ package io.github.yamin8000.dooz.ui.composables
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.model.GamePlayersType
+
+@Composable
+fun InfoCard(
+    modifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
+    elementVerticalSpacing: Dp = 8.dp,
+    header: @Composable () -> Unit = {},
+    content: @Composable () -> Unit = {},
+    footer: @Composable () -> Unit = {}
+) {
+    Card(
+        modifier = modifier,
+    ) {
+        Column(
+            modifier = columnModifier.padding(contentPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(elementVerticalSpacing)
+        ) {
+            header()
+            content()
+            footer()
+        }
+    }
+}
 
 @Composable
 fun LockScreenOrientation(orientation: Int) {
