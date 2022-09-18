@@ -161,9 +161,9 @@ class GameState(
             datastore.getString(Constants.secondPlayerName) ?: Constants.secondPlayerDefaultName
 
         val firstPlayerShape =
-            datastore.getString(Constants.firstPlayerShape)?.toShape() ?: RingShape
+            datastore.getString(Constants.firstPlayerShape)?.toShape() ?: XShape
         val secondPlayerShape =
-            datastore.getString(Constants.secondPlayerShape)?.toShape() ?: XShape
+            datastore.getString(Constants.secondPlayerShape)?.toShape() ?: RingShape
 
         val firstPlayerDice = Random.nextInt(1..6)
         val secondPlayerDice = Random.nextInt(1..6)
@@ -188,7 +188,7 @@ class GameState(
             )
         }
         currentPlayer.value = players.value.reduce { first, second ->
-            if (first.diceIndex > second.diceIndex) first else second
+            if (first.diceIndex >= second.diceIndex) first else second
         }
     }
 
@@ -210,17 +210,6 @@ class GameState(
             add(players.value.last().copy(diceIndex = secondPlayerDice))
         }
         delay(100)
-//        var dice by remember { mutableStateOf(player.diceIndex) }
-//        dice = player.diceIndex
-//
-//        LaunchedEffect(dice) {
-//            val backup = dice
-//            repeat(5) {
-//                dice = Random.nextInt(1..6)
-//                delay(100)
-//            }
-//            dice = backup
-//        }
 
         delay(500)
         isRollingDices.value = false
@@ -229,8 +218,8 @@ class GameState(
     fun getOwnerShape(
         owner: Player?
     ): Shape {
-        return if (owner == players.value.first()) owner.shape?.toShape() ?: RingShape
-        else owner?.shape?.toShape() ?: XShape
+        return if (owner == players.value.first()) owner.shape?.toShape() ?: XShape
+        else owner?.shape?.toShape() ?: RingShape
     }
 
     private fun changePlayer() {

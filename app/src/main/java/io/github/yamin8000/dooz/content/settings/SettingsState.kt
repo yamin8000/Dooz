@@ -65,9 +65,9 @@ class SettingsState(
             firstPlayerName.value = dataStore.getString(Constants.firstPlayerName) ?: "Player 1"
             secondPlayerName.value = dataStore.getString(Constants.secondPlayerName) ?: "Player 2"
             firstPlayerShape.value =
-                dataStore.getString(Constants.firstPlayerShape) ?: Constants.Shapes.ringShape
+                dataStore.getString(Constants.firstPlayerShape) ?: Constants.Shapes.xShape
             secondPlayerShape.value =
-                dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.xShape
+                dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.ringShape
             aiDifficulty.value = AiDifficulty.valueOf(getAiDifficulty() ?: AiDifficulty.Easy.name)
         }
     }
@@ -147,8 +147,8 @@ fun rememberSettingsState(
     gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(GameConstants.gameDefaultSize) },
     firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 1") },
     secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 2") },
-    firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
-    secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
+    firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
+    secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
     errorText: MutableState<String?> = rememberSaveable { mutableStateOf(null) },
     aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) }
 ) = remember(

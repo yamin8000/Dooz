@@ -41,6 +41,16 @@ class SimpleGameAi(
 
     private val random = Random(System.nanoTime())
 
+    private var totalCells = listOf<List<DoozCell>>()
+
+    init {
+        totalCells = buildList {
+            addAll(gameCells)
+            addAll(rotatedGameCells)
+            addAll(diagonals.toList())
+        }
+    }
+
     override fun play(): DoozCell {
         val cell = when (difficulty) {
             AiDifficulty.Easy -> easyPlay()
@@ -49,6 +59,10 @@ class SimpleGameAi(
         }
         if (cell.owner != null) throw IllegalArgumentException("Cell already has a owner!")
         else return cell
+    }
+
+    private fun DoozCell?.getReadyToPlayCell(): DoozCell? {
+        return if (this == null || this.owner != null) null else this
     }
 
     private fun mediumPlay(): DoozCell {
@@ -60,23 +74,18 @@ class SimpleGameAi(
 
     //mitigate possible stack overflow
     private fun easyPlay(): DoozCell {
-        val row = gameCells[random.nextInt(gameCells.indices)].filter { it.owner == null }
-        return if (row.isEmpty()) easyPlay()
-        else row[random.nextInt(row.indices)]
+        val cells = gameCells.flatten()
+        return cells.getOrNull(random.nextInt(cells.indices)).getReadyToPlayCell() ?: easyPlay()
     }
 
     private fun hardPlay(): DoozCell {
-        //win or win block scanner
-        var cell = winOrWinBlockScanner(gameCells)
+        var cell = winOrWinBlockPlay().getReadyToPlayCell()
         if (cell != null) return cell
-        //fork or fork block scanner
-        cell = forkOrForkBlockScanner()
+        cell = forkOrForkBlockPlayHandler().getReadyToPlayCell()
         if (cell != null) return cell
-        //center play
-        cell = centerPlay()
+        cell = centerPlay().getReadyToPlayCell()
         if (cell != null) return cell
-        //corner play
-        cell = cornerPlay()
+        cell = cornerPlay().getReadyToPlayCell()
         if (cell != null) return cell
         return easyPlay()
     }
@@ -117,44 +126,70 @@ class SimpleGameAi(
         } else null
     }
 
-    private fun winOrWinBlockScanner(
-        gameCells: List<List<DoozCell>>
-    ): DoozCell? {
-        //column scan
-        var cell = winOrWinBlockLinearScanner(gameCells)
+    private fun winOrWinBlockPlay(): DoozCell? {
+        for (i in totalCells.indices) {
+            val cells = totalCells.getOrNull(i) ?: return null
+            val cell = winOrWinBlockSingleLineScanner(cells)
+            if (cell != null) return cell
+        }
+        return null
+    }
+
+    private fun forkOrForkBlockPlayHandler(): DoozCell? {
+        var cell = forkOrForkBlockPlay(gameCells, rotatedGameCells)
         if (cell != null) return cell
-        //row scan
-        cell = winOrWinBlockLinearScanner(rotatedGameCells)
+        cell = forkOrForkBlockPlay(gameCells, diagonals.toList())
         if (cell != null) return cell
-        //diagonal scan
-        cell = winOrWinBlockDiagonalScanner()
+        cell = forkOrForkBlockPlay(rotatedGameCells, diagonals.toList())
         if (cell != null) return cell
         return null
     }
 
-    private fun forkOrForkBlockScanner(): DoozCell? {
-        var cell = forkOrForkBlockGeneralScanner(gameCells, rotatedGameCells)
-        if (cell != null) return cell
-        cell = forkOrForkBlockGeneralScanner(gameCells, diagonals.toList())
-        if (cell != null) return cell
-        cell = forkOrForkBlockGeneralScanner(rotatedGameCells, diagonals.toList())
-        if (cell != null) return cell
-        return null
-    }
-
-    private fun forkOrForkBlockGeneralScanner(
+    private fun forkOrForkBlockPlay(
         gameCells: List<List<DoozCell>>,
-        intersectingRows: List<List<DoozCell>>
+        compareGameCells: List<List<DoozCell>>
     ): DoozCell? {
+        var cell = forkPlay(gameCells, compareGameCells)
+        if (cell != null) return cell
+        cell = forkBlockPlay(gameCells, compareGameCells)
+        if (cell != null) return cell
+        return null
+    }
+
+    private fun forkPlay(
+        gameCells: List<List<DoozCell>>,
+        compareGameCells: List<List<DoozCell>>,
+    ) = forkOrForkBlockPlayScanner(gameCells, compareGameCells, false)
+
+    private fun forkBlockPlay(
+        gameCells: List<List<DoozCell>>,
+        compareGameCells: List<List<DoozCell>>
+    ) = forkOrForkBlockPlayScanner(gameCells, compareGameCells, true)
+
+    private fun forkOrForkBlockPlayScanner(
+        gameCells: List<List<DoozCell>>,
+        compareGameCells: List<List<DoozCell>>,
+        isBlocking: Boolean
+    ): DoozCell? {
+        val playerType = if (isBlocking) PlayerType.Human else PlayerType.Computer
+
         for (i in gameCells.indices) {
-            val row = gameCells.getOrNull(i)
-            if (row?.filter { it.owner != null }?.size != gameSize - 2) continue
-            for (j in intersectingRows.indices) {
-                val column = intersectingRows[j]
-                if (column.filter { it.owner != null }.size != gameSize - 2) continue
-                if (row.find { it.owner != null }?.owner == column.find { it.owner != null }?.owner) {
-                    val cell = row.filter { it.owner == null }
-                        .intersect(column.filter { it.owner == null }.toSet())
+            val cells = gameCells.getOrNull(i) ?: continue
+            if (!cells.isSuspectToFork(playerType)) continue
+
+            for (j in compareGameCells.indices) {
+                val intersectingCells = compareGameCells.getOrNull(j) ?: continue
+                if (!intersectingCells.isSuspectToFork(playerType)) continue
+
+                if (cells.find { it.owner != null }?.owner == intersectingCells.find { it.owner != null }?.owner) {
+                    if (isBlocking) {
+                        val forceBlockCell = findCellForOpponentForceBlock()
+                        if (forceBlockCell != null)
+                            return forceBlockCell
+                    }
+
+                    val cell = cells.filter { it.owner == null }
+                        .intersect(intersectingCells.filter { it.owner == null }.toSet())
                         .firstOrNull()
                     if (cell != null && cell.owner == null)
                         return cell
@@ -164,55 +199,58 @@ class SimpleGameAi(
         return null
     }
 
-    private fun winOrWinBlockLinearScanner(
-        gameCells: List<List<DoozCell>>
-    ): DoozCell? {
-        for (i in gameCells.indices) {
-            val row = gameCells.getOrNull(i) ?: return null
-            val cell = winOrWinBlockRowScanner(row)
+    private fun findCellForOpponentForceBlock(): DoozCell? {
+        val cells = buildList {
+            addAll(gameCells)
+            addAll(rotatedGameCells)
+            addAll(diagonals.toList())
+        }
+        for (i in cells.indices) {
+            val line = gameCells.getOrNull(i) ?: return null
+            val cell = findCellForWinOrWinBlock(
+                line,
+                PlayerType.Computer,
+                SimpleGameBlankCell.Fork.count
+            )
             if (cell != null) return cell
         }
         return null
     }
 
-    private fun winOrWinBlockRowScanner(
-        row: List<DoozCell>
-    ): DoozCell? {
-        var cell = findCellForWin(row)
-        if (cell != null) return cell
-        cell = findCellForWinBlockMove(row)
-        if (cell != null) return cell
-        return null
+    private fun List<DoozCell>.isSuspectToFork(
+        relevantOwnerType: PlayerType
+    ): Boolean {
+        if (isEmpty()) return false
+        val owned = filter { it.owner != null }
+        return owned.size == 1 && owned.all { it.owner?.type == relevantOwnerType }
     }
 
-    private fun winOrWinBlockDiagonalScanner(): DoozCell? {
-        val (firstDiagonal, secondDiagonal) = diagonals
-        var cell = winOrWinBlockRowScanner(firstDiagonal)
+    private fun winOrWinBlockSingleLineScanner(
+        cells: List<DoozCell>
+    ): DoozCell? {
+        var cell = findCellForWin(cells)
         if (cell != null) return cell
-        cell = winOrWinBlockRowScanner(secondDiagonal)
+        cell = findCellForWinBlock(cells)
         if (cell != null) return cell
         return null
     }
 
     private fun findCellForWin(
-        row: List<DoozCell>
-    ) = findCellForWinOrWinBlock(row, PlayerType.Computer)
+        cells: List<DoozCell>
+    ) = findCellForWinOrWinBlock(cells, PlayerType.Computer)
 
-    private fun findCellForWinBlockMove(
-        row: List<DoozCell>
-    ) = findCellForWinOrWinBlock(row, PlayerType.Human)
+    private fun findCellForWinBlock(
+        cells: List<DoozCell>
+    ) = findCellForWinOrWinBlock(cells, PlayerType.Human)
 
     private fun findCellForWinOrWinBlock(
-        row: List<DoozCell>,
-        playerType: PlayerType
+        cells: List<DoozCell>,
+        playerType: PlayerType,
+        blankCells: Int = SimpleGameBlankCell.Win.count
     ): DoozCell? {
-        var cell: DoozCell? = null
-        if (row.filter { it.owner != null }.size < gameSize - 1) return null
-        if (row.isNotEmpty() && row.all { it.owner != null }) return null
-        val leftPart = row.takeWhile { it.owner?.type == playerType }
-        val rightPart = row.takeLastWhile { it.owner?.type == playerType }
-        if (leftPart.size + rightPart.size == gameSize - 1)
-            cell = row.minus(leftPart.toSet()).minus(rightPart.toSet()).firstOrNull()
-        return if (cell?.owner?.type == playerType) null else cell
+        val (vacant, owned) = cells.partition { it.owner == null }
+        if (vacant.size > blankCells) return null
+        if (owned.any { it.owner?.type != playerType }) return null
+        return vacant.firstOrNull()
     }
 }
