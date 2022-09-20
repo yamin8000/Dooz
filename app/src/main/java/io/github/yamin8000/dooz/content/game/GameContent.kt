@@ -47,13 +47,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.content.MainTopAppBar
 import io.github.yamin8000.dooz.model.*
 import io.github.yamin8000.dooz.ui.ShapePreview
 import io.github.yamin8000.dooz.ui.composables.*
-import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.ui.toShape
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun GameContent(
     onNavigateToSettings: () -> Unit
@@ -62,9 +62,13 @@ fun GameContent(
 
     val gameState = rememberHomeState()
 
-    DoozTheme {
+    Scaffold(
+        topBar = { MainTopAppBar(onSettingsIconClick = onNavigateToSettings) }
+    ) { contentPadding ->
         Surface(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -73,17 +77,10 @@ fun GameContent(
                     .padding(vertical = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Button(
-                        onClick = { gameState.newGame() }
-                    ) { PersianText(stringResource(R.string.start_game)) }
-                    Button(
-                        onClick = onNavigateToSettings
-                    ) { PersianText(stringResource(R.string.settings)) }
-                }
+                Button(
+                    onClick = { gameState.newGame() },
+                    content = { PersianText(stringResource(R.string.start_game)) }
+                )
 
                 AnimatedVisibility(
                     visible = gameState.isGameStarted.value,

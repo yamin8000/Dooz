@@ -27,16 +27,43 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.model.GamePlayersType
+
+@Composable
+fun ClickableIcon(
+    modifier: Modifier = Modifier,
+    iconPainter: Painter,
+    contentDescription: String,
+    onClick: () -> Unit
+) {
+    val haptic = LocalHapticFeedback.current
+    IconButton(
+        modifier = modifier,
+        onClick = {
+            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            onClick()
+        }
+    ) {
+        Icon(
+            painter = iconPainter,
+            contentDescription = contentDescription
+        )
+    }
+}
 
 @Composable
 fun InfoCard(

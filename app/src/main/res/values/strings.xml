@@ -19,7 +19,7 @@
   -->
 
 <resources>
-    <string name="app_name">Dooz</string>
+    <string name="app_name">دوز</string>
     <string name="play_with_computer">بازی یک نفره</string>
     <string name="play_with_human">بازی دو نفره</string>
     <string name="settings">تنظیمات</string>
