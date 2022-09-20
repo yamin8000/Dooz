@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -36,13 +38,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +52,12 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.MainTopAppBar
 import io.github.yamin8000.dooz.model.*
 import io.github.yamin8000.dooz.ui.ShapePreview
-import io.github.yamin8000.dooz.ui.composables.*
+import io.github.yamin8000.dooz.ui.XShape
+import io.github.yamin8000.dooz.ui.composables.InfoCard
+import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
+import io.github.yamin8000.dooz.ui.composables.PersianText
+import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
+import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 import io.github.yamin8000.dooz.ui.toShape
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
@@ -100,8 +107,7 @@ fun GameContent(
                 ) {
                     PlayerCards(
                         gameState.players.value,
-                        gameState.currentPlayer.value,
-                        gameState.isRollingDices.value
+                        gameState.currentPlayer.value
                     )
                 }
 
@@ -128,31 +134,25 @@ fun GameContent(
 @Composable
 fun PlayerCards(
     players: List<Player>,
-    currentPlayer: Player?,
-    isRollingDices: Boolean
+    currentPlayer: Player?
 ) {
     val firstPlayer = players[0]
     val secondPlayer = players[1]
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        PlayerCard(firstPlayer, firstPlayer == currentPlayer, isRollingDices)
-        PlayerCard(secondPlayer, secondPlayer == currentPlayer, isRollingDices)
+        PlayerCard(firstPlayer, firstPlayer == currentPlayer)
+        PlayerCard(secondPlayer, secondPlayer == currentPlayer)
     }
 }
 
-@Preview
 @Composable
 fun PlayerCard(
-    @PreviewParameter(PlayerProvider::class)
     player: Player,
-    isCurrentPlayer: Boolean = true,
-    isRollingDices: Boolean = true
+    isCurrentPlayer: Boolean = true
 ) {
     val iconTint =
         if (isCurrentPlayer) MaterialTheme.colorScheme.secondary
@@ -198,10 +198,8 @@ private fun PlayerDice(
     )
 }
 
-@Preview
 @Composable
 fun GameInfoCard(
-    @PreviewParameter(PlayerProvider::class)
     winner: Player?,
     isGameDrew: Boolean = true,
     playersType: GamePlayersType = GamePlayersType.PvP,
@@ -302,6 +300,7 @@ fun DoozItem(
     itemContentColor: Color,
     onClick: () -> Unit
 ) {
+    val localHapticFeedback = LocalHapticFeedback.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -309,14 +308,17 @@ fun DoozItem(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
-                onClick = onClick,
+                onClick = {
+                    localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onClick()
+                },
                 enabled = clickable
             )
     ) {
         Box(
             modifier = Modifier
                 .size(itemSize)
-                .clip(RectangleShape)
+                .clip(RoundedCornerShape(10.dp))
                 .background(itemBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
@@ -329,5 +331,22 @@ fun DoozItem(
                 )
             }
         }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun DoozItemPreview() {
+    PreviewTheme {
+        DoozItem(
+            shape = XShape,
+            clickable = true,
+            itemSize = 40.dp,
+            doozCell = DoozCell(0, 0, Player("Player")),
+            itemBackgroundColor = MaterialTheme.colorScheme.primary,
+            itemContentColor = MaterialTheme.colorScheme.onPrimary,
+            onClick = {}
+        )
     }
 }
