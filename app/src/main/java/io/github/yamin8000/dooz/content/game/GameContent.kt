@@ -350,3 +350,33 @@ private fun DoozItemPreview() {
         )
     }
 }
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun GameBoardPreview() {
+    PreviewTheme {
+        Surface {
+            GameBoard(
+                gameSize = 3,
+                gameCells = buildList {
+                    for (i in 1..3) {
+                        val row = mutableListOf<DoozCell>()
+                        for (j in 1..3)
+                            row.add(DoozCell(i, j))
+                        add(row)
+                    }
+                },
+                winnerCells = buildList {
+
+                },
+                isGameFinished = false,
+                currentPlayer = null,
+                shapeProvider = {
+                    XShape
+                },
+                onItemClick = {}
+            )
+        }
+    }
+}
