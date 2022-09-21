@@ -27,6 +27,7 @@ Jetpack compose for Android devices.
 
 ## Usage
 
+Just play it!
 
 ## Download
 
@@ -35,6 +36,29 @@ Jetpack compose for Android devices.
 
 ## Features
 
+- Variable game board grid size from three-by-three to nine-by-nine (Larger than nine-by-nine is simply ridiculous and unplayable in mobile phones)
+
+### Variations
+
+#### Simple Game
+Simple game is the most simple variation of Tic-tac-tao with a three-by-three grid with two players. The player who succeeds in placing three of their marks in horizontal, vertical or diagonal is the winner.
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Tic_tac_toe.svg" alt="preview" width="200"/>
+
+##### Simple Game AI
+Currently AI uses an strategy rather than using an AI search algorithms like MinMax. This strategy is followed by these steps:
+
+- Win
+- Block
+- Fork
+- Fork Block
+- Play Center
+- Play Corner
+- Play Side
+
+Strategy's source: Flexible Strategy Use in Young Children's Tic-Tac-Toe by Kevin Crowley, Robert S. Siegler
+
+[More info on the strategy here](https://onlinelibrary.wiley.com/doi/abs/10.1207/s15516709cog1704_3)
 
 ## Changelog
 
