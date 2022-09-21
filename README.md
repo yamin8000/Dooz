@@ -37,6 +37,7 @@ Just play it!
 ## Features
 
 - Variable game board grid size from three-by-three to nine-by-nine (Larger than nine-by-nine is simply ridiculous and unplayable in mobile phones)
+- Variable game ai difficulty (easy, medium, hard)
 
 ### Variations
 
@@ -46,7 +47,7 @@ Simple game is the most simple variation of Tic-tac-tao with a three-by-three gr
 <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Tic_tac_toe.svg" alt="preview" width="200"/>
 
 ##### Simple Game AI
-Currently AI uses an strategy rather than using an AI search algorithms like MinMax. This strategy is followed by these steps:
+Currently in hard mode AI uses an strategy rather than using an AI search algorithms like MinMax. This strategy is followed by these steps:
 
 - Win
 - Block
@@ -59,6 +60,8 @@ Currently AI uses an strategy rather than using an AI search algorithms like Min
 Strategy's source: Flexible Strategy Use in Young Children's Tic-Tac-Toe by Kevin Crowley, Robert S. Siegler
 
 [More info on the strategy here](https://onlinelibrary.wiley.com/doi/abs/10.1207/s15516709cog1704_3)
+
+In Easy difficulty ai just plays a random empty cell in the grid, and in Medium difficulty ai choose between Easy difficulty and Hard difficulty for each move based on a 50/50 chance.
 
 ## Changelog
 
