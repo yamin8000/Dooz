@@ -1,7 +1,6 @@
 # Dooz/Tic-Tac-Tao **(WIP)**
 
-Dooz or Tic-Tac-Tao is a simple pen and paper game. This implementation is created using Kotlin and
-Jetpack compose for Android devices.
+Dooz or Tic-Tac-Tao is a simple pen-and-paper game. I created this implementation using Kotlin and Jetpack Compose for Android devices.
 
 ---
 
@@ -42,26 +41,18 @@ Just play it!
 ### Variations
 
 #### Simple Game
-Simple game is the most simple variation of Tic-tac-tao with a three-by-three grid with two players. The player who succeeds in placing three of their marks in horizontal, vertical or diagonal is the winner.
+The Simple game is the most simple variation of Tic-tac-tao with a three-by-three grid with two players. The player who succeeds in placing three of their marks in horizontal, vertical, or diagonal is the winner.
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Tic_tac_toe.svg" alt="preview" width="200"/>
 
 ##### Simple Game AI
-Currently in hard mode AI uses an strategy rather than using an AI search algorithms like MinMax. This strategy is followed by these steps:
-
-- Win
-- Block
-- Fork
-- Fork Block
-- Play Center
-- Play Corner
-- Play Side
+Currently, in hard mode, AI uses a strategy rather than an AI search algorithm like MinMax. This strategy consists of these steps: Win, Block, Fork, Block Fork, Center Play, Corner Play, and Side Play.
 
 Strategy's source: Flexible Strategy Use in Young Children's Tic-Tac-Toe by Kevin Crowley, Robert S. Siegler
 
 [More info on the strategy here](https://onlinelibrary.wiley.com/doi/abs/10.1207/s15516709cog1704_3)
 
-In Easy difficulty ai just plays a random empty cell in the grid, and in Medium difficulty ai choose between Easy difficulty and Hard difficulty for each move based on a 50/50 chance.
+In Easy difficulty, AI plays a random empty cell in the grid. In Medium difficulty, AI chooses between Easy difficulty and Hard difficulty for each move based on a 50/50 chance.
 
 ## Changelog
 
