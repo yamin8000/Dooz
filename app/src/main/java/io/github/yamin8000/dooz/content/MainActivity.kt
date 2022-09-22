@@ -24,7 +24,8 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.*
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -36,34 +37,50 @@ import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.yamin8000.dooz.content.game.GameContent
 import io.github.yamin8000.dooz.content.settings.SettingsContent
+import io.github.yamin8000.dooz.content.settings.ThemeSetting
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
+import io.github.yamin8000.dooz.util.Constants
+import io.github.yamin8000.dooz.util.DataStoreHelper
 
 val Context.settings: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { DoozTheme { MainContent() } }
+        setContent { MainContent() }
 
         prepareLogger()
     }
 
     @Composable
     private fun MainContent() {
-        val navController = rememberNavController()
-        NavHost(
-            navController = navController,
-            startDestination = Nav.Routes.game
-        ) {
-            composable(Nav.Routes.game) {
-                GameContent() {
-                    navController.navigate(Nav.Routes.settings)
-                }
-            }
+        var theme by remember { mutableStateOf(ThemeSetting.System) }
 
-            composable(Nav.Routes.settings) {
-                SettingsContent()
+        LaunchedEffect(Unit) {
+            val dataStore = DataStoreHelper(settings)
+            theme = ThemeSetting.valueOf(
+                dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
+            )
+        }
+
+        DoozTheme(
+            isDarkTheme = isDarkTheme(theme, isSystemInDarkTheme())
+        ) {
+            val navController = rememberNavController()
+            NavHost(
+                navController = navController,
+                startDestination = Nav.Routes.game
+            ) {
+                composable(Nav.Routes.game) {
+                    GameContent() {
+                        navController.navigate(Nav.Routes.settings)
+                    }
+                }
+
+                composable(Nav.Routes.settings) {
+                    SettingsContent { newTheme -> theme = newTheme }
+                }
             }
         }
     }
@@ -75,5 +92,15 @@ class MainActivity : ComponentActivity() {
             )
         )
         Logger.d("Application is Started!")
+    }
+
+    private fun isDarkTheme(
+        themeSetting: ThemeSetting,
+        isSystemInDarkTheme: Boolean
+    ): Boolean {
+        if (themeSetting == ThemeSetting.Light) return false
+        if (themeSetting == ThemeSetting.System) return isSystemInDarkTheme
+        if (themeSetting == ThemeSetting.Dark) return true
+        return false
     }
 }

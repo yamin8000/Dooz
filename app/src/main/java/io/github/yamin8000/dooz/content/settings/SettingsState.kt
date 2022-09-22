@@ -35,8 +35,8 @@ import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.GameConstants
-import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.model.AiDifficulty
+import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 import kotlinx.coroutines.launch
@@ -44,7 +44,7 @@ import kotlinx.coroutines.withContext
 
 class SettingsState(
     private val context: Context,
-    private val coroutineScope: LifecycleCoroutineScope,
+    val coroutineScope: LifecycleCoroutineScope,
     var gamePlayersType: MutableState<GamePlayersType>,
     var gameSize: MutableState<Int>,
     var firstPlayerName: MutableState<String>,
@@ -52,13 +52,17 @@ class SettingsState(
     var firstPlayerShape: MutableState<String>,
     var secondPlayerShape: MutableState<String>,
     val errorText: MutableState<String?>,
-    var aiDifficulty: MutableState<AiDifficulty>
+    var aiDifficulty: MutableState<AiDifficulty>,
+    val themeSetting: MutableState<ThemeSetting>
 ) {
 
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
         coroutineScope.launch {
+            themeSetting.value = ThemeSetting.valueOf(
+                dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
+            )
             gamePlayersType.value =
                 GamePlayersType.valueOf(getPlayersType() ?: GamePlayersType.PvC.name)
             gameSize.value = getGameSize() ?: GameConstants.gameDefaultSize
@@ -69,6 +73,15 @@ class SettingsState(
             secondPlayerShape.value =
                 dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.ringShape
             aiDifficulty.value = AiDifficulty.valueOf(getAiDifficulty() ?: AiDifficulty.Easy.name)
+        }
+    }
+
+    suspend fun updateThemeSetting(
+        newTheme: ThemeSetting
+    ) {
+        themeSetting.value = newTheme
+        coroutineScope.launch {
+            dataStore.setString(Constants.theme, newTheme.name)
         }
     }
 
@@ -150,7 +163,8 @@ fun rememberSettingsState(
     firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
     secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
     errorText: MutableState<String?> = rememberSaveable { mutableStateOf(null) },
-    aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) }
+    aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
+    themeSetting: MutableState<ThemeSetting> = rememberSaveable { mutableStateOf(ThemeSetting.System) }
 ) = remember(
     context,
     coroutineScope,
@@ -161,7 +175,8 @@ fun rememberSettingsState(
     firstPlayerShape,
     secondPlayerShape,
     errorText,
-    aiDifficulty
+    aiDifficulty,
+    themeSetting
 ) {
     SettingsState(
         context,
@@ -173,6 +188,7 @@ fun rememberSettingsState(
         firstPlayerShape,
         secondPlayerShape,
         errorText,
-        aiDifficulty
+        aiDifficulty,
+        themeSetting
     )
 }

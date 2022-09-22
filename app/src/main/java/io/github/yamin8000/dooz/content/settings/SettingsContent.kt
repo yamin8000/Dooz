@@ -49,54 +49,111 @@ import io.github.yamin8000.dooz.ui.ClickableShapes
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
 import io.github.yamin8000.dooz.ui.shapes
-import io.github.yamin8000.dooz.ui.theme.DoozTheme
+import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 import io.github.yamin8000.dooz.ui.theme.Samim
 import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
+import kotlinx.coroutines.launch
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun SettingsContent() {
+fun SettingsContent(
+    onThemeChanged: (ThemeSetting) -> Unit
+) {
     val settingsState = rememberSettingsState()
 
-    DoozTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize()
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            PersianText(
+                text = stringResource(R.string.settings),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp,
+            )
+            ThemeChanger(settingsState.themeSetting.value) { newTheme ->
+                settingsState.coroutineScope.launch {
+                    settingsState.updateThemeSetting(newTheme)
+                }
+                onThemeChanged(newTheme)
+            }
+            GamePlayersTypeSwitch(
+                gamePlayersType = settingsState.gamePlayersType,
+                onCheckedChanged = { settingsState.setPlayersType() }
+            )
+            GameSizeChanger(
+                gameSize = settingsState.gameSize.value,
+                onGameSizeIncrease = { settingsState.increaseGameSize() },
+                onGameSizeDecrease = { settingsState.decreaseGameSize() }
+            )
+            AiDifficultyCard(
+                aiDifficulty = settingsState.aiDifficulty,
+                onDifficultyChanged = { settingsState.setAiDifficulty() }
+            )
+            PlayerCustomization(
+                firstPlayerName = settingsState.firstPlayerName,
+                secondPlayerName = settingsState.secondPlayerName,
+                firstPlayerShape = settingsState.firstPlayerShape,
+                secondPlayerShape = settingsState.secondPlayerShape,
+                errorText = settingsState.errorText,
+                onSave = { settingsState.savePlayerInfo() }
+            )
+        }
+    }
+}
+
+@Composable
+fun ThemeChanger(
+    currentTheme: ThemeSetting,
+    onCurrentThemeChange: (ThemeSetting) -> Unit
+) {
+    Card {
+        Column(
+            modifier = Modifier.padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PersianText(
+                text = stringResource(R.string.theme),
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+            val themes = ThemeSetting.values()
+            Row(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
+                    .selectableGroup()
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                PersianText(
-                    text = stringResource(R.string.settings),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                )
-                GamePlayersTypeSwitch(
-                    gamePlayersType = settingsState.gamePlayersType,
-                    onCheckedChanged = { settingsState.setPlayersType() }
-                )
-                GameSizeChanger(
-                    gameSize = settingsState.gameSize.value,
-                    onGameSizeIncrease = { settingsState.increaseGameSize() },
-                    onGameSizeDecrease = { settingsState.decreaseGameSize() }
-                )
-                AiDifficultyCard(
-                    aiDifficulty = settingsState.aiDifficulty,
-                    onDifficultyChanged = { settingsState.setAiDifficulty() }
-                )
-                PlayerCustomization(
-                    firstPlayerName = settingsState.firstPlayerName,
-                    secondPlayerName = settingsState.secondPlayerName,
-                    firstPlayerShape = settingsState.firstPlayerShape,
-                    secondPlayerShape = settingsState.secondPlayerShape,
-                    errorText = settingsState.errorText,
-                    onSave = { settingsState.savePlayerInfo() }
-                )
+                themes.forEach { theme ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        modifier = Modifier
+                            .selectable(
+                                selected = (theme == currentTheme),
+                                onClick = { onCurrentThemeChange(theme) },
+                                role = Role.RadioButton
+                            )
+                    ) {
+                        PersianText(
+                            text = theme.persianName,
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        )
+                        RadioButton(
+                            selected = (theme == currentTheme),
+                            onClick = null,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        )
+                    }
+                }
             }
         }
     }
@@ -247,7 +304,6 @@ private fun PlayerNamesCustomizer(
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun NameField(
@@ -332,18 +388,25 @@ private fun GamePlayersTypeSwitch(
     gamePlayersType: MutableState<GamePlayersType>,
     onCheckedChanged: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        PersianText(getGamePlayersTypeCaption(gamePlayersType.value))
-        Switch(
-            checked = gamePlayersType.value == GamePlayersType.PvP,
-            onCheckedChange = { isChecked ->
-                onSwitchCheckedChanged(isChecked, gamePlayersType)
-                onCheckedChanged()
-            }
-        )
+    Card {
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            PersianText(getGamePlayersTypeCaption(gamePlayersType.value))
+            Switch(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                checked = gamePlayersType.value == GamePlayersType.PvP,
+                onCheckedChange = { isChecked ->
+                    onSwitchCheckedChanged(isChecked, gamePlayersType)
+                    onCheckedChanged()
+                }
+            )
+        }
+
     }
 }
 
@@ -353,4 +416,11 @@ private fun onSwitchCheckedChanged(
 ) {
     if (isChecked) gamePlayersType.value = GamePlayersType.PvP
     else gamePlayersType.value = GamePlayersType.PvC
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun Preview() {
+    PreviewTheme { SettingsContent {} }
 }
