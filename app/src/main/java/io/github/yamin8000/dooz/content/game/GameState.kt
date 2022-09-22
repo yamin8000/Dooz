@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.Context
+import android.media.MediaPlayer
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -73,6 +74,7 @@ class GameState(
     }
 
     fun newGame() {
+        MediaPlayer.create(context, R.raw.dice).start()
         coroutineScope.launch {
             prepareGame()
 
