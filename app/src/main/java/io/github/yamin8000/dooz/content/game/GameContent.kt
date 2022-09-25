@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.MainTopAppBar
+import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.model.*
 import io.github.yamin8000.dooz.ui.ShapePreview
 import io.github.yamin8000.dooz.ui.XShape
@@ -107,6 +108,7 @@ fun GameContent(
                     enter = slideInHorizontally { it }
                 ) {
                     PlayerCards(
+                        gameState.firstPlayerPolicy.value,
                         gameState.players.value,
                         gameState.currentPlayer.value
                     )
@@ -134,6 +136,7 @@ fun GameContent(
 
 @Composable
 fun PlayerCards(
+    firstPlayerPolicy: FirstPlayerPolicy,
     players: List<Player>,
     currentPlayer: Player?
 ) {
@@ -145,14 +148,15 @@ fun PlayerCards(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        PlayerCard(firstPlayer, firstPlayer == currentPlayer)
-        PlayerCard(secondPlayer, secondPlayer == currentPlayer)
+        PlayerCard(firstPlayer, firstPlayerPolicy, firstPlayer == currentPlayer)
+        PlayerCard(secondPlayer, firstPlayerPolicy, secondPlayer == currentPlayer)
     }
 }
 
 @Composable
 fun PlayerCard(
     player: Player,
+    firstPlayerPolicy: FirstPlayerPolicy,
     isCurrentPlayer: Boolean = true
 ) {
     val iconTint =
@@ -171,7 +175,8 @@ fun PlayerCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            PlayerDice(iconTint = iconTint, diceIndex = player.diceIndex)
+            if (firstPlayerPolicy == FirstPlayerPolicy.DiceRolling)
+                PlayerDice(iconTint = iconTint, diceIndex = player.diceIndex)
             player.shape?.toShape()?.let { shape -> ShapePreview(shape, 30.dp, iconTint) }
             PersianText(player.name)
         }

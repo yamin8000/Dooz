@@ -51,4 +51,6 @@
     <string name="theme_system">هماهنگ سیستم</string>
     <string name="theme_light">روشن</string>
     <string name="theme_dark">تاریک</string>
+    <string name="dice_rolling_start">شروع با ریختن تاس</string>
+    <string name="human_first_start">شروع همیشه با کاربر</string>
 </resources>

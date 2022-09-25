@@ -34,6 +34,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings
+import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.game.GameConstants
 import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.model.GamePlayersType
@@ -53,7 +54,8 @@ class SettingsState(
     var secondPlayerShape: MutableState<String>,
     val errorText: MutableState<String?>,
     var aiDifficulty: MutableState<AiDifficulty>,
-    val themeSetting: MutableState<ThemeSetting>
+    val themeSetting: MutableState<ThemeSetting>,
+    var firstPlayerPolicy: MutableState<FirstPlayerPolicy>
 ) {
 
     private val dataStore = DataStoreHelper(context.settings)
@@ -73,10 +75,23 @@ class SettingsState(
             secondPlayerShape.value =
                 dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.ringShape
             aiDifficulty.value = AiDifficulty.valueOf(getAiDifficulty() ?: AiDifficulty.Easy.name)
+            firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
+                dataStore.getString(Constants.firstPlayerPolicy)
+                    ?: FirstPlayerPolicy.DiceRolling.name
+            )
         }
     }
 
-    suspend fun updateThemeSetting(
+    fun setFirstPlayerPolicy(
+        firstPlayerPolicy: FirstPlayerPolicy
+    ) {
+        this.firstPlayerPolicy.value = firstPlayerPolicy
+        coroutineScope.launch {
+            dataStore.setString(Constants.firstPlayerPolicy, firstPlayerPolicy.name)
+        }
+    }
+
+    fun setThemeSetting(
         newTheme: ThemeSetting
     ) {
         themeSetting.value = newTheme
@@ -170,7 +185,12 @@ fun rememberSettingsState(
     secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
     errorText: MutableState<String?> = rememberSaveable { mutableStateOf(null) },
     aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
-    themeSetting: MutableState<ThemeSetting> = rememberSaveable { mutableStateOf(ThemeSetting.System) }
+    themeSetting: MutableState<ThemeSetting> = rememberSaveable { mutableStateOf(ThemeSetting.System) },
+    firstPlayerPolicy: MutableState<FirstPlayerPolicy> = rememberSaveable {
+        mutableStateOf(
+            FirstPlayerPolicy.DiceRolling
+        )
+    }
 ) = remember(
     context,
     coroutineScope,
@@ -182,7 +202,8 @@ fun rememberSettingsState(
     secondPlayerShape,
     errorText,
     aiDifficulty,
-    themeSetting
+    themeSetting,
+    firstPlayerPolicy
 ) {
     SettingsState(
         context,
@@ -195,6 +216,7 @@ fun rememberSettingsState(
         secondPlayerShape,
         errorText,
         aiDifficulty,
-        themeSetting
+        themeSetting,
+        firstPlayerPolicy
     )
 }

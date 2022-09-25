@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.ui.ClickableShapes
@@ -56,7 +57,6 @@ import io.github.yamin8000.dooz.ui.theme.Samim
 import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
-import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsContent(
@@ -80,14 +80,14 @@ fun SettingsContent(
                 fontSize = 20.sp,
             )
             ThemeChanger(settingsState.themeSetting.value) { newTheme ->
-                settingsState.coroutineScope.launch {
-                    settingsState.updateThemeSetting(newTheme)
-                }
+                settingsState.setThemeSetting(newTheme)
                 onThemeChanged(newTheme)
             }
             GeneralGameSettings(
                 gamePlayersType = settingsState.gamePlayersType.value,
-                onCheckedChanged = { settingsState.setPlayersType(it) }
+                onPlayerTypeChange = { settingsState.setPlayersType(it) },
+                firstPlayerPolicy = settingsState.firstPlayerPolicy.value,
+                onFirstPlayerPolicyChange = { settingsState.setFirstPlayerPolicy(it) }
             )
             GameSizeChanger(
                 gameSize = settingsState.gameSize.value,
@@ -113,7 +113,9 @@ fun SettingsContent(
 @Composable
 fun GeneralGameSettings(
     gamePlayersType: GamePlayersType,
-    onCheckedChanged: (GamePlayersType) -> Unit
+    onPlayerTypeChange: (GamePlayersType) -> Unit,
+    firstPlayerPolicy: FirstPlayerPolicy,
+    onFirstPlayerPolicyChange: (FirstPlayerPolicy) -> Unit
 ) {
     val resources = LocalContext.current.resources
     InfoCard(
@@ -130,7 +132,13 @@ fun GeneralGameSettings(
             RadioGroup(
                 options = GamePlayersType.values().toList(),
                 currentOption = gamePlayersType,
-                onOptionChange = onCheckedChanged,
+                onOptionChange = onPlayerTypeChange,
+                optionStringProvider = { resources.getString(it.persianNameStringResource) }
+            )
+            RadioGroup(
+                options = FirstPlayerPolicy.values().toList(),
+                currentOption = firstPlayerPolicy,
+                onOptionChange = onFirstPlayerPolicyChange,
                 optionStringProvider = { resources.getString(it.persianNameStringResource) }
             )
         }

@@ -34,6 +34,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings
+import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
 import io.github.yamin8000.dooz.game.logic.GameLogic
 import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
@@ -64,7 +65,8 @@ class GameState(
     var isGameDrew: MutableState<Boolean>,
     var winnerCells: MutableState<List<DoozCell>>,
     val aiDifficulty: MutableState<AiDifficulty>,
-    val isRollingDices: MutableState<Boolean>
+    val isRollingDices: MutableState<Boolean>,
+    var firstPlayerPolicy: MutableState<FirstPlayerPolicy>
 ) {
     private var gameLogic: GameLogic? = null
     private val datastore = DataStoreHelper(context.settings)
@@ -74,13 +76,13 @@ class GameState(
     }
 
     fun newGame() {
-        MediaPlayer.create(context, R.raw.dice).start()
         coroutineScope.launch {
             prepareGame()
 
             isGameStarted.value = true
 
-            dummyDiceRolling()
+            if (firstPlayerPolicy.value == FirstPlayerPolicy.DiceRolling)
+                dummyDiceRolling()
 
             if (isAiTurnToPlay())
                 playCellByAi()
@@ -136,6 +138,9 @@ class GameState(
         aiDifficulty.value = AiDifficulty.valueOf(
             datastore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
         )
+        firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
+            datastore.getString(Constants.firstPlayerPolicy) ?: FirstPlayerPolicy.DiceRolling.name
+        )
     }
 
     private fun prepareGameLogic() {
@@ -170,31 +175,55 @@ class GameState(
         val firstPlayerDice = Random.nextInt(1..6)
         val secondPlayerDice = Random.nextInt(1..6)
 
-        players.value = buildList {
-            add(Player(firstPlayerName, firstPlayerShape.toName(), diceIndex = firstPlayerDice))
-            if (gamePlayersType.value == GamePlayersType.PvC) {
-                add(
-                    Player(
-                        name = context.getString(R.string.computer),
-                        shape = secondPlayerShape.toName(),
-                        type = PlayerType.Computer,
-                        diceIndex = secondPlayerDice
-                    )
-                )
-            } else add(
-                Player(
-                    secondPlayerName,
-                    secondPlayerShape.toName(),
-                    diceIndex = secondPlayerDice
-                )
-            )
-        }
+        players.value = createPlayers(
+            firstPlayerName,
+            firstPlayerShape,
+            firstPlayerDice,
+            secondPlayerShape,
+            secondPlayerDice,
+            secondPlayerName
+        )
+
+        if (firstPlayerPolicy.value == FirstPlayerPolicy.DiceRolling)
+            setFirstPlayerToDiceWinner()
+        else currentPlayer.value = players.value.first()
+    }
+
+    private fun setFirstPlayerToDiceWinner() {
         currentPlayer.value = players.value.reduce { first, second ->
             if (first.diceIndex >= second.diceIndex) first else second
         }
     }
 
+    private fun createPlayers(
+        firstPlayerName: String,
+        firstPlayerShape: Shape,
+        firstPlayerDice: Int,
+        secondPlayerShape: Shape,
+        secondPlayerDice: Int,
+        secondPlayerName: String
+    ) = buildList {
+        add(Player(firstPlayerName, firstPlayerShape.toName(), diceIndex = firstPlayerDice))
+        if (gamePlayersType.value == GamePlayersType.PvC) {
+            add(
+                Player(
+                    name = context.getString(R.string.computer),
+                    shape = secondPlayerShape.toName(),
+                    type = PlayerType.Computer,
+                    diceIndex = secondPlayerDice
+                )
+            )
+        } else add(
+            Player(
+                secondPlayerName,
+                secondPlayerShape.toName(),
+                diceIndex = secondPlayerDice
+            )
+        )
+    }
+
     private suspend fun dummyDiceRolling() {
+        MediaPlayer.create(context, R.raw.dice).start()
         isRollingDices.value = true
 
         val firstPlayerDice = players.value.first().diceIndex
@@ -283,7 +312,12 @@ fun rememberHomeState(
     isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
     winnerCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(emptyList()) },
     aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
-    isRollingDices: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
+    isRollingDices: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
+    firstPlayerPolicy: MutableState<FirstPlayerPolicy> = rememberSaveable {
+        mutableStateOf(
+            FirstPlayerPolicy.DiceRolling
+        )
+    }
 ) = remember(
     context,
     coroutineScope,
@@ -299,7 +333,8 @@ fun rememberHomeState(
     isGameDrew,
     winnerCells,
     aiDifficulty,
-    isRollingDices
+    isRollingDices,
+    firstPlayerPolicy
 ) {
     GameState(
         context,
@@ -316,6 +351,7 @@ fun rememberHomeState(
         isGameDrew,
         winnerCells,
         aiDifficulty,
-        isRollingDices
+        isRollingDices,
+        firstPlayerPolicy
     )
 }
