@@ -30,6 +30,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -74,38 +76,59 @@ fun SettingsContent(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            PersianText(
-                text = stringResource(R.string.settings),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp,
+            val tabTitles = listOf(
+                stringResource(R.string.theme),
+                stringResource(R.string.game_general_settings),
+                stringResource(R.string.player_customization_settings)
             )
-            ThemeChanger(settingsState.themeSetting.value) { newTheme ->
-                settingsState.setThemeSetting(newTheme)
-                onThemeChanged(newTheme)
+
+            val tabIndex = rememberSaveable { mutableStateOf(1) }
+            ScrollableTabRow(
+                selectedTabIndex = tabIndex.value,
+                tabs = {
+                    tabTitles.forEachIndexed { index, title ->
+                        Tab(
+                            selected = tabIndex.value == index,
+                            onClick = { tabIndex.value = index },
+                            text = { PersianText(title) })
+                    }
+                }
+            )
+            when (tabTitles[tabIndex.value]) {
+                stringResource(R.string.theme) -> {
+                    ThemeChanger(settingsState.themeSetting.value) { newTheme ->
+                        settingsState.setThemeSetting(newTheme)
+                        onThemeChanged(newTheme)
+                    }
+                }
+                stringResource(R.string.game_general_settings) -> {
+                    GeneralGameSettings(
+                        gamePlayersType = settingsState.gamePlayersType.value,
+                        onPlayerTypeChange = { settingsState.setPlayersType(it) },
+                        firstPlayerPolicy = settingsState.firstPlayerPolicy.value,
+                        onFirstPlayerPolicyChange = { settingsState.setFirstPlayerPolicy(it) }
+                    )
+                    GameSizeChanger(
+                        gameSize = settingsState.gameSize.value,
+                        onGameSizeIncrease = { settingsState.increaseGameSize() },
+                        onGameSizeDecrease = { settingsState.decreaseGameSize() }
+                    )
+                    AiDifficultyCard(
+                        aiDifficulty = settingsState.aiDifficulty,
+                        onDifficultyChanged = { settingsState.setAiDifficulty() }
+                    )
+                }
+                stringResource(R.string.player_customization_settings) -> {
+                    PlayerCustomization(
+                        firstPlayerName = settingsState.firstPlayerName,
+                        secondPlayerName = settingsState.secondPlayerName,
+                        firstPlayerShape = settingsState.firstPlayerShape,
+                        secondPlayerShape = settingsState.secondPlayerShape,
+                        errorText = settingsState.errorText,
+                        onSave = { settingsState.savePlayerInfo() }
+                    )
+                }
             }
-            GeneralGameSettings(
-                gamePlayersType = settingsState.gamePlayersType.value,
-                onPlayerTypeChange = { settingsState.setPlayersType(it) },
-                firstPlayerPolicy = settingsState.firstPlayerPolicy.value,
-                onFirstPlayerPolicyChange = { settingsState.setFirstPlayerPolicy(it) }
-            )
-            GameSizeChanger(
-                gameSize = settingsState.gameSize.value,
-                onGameSizeIncrease = { settingsState.increaseGameSize() },
-                onGameSizeDecrease = { settingsState.decreaseGameSize() }
-            )
-            AiDifficultyCard(
-                aiDifficulty = settingsState.aiDifficulty,
-                onDifficultyChanged = { settingsState.setAiDifficulty() }
-            )
-            PlayerCustomization(
-                firstPlayerName = settingsState.firstPlayerName,
-                secondPlayerName = settingsState.secondPlayerName,
-                firstPlayerShape = settingsState.firstPlayerShape,
-                secondPlayerShape = settingsState.secondPlayerShape,
-                errorText = settingsState.errorText,
-                onSave = { settingsState.savePlayerInfo() }
-            )
         }
     }
 }
