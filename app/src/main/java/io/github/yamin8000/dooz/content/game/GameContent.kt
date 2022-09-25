@@ -21,16 +21,18 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.media.MediaPlayer
 import androidx.compose.animation.*
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -44,23 +46,18 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.MainTopAppBar
-import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.model.*
-import io.github.yamin8000.dooz.ui.ShapePreview
 import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
-import io.github.yamin8000.dooz.ui.toShape
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +75,7 @@ fun GameContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
+                .padding(horizontal = 16.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -135,86 +133,14 @@ fun GameContent(
 }
 
 @Composable
-fun PlayerCards(
-    firstPlayerPolicy: FirstPlayerPolicy,
-    players: List<Player>,
-    currentPlayer: Player?
-) {
-    val firstPlayer = players[0]
-    val secondPlayer = players[1]
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        PlayerCard(firstPlayer, firstPlayerPolicy, firstPlayer == currentPlayer)
-        PlayerCard(secondPlayer, firstPlayerPolicy, secondPlayer == currentPlayer)
-    }
-}
-
-@Composable
-fun PlayerCard(
-    player: Player,
-    firstPlayerPolicy: FirstPlayerPolicy,
-    isCurrentPlayer: Boolean = true
-) {
-    val iconTint =
-        if (isCurrentPlayer) MaterialTheme.colorScheme.secondary
-        else MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
-
-    val borderColor =
-        if (isCurrentPlayer) MaterialTheme.colorScheme.outline
-        else MaterialTheme.colorScheme.outlineVariant
-
-    OutlinedCard(
-        border = BorderStroke(1.dp, borderColor)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (firstPlayerPolicy == FirstPlayerPolicy.DiceRolling)
-                PlayerDice(iconTint = iconTint, diceIndex = player.diceIndex)
-            player.shape?.toShape()?.let { shape -> ShapePreview(shape, 30.dp, iconTint) }
-            PersianText(player.name)
-        }
-    }
-}
-
-@Composable
-private fun PlayerDice(
-    iconTint: Color,
-    diceIndex: Int = 1
-) {
-    val icon = when (diceIndex) {
-        1 -> R.drawable.ic_dice_1
-        2 -> R.drawable.ic_dice_2
-        3 -> R.drawable.ic_dice_3
-        4 -> R.drawable.ic_dice_4
-        5 -> R.drawable.ic_dice_5
-        6 -> R.drawable.ic_dice_6
-        else -> R.drawable.ic_dice_1
-    }
-    Icon(
-        painter = painterResource(icon),
-        contentDescription = stringResource(R.string.player_turn),
-        tint = iconTint
-    )
-}
-
-@Composable
-fun GameInfoCard(
+private fun GameInfoCard(
     winner: Player?,
     isGameDrew: Boolean = true,
     playersType: GamePlayersType = GamePlayersType.PvP,
     aiDifficulty: AiDifficulty = AiDifficulty.Easy,
 ) {
     InfoCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxWidth(),
         columnModifier = Modifier.fillMaxWidth(),
         header = {
             PersianText(
@@ -265,9 +191,7 @@ private fun GameBoard(
     val boxItemSize = ((boxSize.value - ((itemMargin.value * (gameSize - 1)))) / gameSize).dp
 
     LazyVerticalGrid(
-        modifier = Modifier
-            .padding(boxPadding)
-            .size(boxSize),
+        modifier = Modifier.size(boxSize),
         columns = GridCells.Fixed(gameSize),
         horizontalArrangement = Arrangement.spacedBy(itemMargin),
         verticalArrangement = Arrangement.spacedBy(itemMargin),
@@ -296,6 +220,7 @@ private fun GameBoard(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DoozItem(
     shape: Shape,
@@ -333,20 +258,25 @@ fun DoozItem(
                 .background(itemBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
-            doozCell.owner?.let {
-                Box(
-                    modifier = Modifier
-                        .size((itemSize.value / 2).dp)
-                        .clip(shape)
-                        .background(itemContentColor),
-                )
+            androidx.compose.animation.AnimatedVisibility(
+                visible = doozCell.owner != null,
+                enter = scaleIn()
+            ) {
+                doozCell.owner?.let {
+                    Box(
+                        modifier = Modifier
+                            .size((itemSize.value / 2).dp)
+                            .clip(shape)
+                            .background(itemContentColor),
+                    )
+                }
             }
         }
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun DoozItemPreview() {
     PreviewTheme {
@@ -362,8 +292,8 @@ private fun DoozItemPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun GameBoardPreview() {
     PreviewTheme {
