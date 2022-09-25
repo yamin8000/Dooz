@@ -65,7 +65,8 @@ class MainActivity : ComponentActivity() {
         }
 
         DoozTheme(
-            isDarkTheme = isDarkTheme(theme, isSystemInDarkTheme())
+            isDarkTheme = isDarkTheme(theme, isSystemInDarkTheme()),
+            isDynamicColor = theme == ThemeSetting.System
         ) {
             val navController = rememberNavController()
             NavHost(
