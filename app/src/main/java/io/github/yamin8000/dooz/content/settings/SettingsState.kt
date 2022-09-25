@@ -85,9 +85,15 @@ class SettingsState(
         }
     }
 
-    fun setPlayersType() {
+    fun setPlayersType(
+        gamePlayersType: GamePlayersType
+    ) {
+        this.gamePlayersType.value = gamePlayersType
         coroutineScope.launch {
-            dataStore.setString(Constants.gamePlayersType, gamePlayersType.value.name)
+            dataStore.setString(
+                Constants.gamePlayersType,
+                this@SettingsState.gamePlayersType.value.name
+            )
         }
     }
 

@@ -23,12 +23,13 @@ package io.github.yamin8000.dooz.ui.composables
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
@@ -37,11 +38,48 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.model.GamePlayersType
+
+@Composable
+fun <T> RadioGroup(
+    options: List<T>,
+    currentOption: T,
+    onOptionChange: (T) -> Unit,
+    optionStringProvider: (T) -> String
+) {
+    Row(
+        modifier = Modifier
+            .selectableGroup()
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        options.forEach { option ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                modifier = Modifier
+                    .selectable(
+                        selected = (option == currentOption),
+                        onClick = { onOptionChange(option) },
+                        role = Role.RadioButton
+                    )
+            ) {
+                PersianText(
+                    text = optionStringProvider(option),
+                    modifier = Modifier.padding(vertical = 16.dp)
+                )
+                RadioButton(
+                    selected = (option == currentOption),
+                    onClick = null,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun ClickableIcon(
@@ -69,7 +107,7 @@ fun ClickableIcon(
 fun InfoCard(
     modifier: Modifier = Modifier,
     columnModifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
+    contentPadding: Dp = 8.dp,
     elementVerticalSpacing: Dp = 8.dp,
     header: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
@@ -102,14 +140,6 @@ fun LockScreenOrientation(orientation: Int) {
             activity.requestedOrientation = originalOrientation
         }
     }
-}
-
-@Composable
-fun getGamePlayersTypeCaption(
-    gamePlayersType: GamePlayersType
-): String {
-    return if (gamePlayersType == GamePlayersType.PvP) stringResource(R.string.play_with_human)
-    else stringResource(R.string.play_with_computer)
 }
 
 fun Context.findActivity(): Activity? = when (this) {

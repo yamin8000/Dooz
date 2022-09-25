@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -46,8 +47,9 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.ui.ClickableShapes
+import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
+import io.github.yamin8000.dooz.ui.composables.RadioGroup
 import io.github.yamin8000.dooz.ui.shapes
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 import io.github.yamin8000.dooz.ui.theme.Samim
@@ -83,9 +85,9 @@ fun SettingsContent(
                 }
                 onThemeChanged(newTheme)
             }
-            GamePlayersTypeSwitch(
-                gamePlayersType = settingsState.gamePlayersType,
-                onCheckedChanged = { settingsState.setPlayersType() }
+            GeneralGameSettings(
+                gamePlayersType = settingsState.gamePlayersType.value,
+                onCheckedChanged = { settingsState.setPlayersType(it) }
             )
             GameSizeChanger(
                 gameSize = settingsState.gameSize.value,
@@ -109,54 +111,57 @@ fun SettingsContent(
 }
 
 @Composable
+fun GeneralGameSettings(
+    gamePlayersType: GamePlayersType,
+    onCheckedChanged: (GamePlayersType) -> Unit
+) {
+    val resources = LocalContext.current.resources
+    InfoCard(
+        modifier = Modifier.fillMaxWidth(),
+        columnModifier = Modifier.fillMaxWidth(),
+        header = {
+            PersianText(
+                text = stringResource(R.string.game_general_settings),
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        },
+        content = {
+            RadioGroup(
+                options = GamePlayersType.values().toList(),
+                currentOption = gamePlayersType,
+                onOptionChange = onCheckedChanged,
+                optionStringProvider = { resources.getString(it.persianNameStringResource) }
+            )
+        }
+    )
+}
+
+@Composable
 fun ThemeChanger(
     currentTheme: ThemeSetting,
     onCurrentThemeChange: (ThemeSetting) -> Unit
 ) {
-    Card {
-        Column(
-            modifier = Modifier.padding(4.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    val resources = LocalContext.current.resources
+    InfoCard(
+        modifier = Modifier.fillMaxWidth(),
+        columnModifier = Modifier.fillMaxWidth(),
+        header = {
             PersianText(
                 text = stringResource(R.string.theme),
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.primary
             )
-            val themes = ThemeSetting.values()
-            Row(
-                modifier = Modifier
-                    .selectableGroup()
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                themes.forEach { theme ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier
-                            .selectable(
-                                selected = (theme == currentTheme),
-                                onClick = { onCurrentThemeChange(theme) },
-                                role = Role.RadioButton
-                            )
-                    ) {
-                        PersianText(
-                            text = theme.persianName,
-                            modifier = Modifier.padding(vertical = 16.dp)
-                        )
-                        RadioButton(
-                            selected = (theme == currentTheme),
-                            onClick = null,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
-                    }
-                }
-            }
+        },
+        content = {
+            RadioGroup(
+                options = ThemeSetting.values().toList(),
+                currentOption = currentTheme,
+                onOptionChange = onCurrentThemeChange,
+                optionStringProvider = { resources.getString(it.persianNameStringResource) }
+            )
         }
-    }
+    )
 }
 
 @Composable
@@ -164,19 +169,17 @@ fun AiDifficultyCard(
     aiDifficulty: MutableState<AiDifficulty>,
     onDifficultyChanged: () -> Unit
 ) {
-    Card {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        ) {
+    InfoCard(
+        modifier = Modifier.fillMaxWidth(),
+        columnModifier = Modifier.fillMaxWidth(),
+        header = {
             PersianText(
                 text = stringResource(R.string.ai_difficulty),
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+        },
+        content = {
             Row(
                 modifier = Modifier
                     .selectableGroup()
@@ -212,7 +215,7 @@ fun AiDifficultyCard(
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -224,17 +227,17 @@ fun PlayerCustomization(
     errorText: MutableState<String?>,
     onSave: () -> Unit
 ) {
-    Card {
-        Column(
-            modifier = Modifier.padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    InfoCard(
+        modifier = Modifier.fillMaxWidth(),
+        columnModifier = Modifier.fillMaxWidth(),
+        header = {
             PersianText(
                 text = stringResource(R.string.player_names),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+        },
+        content = {
             PlayerNamesCustomizer(firstPlayerName, secondPlayerName)
             PersianText(
                 text = stringResource(R.string.player_shapes),
@@ -257,7 +260,7 @@ fun PlayerCustomization(
                 )
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -346,19 +349,17 @@ private fun GameSizeChanger(
     onGameSizeIncrease: () -> Unit,
     onGameSizeDecrease: () -> Unit
 ) {
-    Card {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+    InfoCard(
+        modifier = Modifier.fillMaxWidth(),
+        columnModifier = Modifier.fillMaxWidth(),
+        header = {
             PersianText(
                 text = stringResource(R.string.game_board_size),
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.primary
             )
+        },
+        content = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -380,42 +381,7 @@ private fun GameSizeChanger(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun GamePlayersTypeSwitch(
-    gamePlayersType: MutableState<GamePlayersType>,
-    onCheckedChanged: () -> Unit
-) {
-    Card {
-        Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            PersianText(getGamePlayersTypeCaption(gamePlayersType.value))
-            Switch(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                checked = gamePlayersType.value == GamePlayersType.PvP,
-                onCheckedChange = { isChecked ->
-                    onSwitchCheckedChanged(isChecked, gamePlayersType)
-                    onCheckedChanged()
-                }
-            )
-        }
-
-    }
-}
-
-private fun onSwitchCheckedChanged(
-    isChecked: Boolean,
-    gamePlayersType: MutableState<GamePlayersType>,
-) {
-    if (isChecked) gamePlayersType.value = GamePlayersType.PvP
-    else gamePlayersType.value = GamePlayersType.PvC
+    )
 }
 
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)

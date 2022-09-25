@@ -27,13 +27,3 @@ import io.github.yamin8000.dooz.util.Constants
 class TextProvider : PreviewParameterProvider<String> {
     override val values = listOf("سلام", "یمین").asSequence()
 }
-
-class BooleanProvider : PreviewParameterProvider<Boolean> {
-    override val values: Sequence<Boolean> = listOf(true, false).asSequence()
-}
-
-class PlayerProvider : PreviewParameterProvider<Player> {
-    override val values = listOf(
-        Player("یمین", Constants.Shapes.xShape)
-    ).asSequence()
-}

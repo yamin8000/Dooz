@@ -58,7 +58,6 @@ import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.getGamePlayersTypeCaption
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 import io.github.yamin8000.dooz.ui.toShape
 
@@ -220,7 +219,7 @@ fun GameInfoCard(
             )
         },
         content = {
-            PersianText(getGamePlayersTypeCaption(playersType))
+            PersianText(stringResource(playersType.persianNameStringResource))
 
             if (playersType == GamePlayersType.PvC)
                 PersianText(stringResource(R.string.ai_difficulty_var, aiDifficulty.persianName))

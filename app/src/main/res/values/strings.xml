@@ -47,4 +47,8 @@
     <string name="undefined">نامشخص</string>
     <string name="game_result">:نتیجه بازی</string>
     <string name="theme">زمینه</string>
+    <string name="game_general_settings">تنظیمات عمومی بازی</string>
+    <string name="theme_system">هماهنگ سیستم</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">تاریک</string>
 </resources>
