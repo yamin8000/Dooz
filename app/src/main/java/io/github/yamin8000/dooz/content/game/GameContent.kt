@@ -22,6 +22,7 @@ package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.media.MediaPlayer
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -41,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -301,6 +303,8 @@ fun DoozItem(
     onClick: () -> Unit
 ) {
     val localHapticFeedback = LocalHapticFeedback.current
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -310,6 +314,9 @@ fun DoozItem(
                 indication = rememberRipple(),
                 onClick = {
                     localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+                    MediaPlayer
+                        .create(context, R.raw.pencil)
+                        .start()
                     onClick()
                 },
                 enabled = clickable
