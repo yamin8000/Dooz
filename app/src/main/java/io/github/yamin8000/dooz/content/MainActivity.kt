@@ -36,8 +36,8 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.yamin8000.dooz.content.game.GameContent
-import io.github.yamin8000.dooz.content.settings.SettingsContent
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
+import io.github.yamin8000.dooz.content.settings.content.Settings
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.util.Constants
@@ -74,13 +74,13 @@ class MainActivity : ComponentActivity() {
                 startDestination = Nav.Routes.game
             ) {
                 composable(Nav.Routes.game) {
-                    GameContent() {
+                    GameContent {
                         navController.navigate(Nav.Routes.settings)
                     }
                 }
 
                 composable(Nav.Routes.settings) {
-                    SettingsContent { newTheme -> theme = newTheme }
+                    Settings { newTheme -> theme = newTheme }
                 }
             }
         }

@@ -69,7 +69,7 @@ class GameState(
     var firstPlayerPolicy: MutableState<FirstPlayerPolicy>
 ) {
     private var gameLogic: GameLogic? = null
-    private val datastore = DataStoreHelper(context.settings)
+    private val dataStore = DataStoreHelper(context.settings)
 
     init {
         coroutineScope.launch { prepareGame() }
@@ -131,15 +131,15 @@ class GameState(
     }
 
     private suspend fun prepareGameRules() {
-        gameSize.value = datastore.getInt(Constants.gameSize) ?: gameDefaultSize
+        gameSize.value = dataStore.getInt(Constants.gameSize) ?: gameDefaultSize
         gamePlayersType.value = GamePlayersType.valueOf(
-            datastore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
+            dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
         )
         aiDifficulty.value = AiDifficulty.valueOf(
-            datastore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
+            dataStore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
         )
         firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
-            datastore.getString(Constants.firstPlayerPolicy) ?: FirstPlayerPolicy.DiceRolling.name
+            dataStore.getString(Constants.firstPlayerPolicy) ?: FirstPlayerPolicy.DiceRolling.name
         )
     }
 
@@ -163,14 +163,14 @@ class GameState(
 
     private suspend fun preparePlayers() {
         val firstPlayerName =
-            datastore.getString(Constants.firstPlayerName) ?: Constants.firstPlayerDefaultName
+            dataStore.getString(Constants.firstPlayerName) ?: Constants.firstPlayerDefaultName
         val secondPlayerName =
-            datastore.getString(Constants.secondPlayerName) ?: Constants.secondPlayerDefaultName
+            dataStore.getString(Constants.secondPlayerName) ?: Constants.secondPlayerDefaultName
 
         val firstPlayerShape =
-            datastore.getString(Constants.firstPlayerShape)?.toShape() ?: XShape
+            dataStore.getString(Constants.firstPlayerShape)?.toShape() ?: XShape
         val secondPlayerShape =
-            datastore.getString(Constants.secondPlayerShape)?.toShape() ?: RingShape
+            dataStore.getString(Constants.secondPlayerShape)?.toShape() ?: RingShape
 
         val firstPlayerDice = Random.nextInt(1..6)
         val secondPlayerDice = Random.nextInt(1..6)

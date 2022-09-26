@@ -53,5 +53,12 @@
     <string name="theme_dark">تاریک</string>
     <string name="dice_rolling_start">شروع با ریختن تاس</string>
     <string name="human_first_start">شروع همیشه با کاربر</string>
-    <string name="player_customization_settings">تنظیمات بازیکن ها</string>
+    <string name="game">بازی</string>
+    <string name="players">بازیکن ها</string>
+    <string name="general">عمومی</string>
+    <string name="effects">جلوه ها</string>
+    <string name="dynamic_theme_notice">در نسخه های اندروید 12 به بعد زمینه برنامه بر اساس رنگ قالب تصویر پس زمینه گوشی شما تعیین می شود</string>
+    <string name="sound_effects">جلوه های صوتی</string>
+    <string name="haptic_feedback">لرزش (ویبره)</string>
+    <string name="animation_effects">انیمیشن ها</string>
 </resources>

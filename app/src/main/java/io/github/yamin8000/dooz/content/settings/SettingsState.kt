@@ -41,11 +41,10 @@ import io.github.yamin8000.dooz.model.GamePlayersType
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SettingsState(
     private val context: Context,
-    val coroutineScope: LifecycleCoroutineScope,
+    private val scope: LifecycleCoroutineScope,
     var gamePlayersType: MutableState<GamePlayersType>,
     var gameSize: MutableState<Int>,
     var firstPlayerName: MutableState<String>,
@@ -54,27 +53,29 @@ class SettingsState(
     var secondPlayerShape: MutableState<String>,
     val errorText: MutableState<String?>,
     var aiDifficulty: MutableState<AiDifficulty>,
-    val themeSetting: MutableState<ThemeSetting>,
-    var firstPlayerPolicy: MutableState<FirstPlayerPolicy>
+    var themeSetting: MutableState<ThemeSetting>,
+    var firstPlayerPolicy: MutableState<FirstPlayerPolicy>,
 ) {
-
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
-        coroutineScope.launch {
+        scope.launch {
             themeSetting.value = ThemeSetting.valueOf(
                 dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
             )
-            gamePlayersType.value =
-                GamePlayersType.valueOf(getPlayersType() ?: GamePlayersType.PvC.name)
-            gameSize.value = getGameSize() ?: GameConstants.gameDefaultSize
+            gamePlayersType.value = GamePlayersType.valueOf(
+                dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
+            )
+            gameSize.value = dataStore.getInt(Constants.gameSize) ?: GameConstants.gameDefaultSize
             firstPlayerName.value = dataStore.getString(Constants.firstPlayerName) ?: "Player 1"
             secondPlayerName.value = dataStore.getString(Constants.secondPlayerName) ?: "Player 2"
             firstPlayerShape.value =
                 dataStore.getString(Constants.firstPlayerShape) ?: Constants.Shapes.xShape
             secondPlayerShape.value =
                 dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.ringShape
-            aiDifficulty.value = AiDifficulty.valueOf(getAiDifficulty() ?: AiDifficulty.Easy.name)
+            aiDifficulty.value = AiDifficulty.valueOf(
+                dataStore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
+            )
             firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
                 dataStore.getString(Constants.firstPlayerPolicy)
                     ?: FirstPlayerPolicy.DiceRolling.name
@@ -86,30 +87,21 @@ class SettingsState(
         firstPlayerPolicy: FirstPlayerPolicy
     ) {
         this.firstPlayerPolicy.value = firstPlayerPolicy
-        coroutineScope.launch {
-            dataStore.setString(Constants.firstPlayerPolicy, firstPlayerPolicy.name)
-        }
+        scope.launch { dataStore.setString(Constants.firstPlayerPolicy, firstPlayerPolicy.name) }
     }
 
     fun setThemeSetting(
         newTheme: ThemeSetting
     ) {
         themeSetting.value = newTheme
-        coroutineScope.launch {
-            dataStore.setString(Constants.theme, newTheme.name)
-        }
+        scope.launch { dataStore.setString(Constants.theme, newTheme.name) }
     }
 
     fun setPlayersType(
         gamePlayersType: GamePlayersType
     ) {
         this.gamePlayersType.value = gamePlayersType
-        coroutineScope.launch {
-            dataStore.setString(
-                Constants.gamePlayersType,
-                this@SettingsState.gamePlayersType.value.name
-            )
-        }
+        scope.launch { dataStore.setString(Constants.gamePlayersType, gamePlayersType.name) }
     }
 
     fun increaseGameSize() {
@@ -133,7 +125,7 @@ class SettingsState(
             errorText.value = context.getString(R.string.player_names_equal)
         } else {
             errorText.value = null
-            coroutineScope.launch {
+            scope.launch {
                 context.settings.edit {
                     it[stringPreferencesKey(Constants.firstPlayerName)] = firstPlayerName.value
                     it[stringPreferencesKey(Constants.secondPlayerName)] = secondPlayerName.value
@@ -145,27 +137,14 @@ class SettingsState(
     }
 
     private fun setGameSize() {
-        coroutineScope.launch {
-            dataStore.setInt(Constants.gameSize, gameSize.value)
-        }
+        scope.launch { dataStore.setInt(Constants.gameSize, gameSize.value) }
     }
 
-    private suspend fun getGameSize() = withContext(coroutineScope.coroutineContext) {
-        dataStore.getInt(Constants.gameSize)
-    }
-
-    private suspend fun getPlayersType() = withContext(coroutineScope.coroutineContext) {
-        dataStore.getString(Constants.gamePlayersType)
-    }
-
-    fun setAiDifficulty() {
-        coroutineScope.launch {
-            dataStore.setString(Constants.aiDifficulty, aiDifficulty.value.name)
-        }
-    }
-
-    private suspend fun getAiDifficulty() = withContext(coroutineScope.coroutineContext) {
-        dataStore.getString(Constants.aiDifficulty)
+    fun setAiDifficulty(
+        aiDifficulty: AiDifficulty
+    ) {
+        this.aiDifficulty.value = aiDifficulty
+        scope.launch { dataStore.setString(Constants.aiDifficulty, aiDifficulty.name) }
     }
 }
 

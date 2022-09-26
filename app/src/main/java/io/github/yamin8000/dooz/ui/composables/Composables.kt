@@ -24,15 +24,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun RadioGroupPreview() {
     PreviewTheme {
@@ -56,6 +56,49 @@ private fun RadioGroupPreview() {
                 currentOption = "On",
                 onOptionChange = {},
                 optionStringProvider = { it }
+            )
+        }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun SwitchWithTextPreview() {
+    PreviewTheme {
+        SwitchWithText(
+            caption = "Hello",
+            checked = true,
+            onCheckedChange = {}
+        )
+    }
+}
+
+@Composable
+fun SwitchWithText(
+    caption: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    val internalChecked = remember { mutableStateOf(checked) }
+    Box(modifier = Modifier
+        .clickable(
+            role = Role.Switch,
+            onClick = {
+                internalChecked.value = !internalChecked.value
+                onCheckedChange(internalChecked.value)
+            }
+        )
+        .padding(16.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            PersianText(caption)
+            Switch(
+                checked = checked,
+                onCheckedChange = null
             )
         }
     }
@@ -128,6 +171,7 @@ fun InfoCard(
     columnModifier: Modifier = Modifier,
     contentPadding: Dp = 8.dp,
     elementVerticalSpacing: Dp = 8.dp,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     header: @Composable () -> Unit = {},
     content: @Composable () -> Unit = {},
     footer: @Composable () -> Unit = {}
@@ -137,7 +181,7 @@ fun InfoCard(
     ) {
         Column(
             modifier = columnModifier.padding(contentPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = horizontalAlignment,
             verticalArrangement = Arrangement.spacedBy(elementVerticalSpacing)
         ) {
             header()
