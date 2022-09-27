@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.res.Configuration
+import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -74,6 +75,7 @@ internal fun PlayerCards(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun PlayerCard(
     modifier: Modifier = Modifier,
@@ -98,8 +100,16 @@ internal fun PlayerCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (firstPlayerPolicy == FirstPlayerPolicy.DiceRolling)
-                PlayerDice(iconTint = iconTint, diceIndex = player.diceIndex)
+            if (firstPlayerPolicy == FirstPlayerPolicy.DiceRolling) {
+                AnimatedContent(
+                    targetState = player.diceIndex,
+                    transitionSpec = {
+                        slideInVertically { it } + fadeIn() with
+                                slideOutVertically { -it } + fadeOut()
+                    },
+                    content = { PlayerDice(iconTint = iconTint, diceIndex = it) }
+                )
+            }
             player.shape?.toShape()?.let { shape -> ShapePreview(shape, 30.dp, iconTint) }
             PersianText(text = player.name, modifier = Modifier.weight(2f))
         }

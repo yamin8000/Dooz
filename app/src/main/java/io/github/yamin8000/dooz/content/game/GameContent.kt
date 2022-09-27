@@ -23,6 +23,7 @@ package io.github.yamin8000.dooz.content.game
 import android.content.pm.ActivityInfo
 import android.media.MediaPlayer
 import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -86,12 +87,16 @@ fun GameContent(
             ) {
                 Button(
                     onClick = { gameState.newGame() },
-                    content = { PersianText(stringResource(R.string.start_game)) }
+                    content = { PersianText(stringResource(R.string.start_game)) },
+                    enabled = !gameState.isRollingDices.value
                 )
 
                 AnimatedVisibility(
                     visible = gameState.isGameStarted.value,
-                    enter = slideInHorizontally { -it }
+                    enter = slideInHorizontally(
+                        initialOffsetX = { -it },
+                        animationSpec = tween(300)
+                    )
                 ) {
                     GameInfoCard(
                         gameState.winner.value,
@@ -103,7 +108,10 @@ fun GameContent(
 
                 AnimatedVisibility(
                     visible = gameState.isGameStarted.value,
-                    enter = slideInHorizontally { it }
+                    enter = slideInHorizontally(
+                        initialOffsetX = { it },
+                        animationSpec = tween(300)
+                    )
                 ) {
                     PlayerCards(
                         gameState.firstPlayerPolicy.value,
@@ -254,13 +262,13 @@ fun DoozItem(
         Box(
             modifier = Modifier
                 .size(itemSize)
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(5.dp))
                 .background(itemBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
             androidx.compose.animation.AnimatedVisibility(
                 visible = doozCell.owner != null,
-                enter = scaleIn()
+                enter = scaleIn(animationSpec = tween(150))
             ) {
                 doozCell.owner?.let {
                     Box(
