@@ -69,6 +69,7 @@ class GameState(
     var firstPlayerPolicy: MutableState<FirstPlayerPolicy>
 ) {
     private var gameLogic: GameLogic? = null
+    private val lastPlayedCells = mutableListOf<DoozCell>()
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
@@ -101,6 +102,7 @@ class GameState(
         isGameFinished.value = false
         isGameStarted.value = false
         isGameDrew.value = false
+        lastPlayedCells.clear()
         gameCells.value = getEmptyBoard()
         winnerCells.value = listOf()
     }
@@ -262,6 +264,7 @@ class GameState(
         cell: DoozCell
     ) {
         if (cell.owner == null && isGameStarted.value) {
+            lastPlayedCells.add(cell)
             cell.owner = currentPlayer.value
             changePlayer()
         }
@@ -288,6 +291,30 @@ class GameState(
     private fun findWinner(): Player? {
         return when (gameType.value) {
             GameType.Simple -> gameLogic?.findWinner()
+        }
+    }
+
+    fun undo() {
+        if (lastPlayedCells.isNotEmpty()) {
+            val last = lastPlayedCells.last()
+            val mutatedRow = gameCells.value[last.x].toMutableList()
+            mutatedRow[last.y] = last.copy(owner = null)
+            val mutatedGameCells = gameCells.value.toMutableList()
+            mutatedGameCells[last.x] = mutatedRow
+            gameCells.value = mutatedGameCells
+
+            lastPlayedCells.removeLast()
+            prepareGameLogic()
+            winner.value = null
+            isGameFinished.value = false
+            isGameDrew.value = false
+            winnerCells.value = emptyList()
+
+            if (isAiTurnToPlay())
+                playCellByAi()
+
+            if (gamePlayersType.value == GamePlayersType.PvP)
+                changePlayer()
         }
     }
 }

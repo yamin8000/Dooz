@@ -61,4 +61,5 @@
     <string name="sound_effects">جلوه های صوتی</string>
     <string name="haptic_feedback">لرزش (ویبره)</string>
     <string name="animation_effects">انیمیشن ها</string>
+    <string name="undo">واگرد</string>
 </resources>

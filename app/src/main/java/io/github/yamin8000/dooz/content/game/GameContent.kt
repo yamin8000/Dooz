@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.media.MediaPlayer
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
@@ -48,6 +49,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -85,11 +87,25 @@ fun GameContent(
                     .padding(vertical = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                Button(
-                    onClick = { gameState.newGame() },
-                    content = { PersianText(stringResource(R.string.start_game)) },
-                    enabled = !gameState.isRollingDices.value
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = { gameState.newGame() },
+                        content = { PersianText(stringResource(R.string.start_game)) },
+                        enabled = !gameState.isRollingDices.value
+                    )
+                    Button(
+                        onClick = {
+                            val times =
+                                if (gameState.gamePlayersType.value == GamePlayersType.PvC) 2
+                                else 1
+                            repeat(times) { gameState.undo() }
+                        },
+                        content = { PersianText(stringResource(R.string.undo)) }
+                    )
+                }
 
                 AnimatedVisibility(
                     visible = gameState.isGameStarted.value,
@@ -281,6 +297,13 @@ fun DoozItem(
             }
         }
     }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Composable
+private fun Preview() {
+    PreviewTheme { GameContent {} }
 }
 
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
