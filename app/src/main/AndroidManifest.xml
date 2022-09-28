@@ -35,6 +35,7 @@
         tools:targetApi="s">
         <activity
             android:name=".content.MainActivity"
+            android:configChanges="locale|fontScale|orientation|screenSize|keyboardHidden|keyboard|locale|screenLayout|screenSize|layoutDirection"
             android:exported="true"
             android:theme="@style/Theme.Dooz">
             <intent-filter>
