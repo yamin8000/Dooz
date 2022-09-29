@@ -48,7 +48,7 @@ val Context.settings: DataStore<Preferences> by preferencesDataStore(name = "set
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splash = installSplashScreen()
+        installSplashScreen()
 
         super.onCreate(savedInstanceState)
         setContent { MainContent() }
