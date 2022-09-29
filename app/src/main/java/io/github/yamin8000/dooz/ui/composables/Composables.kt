@@ -24,10 +24,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,6 +38,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -72,6 +77,71 @@ private fun SwitchWithTextPreview() {
             onCheckedChange = {}
         )
     }
+}
+
+@Composable
+fun ButtonWithIcon(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = ButtonDefaults.shape,
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
+    border: BorderStroke? = null,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    painter: Painter,
+    space: Dp = 8.dp,
+    contentDescription: String?,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = shape,
+        colors = colors,
+        elevation = elevation,
+        border = border,
+        contentPadding = contentPadding,
+        interactionSource = interactionSource,
+        content = {
+            content()
+            Spacer(modifier = Modifier.width(space))
+            Icon(
+                painter = painter,
+                contentDescription = contentDescription
+            )
+        }
+    )
+}
+
+@Composable
+fun MySnackbar(
+    modifier: Modifier = Modifier,
+    action: @Composable (() -> Unit)? = null,
+    dismissAction: @Composable (() -> Unit)? = null,
+    actionOnNewLine: Boolean = false,
+    containerColor: Color = SnackbarDefaults.color,
+    contentColor: Color = SnackbarDefaults.contentColor,
+    actionContentColor: Color = SnackbarDefaults.actionContentColor,
+    dismissActionContentColor: Color = SnackbarDefaults.dismissActionContentColor,
+    content: @Composable () -> Unit
+) {
+    Snackbar(
+        modifier = modifier
+            .padding(vertical = 32.dp, horizontal = 16.dp)
+            .padding(WindowInsets.ime.asPaddingValues()),
+        action = action,
+        dismissAction = dismissAction,
+        actionOnNewLine = actionOnNewLine,
+        shape = RoundedCornerShape(10.dp),
+        containerColor = containerColor,
+        contentColor = contentColor,
+        actionContentColor = actionContentColor,
+        dismissActionContentColor = dismissActionContentColor,
+        content = content
+    )
 }
 
 @Composable
@@ -173,7 +243,7 @@ fun InfoCard(
     elementVerticalSpacing: Dp = 8.dp,
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     header: @Composable () -> Unit = {},
-    content: @Composable () -> Unit = {},
+    content: @Composable () -> Unit,
     footer: @Composable () -> Unit = {}
 ) {
     Card(

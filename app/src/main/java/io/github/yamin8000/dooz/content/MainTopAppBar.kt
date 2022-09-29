@@ -42,10 +42,12 @@ import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopAppBar(
+    scrollBehavior: TopAppBarScrollBehavior,
     onSettingsIconClick: () -> Unit
 ) {
     val appName = stringResource(id = R.string.app_name)
     CenterAlignedTopAppBar(
+        scrollBehavior = scrollBehavior,
         title = { PersianText(text = appName, fontSize = 20.sp) },
         navigationIcon = { NavigationIcon(appName) },
         actions = {
@@ -81,9 +83,10 @@ private fun NavigationIcon(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun Preview() {
-    PreviewTheme { MainTopAppBar {} }
+    PreviewTheme { MainTopAppBar(TopAppBarDefaults.enterAlwaysScrollBehavior()) {} }
 }

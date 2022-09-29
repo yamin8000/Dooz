@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.content.settings
 
 import android.content.Context
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -51,11 +52,12 @@ class SettingsState(
     var secondPlayerName: MutableState<String>,
     var firstPlayerShape: MutableState<String>,
     var secondPlayerShape: MutableState<String>,
-    val errorText: MutableState<String?>,
     var aiDifficulty: MutableState<AiDifficulty>,
     var themeSetting: MutableState<ThemeSetting>,
     var firstPlayerPolicy: MutableState<FirstPlayerPolicy>,
 ) {
+    val snackbarHostState: SnackbarHostState = SnackbarHostState()
+
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
@@ -119,21 +121,31 @@ class SettingsState(
     }
 
     fun savePlayerInfo() {
+        val isAnyNameEmpty =
+            firstPlayerName.value.trim().isEmpty() || secondPlayerName.value.trim().isEmpty()
+
+        var errorText: String? = null
         if (firstPlayerShape.value == secondPlayerShape.value) {
-            errorText.value = context.getString(R.string.player_shapes_equal)
+            errorText = context.getString(R.string.player_shapes_equal)
         } else if (firstPlayerName.value == secondPlayerName.value) {
-            errorText.value = context.getString(R.string.player_names_equal)
+            errorText = context.getString(R.string.player_names_equal)
+        } else if (isAnyNameEmpty) {
+            errorText = context.getString(R.string.player_names_empty)
         } else {
-            errorText.value = null
             scope.launch {
                 context.settings.edit {
-                    it[stringPreferencesKey(Constants.firstPlayerName)] = firstPlayerName.value
-                    it[stringPreferencesKey(Constants.secondPlayerName)] = secondPlayerName.value
+                    it[stringPreferencesKey(Constants.firstPlayerName)] =
+                        firstPlayerName.value.trim()
+                    it[stringPreferencesKey(Constants.secondPlayerName)] =
+                        secondPlayerName.value.trim()
                     it[stringPreferencesKey(Constants.firstPlayerShape)] = firstPlayerShape.value
                     it[stringPreferencesKey(Constants.secondPlayerShape)] = secondPlayerShape.value
                 }
+                snackbarHostState.showSnackbar(context.getString(R.string.data_saved))
             }
         }
+        if (errorText != null)
+            scope.launch { snackbarHostState.showSnackbar(errorText) }
     }
 
     private fun setGameSize() {
@@ -162,7 +174,6 @@ fun rememberSettingsState(
     secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 2") },
     firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
     secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
-    errorText: MutableState<String?> = rememberSaveable { mutableStateOf(null) },
     aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
     themeSetting: MutableState<ThemeSetting> = rememberSaveable { mutableStateOf(ThemeSetting.System) },
     firstPlayerPolicy: MutableState<FirstPlayerPolicy> = rememberSaveable {
@@ -179,7 +190,6 @@ fun rememberSettingsState(
     secondPlayerName,
     firstPlayerShape,
     secondPlayerShape,
-    errorText,
     aiDifficulty,
     themeSetting,
     firstPlayerPolicy
@@ -193,7 +203,6 @@ fun rememberSettingsState(
         secondPlayerName,
         firstPlayerShape,
         secondPlayerShape,
-        errorText,
         aiDifficulty,
         themeSetting,
         firstPlayerPolicy

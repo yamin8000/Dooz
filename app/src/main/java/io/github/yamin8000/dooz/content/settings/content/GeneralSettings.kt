@@ -20,12 +20,14 @@
 
 package io.github.yamin8000.dooz.content.settings.content
 
+import android.os.Build
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
@@ -58,7 +60,7 @@ internal fun ThemeChanger(
             )
         },
         footer = {
-            if (currentTheme == ThemeSetting.System)
+            if (currentTheme == ThemeSetting.System && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
                 DynamicThemeNotice()
         }
     )
@@ -66,5 +68,8 @@ internal fun ThemeChanger(
 
 @Composable
 fun DynamicThemeNotice() {
-    PersianText(stringResource(R.string.dynamic_theme_notice))
+    PersianText(
+        text = stringResource(R.string.dynamic_theme_notice),
+        textAlign = TextAlign.Justify
+    )
 }

@@ -27,6 +27,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.*
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
         setContent { MainContent() }
 
         prepareLogger()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
     @Composable

@@ -62,4 +62,6 @@
     <string name="haptic_feedback">لرزش (ویبره)</string>
     <string name="animation_effects">انیمیشن ها</string>
     <string name="undo">واگرد</string>
+    <string name="data_saved">داده ها ذخیره شد</string>
+    <string name="player_names_empty">نام بازیکن نمیتواند خالی باشد</string>
 </resources>

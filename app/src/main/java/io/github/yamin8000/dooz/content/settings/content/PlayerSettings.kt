@@ -30,7 +30,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -52,11 +51,14 @@ import io.github.yamin8000.dooz.util.Constants
 
 @Composable
 internal fun PlayerCustomization(
-    firstPlayerName: MutableState<String>,
-    secondPlayerName: MutableState<String>,
-    firstPlayerShape: MutableState<String>,
-    secondPlayerShape: MutableState<String>,
-    errorText: MutableState<String?>,
+    firstPlayerName: String,
+    onFirstPlayerNameChange: (String) -> Unit,
+    secondPlayerName: String,
+    onSecondPlayerNameChange: (String) -> Unit,
+    firstPlayerShape: String,
+    onFirstPlayerShapeChange: (String) -> Unit,
+    secondPlayerShape: String,
+    onSecondPlayerShapeChange: (String) -> Unit,
     onSave: () -> Unit
 ) {
     InfoCard(
@@ -70,14 +72,24 @@ internal fun PlayerCustomization(
             )
         },
         content = {
-            PlayerNamesCustomizer(firstPlayerName, secondPlayerName)
+            PlayerNamesCustomizer(
+                firstPlayerName,
+                onFirstPlayerNameChange,
+                secondPlayerName,
+                onSecondPlayerNameChange
+            )
             PersianText(
                 text = stringResource(R.string.player_shapes),
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 16.dp),
                 color = MaterialTheme.colorScheme.primary
             )
-            PlayerShapesCustomizer(firstPlayerShape, secondPlayerShape)
+            PlayerShapesCustomizer(
+                firstPlayerShape,
+                onFirstPlayerNameChange,
+                secondPlayerShape,
+                onSecondPlayerShapeChange
+            )
             Button(
                 modifier = Modifier
                     .fillMaxWidth(.5f)
@@ -85,37 +97,37 @@ internal fun PlayerCustomization(
                 onClick = { onSave() }) {
                 PersianText(text = stringResource(R.string.save))
             }
-            errorText.value?.let { it ->
-                PersianText(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
         }
     )
 }
 
 @Composable
 internal fun PlayerShapesCustomizer(
-    firstPlayerShape: MutableState<String>,
-    secondPlayerShape: MutableState<String>
+    firstPlayerShape: String,
+    onFirstPlayerShapeChange: (String) -> Unit,
+    secondPlayerShape: String,
+    onSecondPlayerShapeChange: (String) -> Unit
 ) {
     ClickableShapes(
         shapes = shapes,
-        lastSelectedShape = firstPlayerShape.value.toShape(),
-        header = { PersianText(stringResource(R.string.first_player_shape)) }
-    ) { shape -> firstPlayerShape.value = shape.toName() ?: Constants.Shapes.ringShape }
+        lastSelectedShape = firstPlayerShape.toShape(),
+        header = { PersianText(stringResource(R.string.first_player_shape)) },
+        onShapeSelected = { onFirstPlayerShapeChange(it.toName() ?: Constants.Shapes.ringShape) }
+    )
     ClickableShapes(
         shapes = shapes,
-        lastSelectedShape = secondPlayerShape.value.toShape(),
-        header = { PersianText(stringResource(R.string.second_player_shape)) }
-    ) { shape -> secondPlayerShape.value = shape.toName() ?: Constants.Shapes.xShape }
+        lastSelectedShape = secondPlayerShape.toShape(),
+        header = { PersianText(stringResource(R.string.second_player_shape)) },
+        onShapeSelected = { onSecondPlayerShapeChange(it.toName() ?: Constants.Shapes.xShape) }
+    )
 }
 
 @Composable
 internal fun PlayerNamesCustomizer(
-    firstPlayerName: MutableState<String>,
-    secondPlayerName: MutableState<String>
+    firstPlayerName: String,
+    onFirstPlayerNameChange: (String) -> Unit,
+    secondPlayerName: String,
+    onSecondPlayerNameChange: (String) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -126,15 +138,15 @@ internal fun PlayerNamesCustomizer(
             modifier = Modifier.weight(1f),
             label = stringResource(R.string.second_player_name),
             placeholder = stringResource(R.string.enter_name),
-            value = secondPlayerName.value,
-            onValueChange = { secondPlayerName.value = it }
+            value = secondPlayerName,
+            onValueChange = onSecondPlayerNameChange
         )
         NameField(
             modifier = Modifier.weight(1f),
             label = stringResource(R.string.first_player_name),
             placeholder = stringResource(R.string.enter_name),
-            value = firstPlayerName.value,
-            onValueChange = { firstPlayerName.value = it }
+            value = firstPlayerName,
+            onValueChange = onFirstPlayerNameChange
         )
     }
 }

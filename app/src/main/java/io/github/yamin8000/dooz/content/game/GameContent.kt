@@ -45,9 +45,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -57,6 +59,7 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.MainTopAppBar
 import io.github.yamin8000.dooz.model.*
 import io.github.yamin8000.dooz.ui.XShape
+import io.github.yamin8000.dooz.ui.composables.ButtonWithIcon
 import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
@@ -70,90 +73,96 @@ fun GameContent(
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
     val gameState = rememberHomeState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
-        topBar = { MainTopAppBar(onSettingsIconClick = onNavigateToSettings) }
-    ) { contentPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-                .padding(horizontal = 16.dp)
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = { MainTopAppBar(scrollBehavior, onNavigateToSettings) },
+        content = { contentPadding ->
+            Surface(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
+                    .padding(contentPadding)
+                    .padding(horizontal = 16.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
-                    Button(
-                        onClick = { gameState.newGame() },
-                        content = { PersianText(stringResource(R.string.start_game)) },
-                        enabled = !gameState.isRollingDices.value
-                    )
-                    Button(
-                        onClick = {
-                            val times =
-                                if (gameState.gamePlayersType.value == GamePlayersType.PvC) 2
-                                else 1
-                            repeat(times) { gameState.undo() }
-                        },
-                        content = { PersianText(stringResource(R.string.undo)) }
-                    )
-                }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        ButtonWithIcon(
+                            onClick = { gameState.newGame() },
+                            painter = painterResource(R.drawable.ic_gamepad),
+                            contentDescription = stringResource(R.string.start_game),
+                            enabled = !gameState.isRollingDices.value,
+                            content = { PersianText(stringResource(R.string.start_game)) }
+                        )
+                        val times =
+                            if (gameState.gamePlayersType.value == GamePlayersType.PvC) 2
+                            else 1
+                        ButtonWithIcon(
+                            onClick = { repeat(times) { gameState.undo() } },
+                            painter = painterResource(R.drawable.ic_undo),
+                            contentDescription = stringResource(R.string.undo),
+                            enabled = gameState.isGameStarted.value,
+                            content = { PersianText(stringResource(R.string.undo)) }
+                        )
+                    }
 
-                AnimatedVisibility(
-                    visible = gameState.isGameStarted.value,
-                    enter = slideInHorizontally(
-                        initialOffsetX = { -it },
-                        animationSpec = tween(300)
-                    )
-                ) {
-                    GameInfoCard(
-                        gameState.winner.value,
-                        gameState.isGameDrew.value,
-                        gameState.gamePlayersType.value,
-                        gameState.aiDifficulty.value,
-                    )
-                }
+                    AnimatedVisibility(
+                        visible = gameState.isGameStarted.value,
+                        enter = slideInHorizontally(
+                            initialOffsetX = { -it },
+                            animationSpec = tween(300)
+                        )
+                    ) {
+                        GameInfoCard(
+                            gameState.winner.value,
+                            gameState.isGameDrew.value,
+                            gameState.gamePlayersType.value,
+                            gameState.aiDifficulty.value,
+                        )
+                    }
 
-                AnimatedVisibility(
-                    visible = gameState.isGameStarted.value,
-                    enter = slideInHorizontally(
-                        initialOffsetX = { it },
-                        animationSpec = tween(300)
-                    )
-                ) {
-                    PlayerCards(
-                        gameState.firstPlayerPolicy.value,
-                        gameState.players.value,
-                        gameState.currentPlayer.value
-                    )
-                }
+                    AnimatedVisibility(
+                        visible = gameState.isGameStarted.value,
+                        enter = slideInHorizontally(
+                            initialOffsetX = { it },
+                            animationSpec = tween(300)
+                        )
+                    ) {
+                        PlayerCards(
+                            gameState.firstPlayerPolicy.value,
+                            gameState.players.value,
+                            gameState.currentPlayer.value
+                        )
+                    }
 
-                AnimatedVisibility(
-                    visible = gameState.isGameStarted.value && !gameState.isRollingDices.value,
-                    enter = scaleIn(),
-                    exit = scaleOut()
-                ) {
-                    GameBoard(
-                        gameSize = gameState.gameSize.value,
-                        gameCells = gameState.gameCells.value,
-                        winnerCells = gameState.winnerCells.value,
-                        isGameFinished = gameState.isGameFinished.value,
-                        currentPlayer = gameState.currentPlayer.value,
-                        shapeProvider = { gameState.getOwnerShape(it) },
-                        onItemClick = { gameState.playCell(it) }
-                    )
+                    AnimatedVisibility(
+                        visible = gameState.isGameStarted.value && !gameState.isRollingDices.value,
+                        enter = scaleIn(),
+                        exit = scaleOut()
+                    ) {
+                        GameBoard(
+                            gameSize = gameState.gameSize.value,
+                            gameCells = gameState.gameCells.value,
+                            winnerCells = gameState.winnerCells.value,
+                            isGameFinished = gameState.isGameFinished.value,
+                            currentPlayer = gameState.currentPlayer.value,
+                            shapeProvider = { gameState.getOwnerShape(it) },
+                            onItemClick = { gameState.playCell(it) }
+                        )
+                    }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
