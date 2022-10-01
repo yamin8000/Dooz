@@ -110,7 +110,7 @@ fun GameContent(
                             onClick = { repeat(times) { gameState.undo() } },
                             painter = painterResource(R.drawable.ic_undo),
                             contentDescription = stringResource(R.string.undo),
-                            enabled = gameState.isGameStarted.value,
+                            enabled = gameState.isGameStarted.value && gameState.lastPlayedCells.value.isNotEmpty(),
                             content = { PersianText(stringResource(R.string.undo)) }
                         )
                     }

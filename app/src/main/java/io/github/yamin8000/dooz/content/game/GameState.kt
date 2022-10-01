@@ -66,10 +66,12 @@ class GameState(
     var winnerCells: MutableState<List<DoozCell>>,
     val aiDifficulty: MutableState<AiDifficulty>,
     val isRollingDices: MutableState<Boolean>,
-    var firstPlayerPolicy: MutableState<FirstPlayerPolicy>
+    var firstPlayerPolicy: MutableState<FirstPlayerPolicy>,
+    var lastPlayedCells: MutableState<List<DoozCell>>,
 ) {
     private var gameLogic: GameLogic? = null
-    private val lastPlayedCells = mutableListOf<DoozCell>()
+
+    //private val lastPlayedCells = mutableListOf<DoozCell>()
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
@@ -102,7 +104,7 @@ class GameState(
         isGameFinished.value = false
         isGameStarted.value = false
         isGameDrew.value = false
-        lastPlayedCells.clear()
+        lastPlayedCells.value = listOf()
         gameCells.value = getEmptyBoard()
         winnerCells.value = listOf()
     }
@@ -264,7 +266,10 @@ class GameState(
         cell: DoozCell
     ) {
         if (cell.owner == null && isGameStarted.value) {
-            lastPlayedCells.add(cell)
+            lastPlayedCells.value = buildList {
+                addAll(lastPlayedCells.value)
+                add(cell)
+            }
             cell.owner = currentPlayer.value
             changePlayer()
         }
@@ -295,15 +300,19 @@ class GameState(
     }
 
     fun undo() {
-        if (lastPlayedCells.isNotEmpty()) {
-            val last = lastPlayedCells.last()
+        if (lastPlayedCells.value.isNotEmpty()) {
+            val last = lastPlayedCells.value.last()
             val mutatedRow = gameCells.value[last.x].toMutableList()
             mutatedRow[last.y] = last.copy(owner = null)
             val mutatedGameCells = gameCells.value.toMutableList()
             mutatedGameCells[last.x] = mutatedRow
             gameCells.value = mutatedGameCells
 
-            lastPlayedCells.removeLast()
+            lastPlayedCells.value = buildList {
+                val new = lastPlayedCells.value.toMutableList()
+                new.removeLast()
+                addAll(new)
+            }
             prepareGameLogic()
             winner.value = null
             isGameFinished.value = false
@@ -315,6 +324,15 @@ class GameState(
 
             if (gamePlayersType.value == GamePlayersType.PvP)
                 changePlayer()
+
+            if (lastPlayedCells.value.isEmpty()) {
+                val first = players.value.first()
+                val second = players.value.last()
+
+                currentPlayer.value = if (first.diceIndex > second.diceIndex) first else second
+                if (isAiTurnToPlay())
+                    playCellByAi()
+            }
         }
     }
 }
@@ -344,7 +362,8 @@ fun rememberHomeState(
         mutableStateOf(
             FirstPlayerPolicy.DiceRolling
         )
-    }
+    },
+    lastPlayedCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(listOf()) }
 ) = remember(
     context,
     coroutineScope,
@@ -361,7 +380,8 @@ fun rememberHomeState(
     winnerCells,
     aiDifficulty,
     isRollingDices,
-    firstPlayerPolicy
+    firstPlayerPolicy,
+    lastPlayedCells
 ) {
     GameState(
         context,
@@ -379,6 +399,7 @@ fun rememberHomeState(
         winnerCells,
         aiDifficulty,
         isRollingDices,
-        firstPlayerPolicy
+        firstPlayerPolicy,
+        lastPlayedCells
     )
 }
