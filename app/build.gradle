@@ -95,5 +95,5 @@ dependencies {
     //log/crash library
     implementation 'com.orhanobut:logger:2.2.0'
     //datastore
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation "androidx.datastore:datastore-preferences:1.1.0-dev01"
 }
