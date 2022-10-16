@@ -165,6 +165,7 @@ fun GameContent(
     )
 }
 
+//todo replace winner with winner name
 @Composable
 private fun GameInfoCard(
     winner: Player?,
@@ -207,6 +208,7 @@ private fun GameInfoCard(
         })
 }
 
+//todo replace currentPlayer with currentPlayerType
 @Composable
 private fun GameBoard(
     gameSize: Int,
@@ -253,12 +255,14 @@ private fun GameBoard(
     }
 }
 
+//todo replace doozCell with doozCell owner
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DoozItem(
     shape: Shape,
     clickable: Boolean,
     itemSize: Dp,
+    //unstable
     doozCell: DoozCell,
     itemBackgroundColor: Color,
     itemContentColor: Color,

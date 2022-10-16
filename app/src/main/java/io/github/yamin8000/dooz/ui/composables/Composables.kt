@@ -90,6 +90,7 @@ fun ButtonWithIcon(
     border: BorderStroke? = null,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    //unstable
     painter: Painter,
     space: Dp = 8.dp,
     contentDescription: String?,
@@ -176,6 +177,7 @@ fun SwitchWithText(
 
 @Composable
 fun <T> RadioGroup(
+    //unstable
     options: List<T>,
     currentOption: T,
     onOptionChange: (T) -> Unit,
@@ -216,6 +218,7 @@ fun <T> RadioGroup(
 @Composable
 fun ClickableIcon(
     modifier: Modifier = Modifier,
+    //unstable
     iconPainter: Painter,
     contentDescription: String,
     onClick: () -> Unit

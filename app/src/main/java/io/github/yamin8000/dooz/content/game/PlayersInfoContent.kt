@@ -79,6 +79,7 @@ internal fun PlayerCards(
 @Composable
 internal fun PlayerCard(
     modifier: Modifier = Modifier,
+    //unstable
     player: Player,
     firstPlayerPolicy: FirstPlayerPolicy,
     isCurrentPlayer: Boolean = true
