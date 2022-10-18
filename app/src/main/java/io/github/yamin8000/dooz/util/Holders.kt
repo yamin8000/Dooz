@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     Player.kt Created by Yamin Siahmargooei at 2022/8/26
+ *     Holders.kt Created/Updated by Yamin Siahmargooei at 2022/10/19
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,16 +18,28 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.model
+package io.github.yamin8000.dooz.util
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.saveable.Saver
 
-//unstable
-@Parcelize
-data class Player(
-    val name: String,
-    val shape: String? = null,
-    var diceIndex: Int = 0,
-    val type: PlayerType = PlayerType.Human
-) : Parcelable
+@Stable
+class StableHolder<T>(val item: T) {
+    operator fun component1(): T = item
+}
+
+@Immutable
+class ImmutableHolder<T>(val item: T) {
+    operator fun component1(): T = item
+}
+
+fun <T : Any> getImmutableHolderSaver(): Saver<ImmutableHolder<T>, T> = Saver(
+    save = { it.item },
+    restore = { ImmutableHolder(it) }
+)
+
+fun <T : Any> getStableHolderSaver(): Saver<StableHolder<T>, T> = Saver(
+    save = { it.item },
+    restore = { StableHolder(it) }
+)

@@ -25,16 +25,13 @@ import android.content.res.Configuration
 import android.media.MediaPlayer
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -123,7 +120,7 @@ fun GameContent(
                         )
                     ) {
                         GameInfoCard(
-                            gameState.winner.value,
+                            gameState.winner.value?.name,
                             gameState.isGameDrew.value,
                             gameState.gamePlayersType.value,
                             gameState.aiDifficulty.value,
@@ -154,7 +151,7 @@ fun GameContent(
                             gameCells = gameState.gameCells.value,
                             winnerCells = gameState.winnerCells.value,
                             isGameFinished = gameState.isGameFinished.value,
-                            currentPlayer = gameState.currentPlayer.value,
+                            currentPlayerType = gameState.currentPlayer.value?.type,
                             shapeProvider = { gameState.getOwnerShape(it) },
                             onItemClick = { gameState.playCell(it) }
                         )
@@ -165,10 +162,9 @@ fun GameContent(
     )
 }
 
-//todo replace winner with winner name
 @Composable
 private fun GameInfoCard(
-    winner: Player?,
+    winnerName: String?,
     isGameDrew: Boolean = true,
     playersType: GamePlayersType = GamePlayersType.PvP,
     aiDifficulty: AiDifficulty = AiDifficulty.Easy,
@@ -195,10 +191,9 @@ private fun GameInfoCard(
             ) {
                 if (isGameDrew)
                     PersianText(stringResource(R.string.game_is_drew))
-                winner?.let {
-                    PersianText(stringResource(R.string.x_is_winner, it.name))
-                }
-                if (!isGameDrew && winner == null)
+                if (winnerName != null)
+                    PersianText(stringResource(R.string.x_is_winner, winnerName))
+                if (!isGameDrew && winnerName == null)
                     PersianText(stringResource(R.string.undefined))
                 PersianText(
                     text = stringResource(R.string.game_result),
@@ -208,14 +203,13 @@ private fun GameInfoCard(
         })
 }
 
-//todo replace currentPlayer with currentPlayerType
 @Composable
 private fun GameBoard(
     gameSize: Int,
     gameCells: List<List<DoozCell>>,
     winnerCells: List<DoozCell>,
     isGameFinished: Boolean,
-    currentPlayer: Player?,
+    currentPlayerType: PlayerType?,
     shapeProvider: (Player?) -> Shape,
     onItemClick: (DoozCell) -> Unit
 ) {
@@ -242,10 +236,10 @@ private fun GameBoard(
                     MaterialTheme.colorScheme.onPrimary
                 )
                 DoozItem(
-                    clickable = !isGameFinished && currentPlayer?.type == PlayerType.Human,
+                    clickable = !isGameFinished && currentPlayerType == PlayerType.Human,
                     shape = shapeProvider(cell.owner),
                     itemSize = boxItemSize,
-                    doozCell = cell,
+                    doozCellOwner = cell.owner,
                     onClick = { onItemClick(cell) },
                     itemBackgroundColor = colors.first(),
                     itemContentColor = colors.component2()
@@ -255,15 +249,13 @@ private fun GameBoard(
     }
 }
 
-//todo replace doozCell with doozCell owner
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DoozItem(
     shape: Shape,
     clickable: Boolean,
     itemSize: Dp,
-    //unstable
-    doozCell: DoozCell,
+    doozCellOwner: Player?,
     itemBackgroundColor: Color,
     itemContentColor: Color,
     onClick: () -> Unit
@@ -278,14 +270,14 @@ fun DoozItem(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
+                enabled = clickable,
                 onClick = {
                     localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
                     MediaPlayer
                         .create(context, R.raw.pencil)
                         .start()
                     onClick()
-                },
-                enabled = clickable
+                }
             )
     ) {
         Box(
@@ -296,10 +288,10 @@ fun DoozItem(
             contentAlignment = Alignment.Center
         ) {
             androidx.compose.animation.AnimatedVisibility(
-                visible = doozCell.owner != null,
+                visible = doozCellOwner != null,
                 enter = scaleIn(animationSpec = tween(150))
             ) {
-                doozCell.owner?.let {
+                if (doozCellOwner != null) {
                     Box(
                         modifier = Modifier
                             .size((itemSize.value / 2).dp)
@@ -315,9 +307,7 @@ fun DoozItem(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
-private fun Preview() {
-    PreviewTheme { GameContent {} }
-}
+private fun Preview() = PreviewTheme { GameContent {} }
 
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
@@ -328,7 +318,7 @@ private fun DoozItemPreview() {
             shape = XShape,
             clickable = true,
             itemSize = 40.dp,
-            doozCell = DoozCell(0, 0, Player("Player")),
+            doozCellOwner = Player("Player"),
             itemBackgroundColor = MaterialTheme.colorScheme.primary,
             itemContentColor = MaterialTheme.colorScheme.onPrimary,
             onClick = {}
@@ -352,14 +342,10 @@ private fun GameBoardPreview() {
                         add(row)
                     }
                 },
-                winnerCells = buildList {
-
-                },
+                winnerCells = buildList { },
                 isGameFinished = false,
-                currentPlayer = null,
-                shapeProvider = {
-                    XShape
-                },
+                currentPlayerType = null,
+                shapeProvider = { XShape },
                 onItemClick = {}
             )
         }
