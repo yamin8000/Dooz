@@ -49,4 +49,6 @@ object Constants {
     }
 
     val difficulties = listOf(AiDifficulty.Hard, AiDifficulty.Medium, AiDifficulty.Easy)
+
+    val aiPlayDelayRange = 250L..750L
 }

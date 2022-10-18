@@ -44,11 +44,13 @@ import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
+import io.github.yamin8000.dooz.util.Constants.aiPlayDelayRange
 import io.github.yamin8000.dooz.util.DataStoreHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import kotlin.random.nextInt
+import kotlin.random.nextLong
 
 class GameState(
     private val context: Context,
@@ -88,7 +90,7 @@ class GameState(
                 dummyDiceRolling()
 
             if (isAiTurnToPlay())
-                playCellByAi()
+                coroutineScope.launch { playCellByAi() }
         }
     }
 
@@ -117,7 +119,7 @@ class GameState(
         checkIfGameIsFinished()
 
         if (isAiTurnToPlay())
-            playCellByAi()
+            coroutineScope.launch { asyncPlayCellByAi() }
     }
 
     private fun playCellByAi() {
@@ -125,6 +127,11 @@ class GameState(
         val cell = gameLogic?.ai?.play()
         if (cell != null) changeCellOwner(cell)
         checkIfGameIsFinished()
+    }
+
+    private suspend fun asyncPlayCellByAi() {
+        delay(Random.nextLong(aiPlayDelayRange))
+        playCellByAi()
     }
 
     private fun isAiTurnToPlay(): Boolean {
