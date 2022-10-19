@@ -26,9 +26,6 @@ object Constants {
     const val firstPlayerPolicy = "firstPlayerPolicy"
     const val theme = "theme"
 
-    const val firstPlayerDefaultName = "بازیکن اول"
-    const val secondPlayerDefaultName = "بازیکن دوم"
-
     const val gameSize = "gameSize"
     const val gamePlayersType = "gamePlayersType"
 
@@ -51,4 +48,6 @@ object Constants {
     val difficulties = listOf(AiDifficulty.Hard, AiDifficulty.Medium, AiDifficulty.Easy)
 
     val aiPlayDelayRange = 250L..750L
+
+    val diceRange = 1..6
 }

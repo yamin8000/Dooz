@@ -86,7 +86,7 @@ internal fun PlayerCustomization(
             )
             PlayerShapesCustomizer(
                 firstPlayerShape,
-                onFirstPlayerNameChange,
+                onFirstPlayerShapeChange,
                 secondPlayerShape,
                 onSecondPlayerShapeChange
             )

@@ -34,9 +34,6 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.orhanobut.logger.AndroidLogAdapter
-import com.orhanobut.logger.Logger
-import com.orhanobut.logger.PrettyFormatStrategy
 import io.github.yamin8000.dooz.content.game.GameContent
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
 import io.github.yamin8000.dooz.content.settings.content.Settings
@@ -54,7 +51,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent { MainContent() }
 
-        prepareLogger()
         WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
@@ -89,15 +85,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun prepareLogger() {
-        Logger.addLogAdapter(
-            AndroidLogAdapter(
-                PrettyFormatStrategy.newBuilder().tag("<==>").build()
-            )
-        )
-        Logger.d("Application is Started!")
     }
 
     private fun isDarkTheme(

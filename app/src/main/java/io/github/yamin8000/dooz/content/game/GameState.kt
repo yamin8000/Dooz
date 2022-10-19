@@ -73,7 +73,6 @@ class GameState(
 ) {
     private var gameLogic: GameLogic? = null
 
-    //private val lastPlayedCells = mutableListOf<DoozCell>()
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
@@ -173,18 +172,18 @@ class GameState(
     }
 
     private suspend fun preparePlayers() {
-        val firstPlayerName =
-            dataStore.getString(Constants.firstPlayerName) ?: Constants.firstPlayerDefaultName
-        val secondPlayerName =
-            dataStore.getString(Constants.secondPlayerName) ?: Constants.secondPlayerDefaultName
+        val firstPlayerName = dataStore.getString(Constants.firstPlayerName)
+            ?: context.getString(R.string.first_player_default_name)
+        val secondPlayerName = dataStore.getString(Constants.secondPlayerName)
+            ?: context.getString(R.string.second_player_default_name)
 
         val firstPlayerShape =
             dataStore.getString(Constants.firstPlayerShape)?.toShape() ?: XShape
         val secondPlayerShape =
             dataStore.getString(Constants.secondPlayerShape)?.toShape() ?: RingShape
 
-        val firstPlayerDice = Random.nextInt(1..6)
-        val secondPlayerDice = Random.nextInt(1..6)
+        val firstPlayerDice = Random.nextInt(Constants.diceRange)
+        val secondPlayerDice = Random.nextInt(Constants.diceRange)
 
         players.value = createPlayers(
             firstPlayerName,
