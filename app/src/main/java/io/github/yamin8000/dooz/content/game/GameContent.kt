@@ -22,7 +22,6 @@ package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.media.MediaPlayer
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -41,11 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -236,7 +232,7 @@ private fun GameBoard(
                     MaterialTheme.colorScheme.onPrimary
                 )
                 DoozItem(
-                    clickable = !isGameFinished && currentPlayerType == PlayerType.Human,
+                    clickable = !isGameFinished && currentPlayerType == PlayerType.Human && cell.owner == null,
                     shape = shapeProvider(cell.owner),
                     itemSize = boxItemSize,
                     doozCellOwner = cell.owner,
@@ -260,9 +256,6 @@ fun DoozItem(
     itemContentColor: Color,
     onClick: () -> Unit
 ) {
-    val localHapticFeedback = LocalHapticFeedback.current
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -271,13 +264,7 @@ fun DoozItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
                 enabled = clickable,
-                onClick = {
-                    localHapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-                    MediaPlayer
-                        .create(context, R.raw.pencil)
-                        .start()
-                    onClick()
-                }
+                onClick = onClick
             )
     ) {
         Box(

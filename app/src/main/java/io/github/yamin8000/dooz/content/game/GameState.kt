@@ -28,7 +28,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedback
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
@@ -53,8 +56,9 @@ import kotlin.random.nextInt
 import kotlin.random.nextLong
 
 class GameState(
+    private val hapticFeedback: HapticFeedback,
     private val context: Context,
-    private val coroutineScope: LifecycleCoroutineScope,
+    private val scope: LifecycleCoroutineScope,
     var gameCells: MutableState<List<List<DoozCell>>>,
     val gameSize: MutableState<Int>,
     var currentPlayer: MutableState<Player?>,
@@ -71,16 +75,23 @@ class GameState(
     var firstPlayerPolicy: MutableState<FirstPlayerPolicy>,
     var lastPlayedCells: MutableState<List<DoozCell>>,
 ) {
+    private var isSoundOn = true
+    private var isVibrationOn = true
+
     private var gameLogic: GameLogic? = null
 
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
-        coroutineScope.launch { prepareGame() }
+        scope.launch {
+            isSoundOn = dataStore.getBoolean(Constants.isSoundOn) ?: true
+            isVibrationOn = dataStore.getBoolean(Constants.isVibrationOn) ?: true
+            prepareGame()
+        }
     }
 
     fun newGame() {
-        coroutineScope.launch {
+        scope.launch {
             prepareGame()
 
             isGameStarted.value = true
@@ -89,7 +100,7 @@ class GameState(
                 dummyDiceRolling()
 
             if (isAiTurnToPlay())
-                coroutineScope.launch { playCellByAi() }
+                scope.launch { playCellByAi() }
         }
     }
 
@@ -118,7 +129,7 @@ class GameState(
         checkIfGameIsFinished()
 
         if (isAiTurnToPlay())
-            coroutineScope.launch { asyncPlayCellByAi() }
+            scope.launch { asyncPlayCellByAi() }
     }
 
     private fun playCellByAi() {
@@ -233,7 +244,10 @@ class GameState(
     }
 
     private suspend fun dummyDiceRolling() {
-        MediaPlayer.create(context, R.raw.dice).start()
+        if (isSoundOn)
+            MediaPlayer.create(context, R.raw.dice).start()
+        if (isVibrationOn)
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
         isRollingDices.value = true
 
         val firstPlayerDice = players.value.first().diceIndex
@@ -271,6 +285,11 @@ class GameState(
     private fun changeCellOwner(
         cell: DoozCell
     ) {
+        if (isVibrationOn)
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        if (isSoundOn)
+            MediaPlayer.create(context, R.raw.pencil).start()
+
         if (cell.owner == null && isGameStarted.value) {
             lastPlayedCells.value = buildList {
                 addAll(lastPlayedCells.value)
@@ -345,6 +364,7 @@ class GameState(
 
 @Composable
 fun rememberHomeState(
+    hapticFeedback: HapticFeedback = LocalHapticFeedback.current,
     context: Context = LocalContext.current,
     coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
     doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
@@ -371,6 +391,7 @@ fun rememberHomeState(
     },
     lastPlayedCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(listOf()) }
 ) = remember(
+    hapticFeedback,
     context,
     coroutineScope,
     doozCells,
@@ -390,6 +411,7 @@ fun rememberHomeState(
     lastPlayedCells
 ) {
     GameState(
+        hapticFeedback,
         context,
         coroutineScope,
         doozCells,

@@ -22,21 +22,20 @@ package io.github.yamin8000.dooz.content.settings.content
 
 import android.os.Build
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
 import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.RadioGroup
+import io.github.yamin8000.dooz.ui.composables.SwitchWithText
 
 @Composable
-internal fun ThemeChanger(
+internal fun ThemeChangerCard(
     currentTheme: ThemeSetting,
     onCurrentThemeChange: (ThemeSetting) -> Unit
 ) {
@@ -44,13 +43,7 @@ internal fun ThemeChanger(
     InfoCard(
         modifier = Modifier.fillMaxWidth(),
         columnModifier = Modifier.fillMaxWidth(),
-        header = {
-            PersianText(
-                text = stringResource(R.string.theme),
-                fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        },
+        header = stringResource(R.string.theme),
         content = {
             RadioGroup(
                 options = ThemeSetting.values().toList(),
@@ -62,6 +55,32 @@ internal fun ThemeChanger(
         footer = {
             if (currentTheme == ThemeSetting.System && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
                 DynamicThemeNotice()
+        }
+    )
+}
+
+@Composable
+internal fun EffectsCard(
+    isSoundOn: Boolean,
+    isSoundOnChange: (Boolean) -> Unit,
+    isVibrationOn: Boolean,
+    isVibrationOnChange: (Boolean) -> Unit
+) {
+    InfoCard(
+        modifier = Modifier.fillMaxWidth(),
+        columnModifier = Modifier.fillMaxWidth(),
+        header = stringResource(R.string.effects),
+        content = {
+            SwitchWithText(
+                caption = stringResource(R.string.sound_effects),
+                checked = isSoundOn,
+                onCheckedChange = isSoundOnChange
+            )
+            SwitchWithText(
+                caption = stringResource(R.string.haptic_feedback),
+                checked = isVibrationOn,
+                onCheckedChange = isVibrationOnChange
+            )
         }
     )
 }

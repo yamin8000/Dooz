@@ -29,8 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
@@ -46,117 +44,147 @@ import kotlinx.coroutines.launch
 class SettingsState(
     private val context: Context,
     private val scope: LifecycleCoroutineScope,
-    var gamePlayersType: MutableState<GamePlayersType>,
-    var gameSize: MutableState<Int>,
-    var firstPlayerName: MutableState<String>,
-    var secondPlayerName: MutableState<String>,
-    var firstPlayerShape: MutableState<String>,
-    var secondPlayerShape: MutableState<String>,
-    var aiDifficulty: MutableState<AiDifficulty>,
-    var themeSetting: MutableState<ThemeSetting>,
-    var firstPlayerPolicy: MutableState<FirstPlayerPolicy>,
+    private val _gamePlayersType: MutableState<GamePlayersType>,
+    private val _gameSize: MutableState<Int>,
+    private val _firstPlayerName: MutableState<String>,
+    private val _secondPlayerName: MutableState<String>,
+    private val _firstPlayerShape: MutableState<String>,
+    private val _secondPlayerShape: MutableState<String>,
+    private val _aiDifficulty: MutableState<AiDifficulty>,
+    private val _themeSetting: MutableState<ThemeSetting>,
+    private val _firstPlayerPolicy: MutableState<FirstPlayerPolicy>,
+    private var _isSoundOn: MutableState<Boolean>,
+    private val _isVibrationOn: MutableState<Boolean>
 ) {
+    var gamePlayersType: GamePlayersType
+        get() = _gamePlayersType.value
+        set(value) {
+            _gamePlayersType.value = value
+            scope.launch { dataStore.setString(Constants.gamePlayersType, value.name) }
+        }
+
+    var gameSize: Int
+        get() = _gameSize.value
+        set(value) {
+            _gameSize.value = value
+            scope.launch { dataStore.setInt(Constants.gameSize, value) }
+        }
+
+    var firstPlayerName: String
+        get() = _firstPlayerName.value
+        set(value) {
+            _firstPlayerName.value = value
+        }
+
+    var secondPlayerName: String
+        get() = _secondPlayerName.value
+        set(value) {
+            _secondPlayerName.value = value
+        }
+
+    var firstPlayerShape: String
+        get() = _firstPlayerShape.value
+        set(value) {
+            _firstPlayerShape.value = value
+            if (isPairValid(value, secondPlayerShape)) {
+                _firstPlayerShape.value = value
+                scope.launch { dataStore.setString(Constants.firstPlayerShape, value) }
+            } else scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.player_shapes_equal)) }
+        }
+
+    var secondPlayerShape: String
+        get() = _secondPlayerShape.value
+        set(value) {
+            if (isPairValid(firstPlayerShape, value)) {
+                _secondPlayerShape.value = value
+                scope.launch { dataStore.setString(Constants.secondPlayerShape, value) }
+            } else scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.player_shapes_equal)) }
+        }
+
+    var aiDifficulty: AiDifficulty
+        get() = _aiDifficulty.value
+        set(value) {
+            _aiDifficulty.value = value
+            scope.launch { dataStore.setString(Constants.aiDifficulty, value.name) }
+        }
+
+    var themeSetting: ThemeSetting
+        get() = _themeSetting.value
+        set(value) {
+            _themeSetting.value = value
+            scope.launch { dataStore.setString(Constants.theme, value.name) }
+        }
+
+    var firstPlayerPolicy: FirstPlayerPolicy
+        get() = _firstPlayerPolicy.value
+        set(value) {
+            _firstPlayerPolicy.value = value
+            scope.launch { dataStore.setString(Constants.firstPlayerPolicy, value.name) }
+        }
+
+    var isSoundOn: Boolean
+        get() = _isSoundOn.value
+        set(value) {
+            _isSoundOn.value = value
+            scope.launch { dataStore.setBoolean(Constants.isSoundOn, value) }
+        }
+
+    var isVibrationOn: Boolean
+        get() = _isVibrationOn.value
+        set(value) {
+            _isVibrationOn.value = value
+            scope.launch { dataStore.setBoolean(Constants.isVibrationOn, value) }
+        }
+
+    fun saveNames() {
+        if (isPairValid(_firstPlayerName.value, _secondPlayerName.value)) {
+            scope.launch {
+                dataStore.setString(Constants.firstPlayerName, _firstPlayerName.value.trim())
+                dataStore.setString(Constants.secondPlayerName, _secondPlayerName.value.trim())
+                snackbarHostState.showSnackbar(context.getString(R.string.data_saved))
+            }
+        } else scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.player_names_equal_or_empty)) }
+    }
+
+    private fun isPairValid(
+        first: String,
+        second: String
+    ) = if (first.isEmpty() || second.isEmpty()) false else first.trim() != second.trim()
+
     val snackbarHostState: SnackbarHostState = SnackbarHostState()
 
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
+        val defaultFirstPlayerName = context.getString(R.string.first_player_default_name)
+        val defaultSecondPlayerName = context.getString(R.string.second_player_default_name)
+
         scope.launch {
-            themeSetting.value = ThemeSetting.valueOf(
+            _themeSetting.value = ThemeSetting.valueOf(
                 dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
             )
-            gamePlayersType.value = GamePlayersType.valueOf(
+            _gamePlayersType.value = GamePlayersType.valueOf(
                 dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
             )
-            gameSize.value = dataStore.getInt(Constants.gameSize) ?: GameConstants.gameDefaultSize
-            firstPlayerName.value = dataStore.getString(Constants.firstPlayerName) ?: "Player 1"
-            secondPlayerName.value = dataStore.getString(Constants.secondPlayerName) ?: "Player 2"
-            firstPlayerShape.value =
+            _gameSize.value = dataStore.getInt(Constants.gameSize) ?: GameConstants.gameDefaultSize
+            _firstPlayerName.value =
+                dataStore.getString(Constants.firstPlayerName) ?: defaultFirstPlayerName
+            _secondPlayerName.value =
+                dataStore.getString(Constants.secondPlayerName) ?: defaultSecondPlayerName
+            _firstPlayerShape.value =
                 dataStore.getString(Constants.firstPlayerShape) ?: Constants.Shapes.xShape
-            secondPlayerShape.value =
+            _secondPlayerShape.value =
                 dataStore.getString(Constants.secondPlayerShape) ?: Constants.Shapes.ringShape
-            aiDifficulty.value = AiDifficulty.valueOf(
+            _aiDifficulty.value = AiDifficulty.valueOf(
                 dataStore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
             )
-            firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
+            _firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
                 dataStore.getString(Constants.firstPlayerPolicy)
                     ?: FirstPlayerPolicy.DiceRolling.name
             )
+            _isSoundOn.value = dataStore.getBoolean(Constants.isSoundOn) ?: true
+            _isVibrationOn.value = dataStore.getBoolean(Constants.isVibrationOn) ?: true
         }
-    }
-
-    fun setFirstPlayerPolicy(
-        firstPlayerPolicy: FirstPlayerPolicy
-    ) {
-        this.firstPlayerPolicy.value = firstPlayerPolicy
-        scope.launch { dataStore.setString(Constants.firstPlayerPolicy, firstPlayerPolicy.name) }
-    }
-
-    fun setThemeSetting(
-        newTheme: ThemeSetting
-    ) {
-        themeSetting.value = newTheme
-        scope.launch { dataStore.setString(Constants.theme, newTheme.name) }
-    }
-
-    fun setPlayersType(
-        gamePlayersType: GamePlayersType
-    ) {
-        this.gamePlayersType.value = gamePlayersType
-        scope.launch { dataStore.setString(Constants.gamePlayersType, gamePlayersType.name) }
-    }
-
-    fun increaseGameSize() {
-        if (gameSize.value < GameConstants.gameMaxSize) {
-            gameSize.value = gameSize.value + 1
-            setGameSize()
-        }
-    }
-
-    fun decreaseGameSize() {
-        if (gameSize.value > GameConstants.gameDefaultSize) {
-            gameSize.value = gameSize.value - 1
-            setGameSize()
-        }
-    }
-
-    fun savePlayerInfo() {
-        val isAnyNameEmpty =
-            firstPlayerName.value.trim().isEmpty() || secondPlayerName.value.trim().isEmpty()
-
-        var errorText: String? = null
-        if (firstPlayerShape.value == secondPlayerShape.value) {
-            errorText = context.getString(R.string.player_shapes_equal)
-        } else if (firstPlayerName.value == secondPlayerName.value) {
-            errorText = context.getString(R.string.player_names_equal)
-        } else if (isAnyNameEmpty) {
-            errorText = context.getString(R.string.player_names_empty)
-        } else {
-            scope.launch {
-                context.settings.edit {
-                    it[stringPreferencesKey(Constants.firstPlayerName)] =
-                        firstPlayerName.value.trim()
-                    it[stringPreferencesKey(Constants.secondPlayerName)] =
-                        secondPlayerName.value.trim()
-                    it[stringPreferencesKey(Constants.firstPlayerShape)] = firstPlayerShape.value
-                    it[stringPreferencesKey(Constants.secondPlayerShape)] = secondPlayerShape.value
-                }
-                snackbarHostState.showSnackbar(context.getString(R.string.data_saved))
-            }
-        }
-        if (errorText != null)
-            scope.launch { snackbarHostState.showSnackbar(errorText) }
-    }
-
-    private fun setGameSize() {
-        scope.launch { dataStore.setInt(Constants.gameSize, gameSize.value) }
-    }
-
-    fun setAiDifficulty(
-        aiDifficulty: AiDifficulty
-    ) {
-        this.aiDifficulty.value = aiDifficulty
-        scope.launch { dataStore.setString(Constants.aiDifficulty, aiDifficulty.name) }
     }
 }
 
@@ -165,22 +193,20 @@ fun rememberSettingsState(
     context: Context = LocalContext.current,
     coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
-        mutableStateOf(
-            GamePlayersType.PvC
-        )
+        mutableStateOf(GamePlayersType.PvC)
     },
     gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(GameConstants.gameDefaultSize) },
-    firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 1") },
-    secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf("Player 2") },
+    firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.first_player_default_name)) },
+    secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.second_player_default_name)) },
     firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
     secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
     aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
     themeSetting: MutableState<ThemeSetting> = rememberSaveable { mutableStateOf(ThemeSetting.System) },
     firstPlayerPolicy: MutableState<FirstPlayerPolicy> = rememberSaveable {
-        mutableStateOf(
-            FirstPlayerPolicy.DiceRolling
-        )
-    }
+        mutableStateOf(FirstPlayerPolicy.DiceRolling)
+    },
+    isSoundOn: MutableState<Boolean> = rememberSaveable { mutableStateOf(true) },
+    isVibrationOn: MutableState<Boolean> = rememberSaveable { mutableStateOf(true) }
 ) = remember(
     context,
     coroutineScope,
@@ -192,7 +218,9 @@ fun rememberSettingsState(
     secondPlayerShape,
     aiDifficulty,
     themeSetting,
-    firstPlayerPolicy
+    firstPlayerPolicy,
+    isSoundOn,
+    isVibrationOn
 ) {
     SettingsState(
         context,
@@ -205,6 +233,8 @@ fun rememberSettingsState(
         secondPlayerShape,
         aiDifficulty,
         themeSetting,
-        firstPlayerPolicy
+        firstPlayerPolicy,
+        isSoundOn,
+        isVibrationOn
     )
 }

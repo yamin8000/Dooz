@@ -155,10 +155,10 @@ internal fun PlayerNamesCustomizer(
 @Composable
 internal fun NameField(
     modifier: Modifier = Modifier,
-    label: String = "label",
-    placeholder: String = "placeholder",
-    value: String = "value",
-    onValueChange: (String) -> Unit = {}
+    label: String,
+    placeholder: String,
+    value: String,
+    onValueChange: (String) -> Unit
 ) {
     TextField(
         modifier = modifier.fillMaxWidth(),

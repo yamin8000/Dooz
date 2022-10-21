@@ -36,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,6 +49,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -151,28 +153,31 @@ fun SwitchWithText(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val internalChecked = remember { mutableStateOf(checked) }
-    Box(modifier = Modifier
-        .clickable(
-            role = Role.Switch,
-            onClick = {
-                internalChecked.value = !internalChecked.value
-                onCheckedChange(internalChecked.value)
+    val internalChecked = rememberSaveable { mutableStateOf(checked) }
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .clickable(
+                role = Role.Switch,
+                onClick = {
+                    internalChecked.value = !internalChecked.value
+                    onCheckedChange(internalChecked.value)
+                }
+            ),
+        content = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Switch(
+                    checked = checked,
+                    onCheckedChange = null
+                )
+                PersianText(caption)
             }
-        )
-        .padding(16.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            PersianText(caption)
-            Switch(
-                checked = checked,
-                onCheckedChange = null
-            )
         }
-    }
+    )
 }
 
 @Composable
@@ -245,9 +250,39 @@ fun InfoCard(
     contentPadding: Dp = 8.dp,
     elementVerticalSpacing: Dp = 8.dp,
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    header: @Composable () -> Unit = {},
+    header: String,
     content: @Composable () -> Unit,
-    footer: @Composable () -> Unit = {}
+    footer: @Composable (() -> Unit)? = null
+) {
+    InfoCard(
+        header = {
+            PersianText(
+                text = header,
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+        },
+        modifier = modifier,
+        columnModifier = columnModifier,
+        contentPadding = contentPadding,
+        elementVerticalSpacing = elementVerticalSpacing,
+        horizontalAlignment = horizontalAlignment,
+        content = content,
+        footer = footer
+    )
+}
+
+
+@Composable
+fun InfoCard(
+    modifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier,
+    contentPadding: Dp = 8.dp,
+    elementVerticalSpacing: Dp = 8.dp,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+    header: @Composable () -> Unit,
+    content: @Composable () -> Unit,
+    footer: @Composable (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier,
@@ -259,7 +294,7 @@ fun InfoCard(
         ) {
             header()
             content()
-            footer()
+            if (footer != null) footer()
         }
     }
 }

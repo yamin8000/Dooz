@@ -46,11 +46,11 @@ import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 fun Settings(
     onThemeChanged: (ThemeSetting) -> Unit
 ) {
-    val settingsState = rememberSettingsState()
+    val state = rememberSettingsState()
 
     Scaffold(
         snackbarHost = {
-            SnackbarHost(settingsState.snackbarHostState) { data ->
+            SnackbarHost(state.snackbarHostState) { data ->
                 MySnackbar {
                     PersianText(
                         modifier = Modifier.fillMaxWidth(),
@@ -93,47 +93,45 @@ fun Settings(
                     )
                     when (tabTitles[tabIndex.value]) {
                         stringResource(R.string.general) -> {
-                            ThemeChanger(settingsState.themeSetting.value) { newTheme ->
-                                settingsState.setThemeSetting(newTheme)
+                            ThemeChangerCard(state.themeSetting) { newTheme ->
+                                state.themeSetting = newTheme
                                 onThemeChanged(newTheme)
                             }
+                            EffectsCard(
+                                isSoundOn = state.isSoundOn,
+                                isSoundOnChange = { state.isSoundOn = it },
+                                isVibrationOn = state.isVibrationOn,
+                                isVibrationOnChange = { state.isVibrationOn = it }
+                            )
                         }
                         stringResource(R.string.game) -> {
                             GeneralGameSettings(
-                                gamePlayersType = settingsState.gamePlayersType.value,
-                                onPlayerTypeChange = { settingsState.setPlayersType(it) },
-                                firstPlayerPolicy = settingsState.firstPlayerPolicy.value,
-                                onFirstPlayerPolicyChange = { settingsState.setFirstPlayerPolicy(it) }
+                                gamePlayersType = state.gamePlayersType,
+                                onPlayerTypeChange = { state.gamePlayersType = it },
+                                firstPlayerPolicy = state.firstPlayerPolicy,
+                                onFirstPlayerPolicyChange = { state.firstPlayerPolicy = it }
                             )
                             GameSizeChanger(
-                                gameSize = settingsState.gameSize.value,
-                                onGameSizeIncrease = { settingsState.increaseGameSize() },
-                                onGameSizeDecrease = { settingsState.decreaseGameSize() }
+                                gameSize = state.gameSize,
+                                onGameSizeIncrease = { state.gameSize++ },
+                                onGameSizeDecrease = { state.gameSize-- }
                             )
                             AiDifficultyCard(
-                                aiDifficulty = settingsState.aiDifficulty.value,
-                                onDifficultyChanged = { settingsState.setAiDifficulty(it) }
+                                aiDifficulty = state.aiDifficulty,
+                                onDifficultyChanged = { state.aiDifficulty = it }
                             )
                         }
                         stringResource(R.string.players) -> {
                             PlayerCustomization(
-                                firstPlayerName = settingsState.firstPlayerName.value,
-                                onFirstPlayerNameChange = {
-                                    settingsState.firstPlayerName.value = it
-                                },
-                                secondPlayerName = settingsState.secondPlayerName.value,
-                                onSecondPlayerNameChange = {
-                                    settingsState.secondPlayerName.value = it
-                                },
-                                firstPlayerShape = settingsState.firstPlayerShape.value,
-                                onFirstPlayerShapeChange = {
-                                    settingsState.firstPlayerShape.value = it
-                                },
-                                secondPlayerShape = settingsState.secondPlayerShape.value,
-                                onSecondPlayerShapeChange = {
-                                    settingsState.secondPlayerShape.value = it
-                                },
-                                onSave = { settingsState.savePlayerInfo() }
+                                onSave = { state.saveNames() },
+                                firstPlayerName = state.firstPlayerName,
+                                onFirstPlayerNameChange = { state.firstPlayerName = it },
+                                secondPlayerName = state.secondPlayerName,
+                                onSecondPlayerNameChange = { state.secondPlayerName = it },
+                                firstPlayerShape = state.firstPlayerShape,
+                                onFirstPlayerShapeChange = { state.firstPlayerShape = it },
+                                secondPlayerShape = state.secondPlayerShape,
+                                onSecondPlayerShapeChange = { state.secondPlayerShape = it }
                             )
                         }
                     }
