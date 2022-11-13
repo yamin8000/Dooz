@@ -26,12 +26,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.Add
+import androidx.compose.material.icons.twotone.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -154,7 +156,7 @@ internal fun GameSizeChanger(
             ) {
                 IconButton(onClick = onGameSizeDecrease) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_remove),
+                        imageVector = Icons.TwoTone.Remove,
                         contentDescription = stringResource(R.string.decrease),
                         tint = MaterialTheme.colorScheme.secondary
                     )
@@ -162,7 +164,7 @@ internal fun GameSizeChanger(
                 Text("$gameSize*$gameSize")
                 IconButton(onClick = onGameSizeIncrease) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_add),
+                        imageVector = Icons.TwoTone.Add,
                         contentDescription = stringResource(R.string.increase),
                         tint = MaterialTheme.colorScheme.secondary
                     )

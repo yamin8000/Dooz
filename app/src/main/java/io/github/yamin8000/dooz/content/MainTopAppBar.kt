@@ -25,6 +25,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -35,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.ui.composables.AnimatedAppIcon
 import io.github.yamin8000.dooz.ui.composables.ClickableIcon
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
@@ -49,7 +52,7 @@ fun MainTopAppBar(
     CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,
         title = { PersianText(text = appName, fontSize = 20.sp) },
-        navigationIcon = { NavigationIcon(appName) },
+        navigationIcon = { AnimatedAppIcon() },
         actions = {
             SettingsIcon(onSettingsIconClick)
         }
@@ -61,7 +64,7 @@ private fun SettingsIcon(
     onSettingsIconClick: () -> Unit
 ) {
     ClickableIcon(
-        iconPainter = painterResource(R.drawable.ic_settings),
+        imageVector = Icons.TwoTone.Settings,
         contentDescription = stringResource(R.string.settings),
         onClick = onSettingsIconClick
     )

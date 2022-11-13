@@ -31,6 +31,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.Gamepad
+import androidx.compose.material.icons.twotone.Undo
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -42,7 +45,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -91,20 +93,28 @@ fun GameContent(
                     ) {
                         ButtonWithIcon(
                             onClick = { gameState.newGame() },
-                            painter = painterResource(R.drawable.ic_gamepad),
-                            contentDescription = stringResource(R.string.start_game),
                             enabled = !gameState.isRollingDices.value,
-                            content = { PersianText(stringResource(R.string.start_game)) }
+                            content = { PersianText(stringResource(R.string.start_game)) },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.TwoTone.Gamepad,
+                                    contentDescription = stringResource(R.string.start_game)
+                                )
+                            }
                         )
-                        val times =
+                        val undoRepeats =
                             if (gameState.gamePlayersType.value == GamePlayersType.PvC) 2
                             else 1
                         ButtonWithIcon(
-                            onClick = { repeat(times) { gameState.undo() } },
-                            painter = painterResource(R.drawable.ic_undo),
-                            contentDescription = stringResource(R.string.undo),
+                            onClick = { repeat(undoRepeats) { gameState.undo() } },
                             enabled = gameState.isGameStarted.value && gameState.lastPlayedCells.value.isNotEmpty(),
-                            content = { PersianText(stringResource(R.string.undo)) }
+                            content = { PersianText(stringResource(R.string.undo)) },
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.TwoTone.Undo,
+                                    stringResource(R.string.undo)
+                                )
+                            }
                         )
                     }
 

@@ -24,6 +24,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,24 +33,24 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -92,10 +93,8 @@ fun ButtonWithIcon(
     border: BorderStroke? = null,
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    //unstable
-    painter: Painter,
     space: Dp = 8.dp,
-    contentDescription: String?,
+    icon: @Composable () -> Unit,
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(
@@ -111,10 +110,7 @@ fun ButtonWithIcon(
         content = {
             content()
             Spacer(modifier = Modifier.width(space))
-            Icon(
-                painter = painter,
-                contentDescription = contentDescription
-            )
+            icon()
         }
     )
 }
@@ -223,24 +219,37 @@ fun <T> RadioGroup(
 @Composable
 fun ClickableIcon(
     modifier: Modifier = Modifier,
-    //unstable
-    iconPainter: Painter,
+    imageVector: ImageVector,
     contentDescription: String,
+    onClick: () -> Unit
+) {
+    ClickableIcon(
+        modifier = modifier,
+        onClick = onClick,
+        icon = {
+            Icon(
+                imageVector = imageVector,
+                contentDescription = contentDescription,
+            )
+        }
+    )
+}
+
+@Composable
+fun ClickableIcon(
+    modifier: Modifier = Modifier,
+    icon: @Composable () -> Unit,
     onClick: () -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     IconButton(
         modifier = modifier,
+        content = icon,
         onClick = {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             onClick()
         }
-    ) {
-        Icon(
-            painter = iconPainter,
-            contentDescription = contentDescription
-        )
-    }
+    )
 }
 
 @Composable
@@ -297,6 +306,35 @@ fun InfoCard(
             if (footer != null) footer()
         }
     }
+}
+
+@Composable
+fun AnimatedAppIcon(
+    isAnimating: Boolean = true
+) {
+    var size by remember { mutableStateOf(0.dp) }
+
+    LaunchedEffect(Unit) {
+        while (isAnimating) {
+            animate(
+                typeConverter = Dp.VectorConverter,
+                initialValue = 64.dp,
+                targetValue = 56.dp,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(1000),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                block = { value, _ -> size = value }
+            )
+        }
+    }
+
+    Icon(
+        painter = painterResource(R.drawable.ic_launcher_foreground),
+        contentDescription = stringResource(R.string.app_name),
+        tint = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.size(size)
+    )
 }
 
 @Composable
