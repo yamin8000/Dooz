@@ -63,7 +63,8 @@ import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun GameContent(
-    onNavigateToSettings: () -> Unit
+    onNavigateToSettings: () -> Unit,
+    onNavigateToAbout: () -> Unit
 ) {
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
@@ -72,7 +73,7 @@ fun GameContent(
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = { MainTopAppBar(scrollBehavior, onNavigateToSettings) },
+        topBar = { MainTopAppBar(scrollBehavior, onNavigateToSettings, onNavigateToAbout) },
         content = { contentPadding ->
             Surface(
                 modifier = Modifier
@@ -304,7 +305,7 @@ fun DoozItem(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
-private fun Preview() = PreviewTheme { GameContent {} }
+private fun Preview() = PreviewTheme { GameContent({}, {}) }
 
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)

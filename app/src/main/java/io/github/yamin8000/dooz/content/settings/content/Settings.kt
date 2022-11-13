@@ -43,7 +43,7 @@ import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(
+fun SettingsContent(
     onThemeChanged: (ThemeSetting) -> Unit
 ) {
     val state = rememberSettingsState()
@@ -144,5 +144,5 @@ fun Settings(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun Preview() {
-    PreviewTheme { Settings {} }
+    PreviewTheme { SettingsContent {} }
 }

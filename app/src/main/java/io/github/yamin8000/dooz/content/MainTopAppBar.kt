@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.Help
 import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -46,7 +47,8 @@ import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 @Composable
 fun MainTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
-    onSettingsIconClick: () -> Unit
+    onSettingsIconClick: () -> Unit,
+    onAboutIconClick: () -> Unit
 ) {
     val appName = stringResource(id = R.string.app_name)
     CenterAlignedTopAppBar(
@@ -55,7 +57,19 @@ fun MainTopAppBar(
         navigationIcon = { AnimatedAppIcon() },
         actions = {
             SettingsIcon(onSettingsIconClick)
+            AboutIcon(onAboutIconClick)
         }
+    )
+}
+
+@Composable
+fun AboutIcon(
+    onAboutIconClick: () -> Unit
+) {
+    ClickableIcon(
+        imageVector = Icons.TwoTone.Help,
+        contentDescription = stringResource(R.string.about),
+        onClick = onAboutIconClick
     )
 }
 
@@ -91,5 +105,5 @@ private fun NavigationIcon(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun Preview() {
-    PreviewTheme { MainTopAppBar(TopAppBarDefaults.enterAlwaysScrollBehavior()) {} }
+    PreviewTheme { MainTopAppBar(TopAppBarDefaults.enterAlwaysScrollBehavior(), {}, {}) }
 }

@@ -65,4 +65,5 @@
     <string name="player_names_empty">نام بازیکن نمیتواند خالی باشد</string>
     <string name="first_player_default_name">بازیکن اول</string>
     <string name="second_player_default_name">بازیکن دوم</string>
+    <string name="about">درباره</string>
 </resources>

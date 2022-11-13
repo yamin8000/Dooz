@@ -36,7 +36,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.github.yamin8000.dooz.content.game.GameContent
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
-import io.github.yamin8000.dooz.content.settings.content.Settings
+import io.github.yamin8000.dooz.content.settings.content.SettingsContent
 import io.github.yamin8000.dooz.ui.navigation.Nav
 import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.util.Constants
@@ -75,14 +75,14 @@ class MainActivity : ComponentActivity() {
                 startDestination = Nav.Routes.game
             ) {
                 composable(Nav.Routes.game) {
-                    GameContent {
-                        navController.navigate(Nav.Routes.settings)
-                    }
+                    GameContent(
+                        onNavigateToSettings = { navController.navigate(Nav.Routes.settings) },
+                        onNavigateToAbout = { navController.navigate(Nav.Routes.about) }
+                    )
                 }
 
-                composable(Nav.Routes.settings) {
-                    Settings { newTheme -> theme = newTheme }
-                }
+                composable(Nav.Routes.settings) { SettingsContent { newTheme -> theme = newTheme } }
+                composable(Nav.Routes.about) { AboutContent() }
             }
         }
     }
