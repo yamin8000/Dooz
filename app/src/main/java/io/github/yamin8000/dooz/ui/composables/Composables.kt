@@ -26,12 +26,15 @@ import android.content.ContextWrapper
 import android.content.res.Configuration
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -80,6 +83,26 @@ private fun SwitchWithTextPreview() {
             onCheckedChange = {}
         )
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun Ripple(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
+) {
+    Box(
+        modifier = modifier
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(),
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
+        content = { content() }
+    )
 }
 
 @Composable

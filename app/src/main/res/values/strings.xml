@@ -66,4 +66,9 @@
     <string name="first_player_default_name">بازیکن اول</string>
     <string name="second_player_default_name">بازیکن دوم</string>
     <string name="about">درباره</string>
+    <string name="github_source">https://github.com/yamin8000/Dooz</string>
+    <string name="license_link">https://raw.githubusercontent.com/yamin8000/Dooz/master/LICENSE</string>
+    <string name="gplv3_image_description">لوگو پروانه برنامه GPLv3</string>
+    <string name="version_name">نگارش</string>
+    <string name="license_header">این یک برنامه آزاد طبق پروانه گنو است که توضیحات بیشتر آن در ادامه آورده شده است</string>
 </resources>
