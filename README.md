@@ -19,7 +19,7 @@ Jetpack Compose for Android devices.
 
 ## Preview
 
-<img src="./screenshot/1.0.1/Screenshot_2022-11-19-19-48-49-220_io.github.yamin8000.dooz.jpg" alt="preview" width="300"/>
+<img src="./screenshot/1.0.0/Screenshot_2022-11-19-19-48-49-220_io.github.yamin8000.dooz.jpg" alt="preview" width="300"/>
 
 ## Compatibility
 
