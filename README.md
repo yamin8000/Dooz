@@ -1,4 +1,4 @@
-# Dooz/Tic-Tac-Tao **(WIP)**
+# Dooz/Tic-Tac-Tao
 
 Dooz or Tic-Tac-Tao is a simple pen-and-paper game. I created this implementation using Kotlin and
 Jetpack Compose for Android devices.
@@ -19,7 +19,7 @@ Jetpack Compose for Android devices.
 
 ## Preview
 
-<img src="./screenshot/alpha/photo_2022-09-21_04-19-55.jpg" alt="preview" width="300"/>
+<img src="./screenshot/1.0.1/Screenshot_2022-11-19-19-48-49-220_io.github.yamin8000.dooz.jpg" alt="preview" width="300"/>
 
 ## Compatibility
 
@@ -73,7 +73,7 @@ between Easy difficulty and Hard difficulty for each move based on a 50/50 chanc
 
 ## Changelog
 
-- WIP
+- [Releases](https://github.com/yamin8000/Dooz/releases)
 
 ## License
 
