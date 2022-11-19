@@ -32,7 +32,7 @@ Just play it!
 ## Download
 
 - GitHub releases: [here](https://github.com/yamin8000/Dooz/releases)
-- Bazaar: [here](https://cafebazaar.ir/app/io.github.yamin8000.dooz)
+- ~~Bazaar: [here](https://cafebazaar.ir/app/io.github.yamin8000.dooz)~~
 
 ## Features
 
