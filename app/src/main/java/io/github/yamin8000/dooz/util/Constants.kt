@@ -27,6 +27,7 @@ object Constants {
     const val theme = "theme"
 
     const val gameSize = "gameSize"
+    val gameSizeRange = 3..7
 
     const val gamePlayersType = "gamePlayersType"
     const val firstPlayerName = "firstPlayerName"

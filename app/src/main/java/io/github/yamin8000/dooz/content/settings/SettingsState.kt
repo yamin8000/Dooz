@@ -66,8 +66,10 @@ class SettingsState(
     var gameSize: Int
         get() = _gameSize.value
         set(value) {
-            _gameSize.value = value
-            scope.launch { dataStore.setInt(Constants.gameSize, value) }
+            if (value in Constants.gameSizeRange) {
+                _gameSize.value = value
+                scope.launch { dataStore.setInt(Constants.gameSize, value) }
+            }
         }
 
     var firstPlayerName: String
