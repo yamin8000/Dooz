@@ -102,8 +102,12 @@ fun DoozTheme(
     val isDynamicColorReadyDevice = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     val colors = when {
-        isDynamicColorReadyDevice && isDarkTheme -> dynamicDarkColorScheme(LocalContext.current)
-        isDynamicColorReadyDevice && !isDarkTheme -> dynamicLightColorScheme(LocalContext.current)
+        isDynamicColorReadyDevice && isDarkTheme -> {
+            dynamicDarkColorScheme(LocalContext.current).injectBrandColors(DarkColors)
+        }
+        isDynamicColorReadyDevice && !isDarkTheme -> {
+            dynamicLightColorScheme(LocalContext.current).injectBrandColors(LightColors)
+        }
         isDarkTheme -> DarkColors
         else -> LightColors
     }
@@ -123,6 +127,17 @@ fun DoozTheme(
         colorScheme = colors,
         typography = AppTypography,
         content = content
+    )
+}
+
+fun ColorScheme.injectBrandColors(
+    brandColorScheme: ColorScheme
+): ColorScheme {
+    return copy(
+        secondary = brandColorScheme.secondary,
+        onSecondary = brandColorScheme.onSecondary,
+        secondaryContainer = brandColorScheme.secondaryContainer,
+        onSecondaryContainer = brandColorScheme.onSecondaryContainer
     )
 }
 
