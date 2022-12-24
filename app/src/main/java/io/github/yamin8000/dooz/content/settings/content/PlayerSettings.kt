@@ -33,10 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
@@ -44,7 +41,6 @@ import io.github.yamin8000.dooz.ui.ClickableShapes
 import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.shapes
-import io.github.yamin8000.dooz.ui.theme.Samim
 import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
 import io.github.yamin8000.dooz.util.Constants
@@ -164,25 +160,9 @@ internal fun NameField(
         modifier = modifier.fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
-        label = { NameFieldChildArranger { PersianText(label) } },
-        placeholder = { NameFieldChildArranger { PersianText(placeholder) } },
+        label = { PersianText(text = label, fontSize = 12.sp) },
+        placeholder = { PersianText(text = placeholder, fontSize = 12.sp) },
         singleLine = true,
-        textStyle = TextStyle(
-            fontFamily = Samim,
-            textAlign = TextAlign.Right,
-            textDirection = TextDirection.Rtl
-        ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
     )
-}
-
-@Composable
-internal fun NameFieldChildArranger(
-    content: @Composable () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
-    ) { content() }
 }

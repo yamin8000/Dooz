@@ -189,23 +189,29 @@ private fun GameInfoCard(
         content = {
             PersianText(stringResource(playersType.persianNameStringResource))
 
-            if (playersType == GamePlayersType.PvC)
-                PersianText(stringResource(R.string.ai_difficulty_var, aiDifficulty.persianName))
+            if (playersType == GamePlayersType.PvC) {
+                PersianText(
+                    stringResource(
+                        R.string.ai_difficulty_var,
+                        stringResource(aiDifficulty.persianNameStringResource)
+                    )
+                )
+            }
         },
         footer = {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+                PersianText(
+                    text = stringResource(R.string.game_result),
+                    color = MaterialTheme.colorScheme.primary
+                )
                 if (isGameDrew)
                     PersianText(stringResource(R.string.game_is_drew))
                 if (winnerName != null)
                     PersianText(stringResource(R.string.x_is_winner, winnerName))
                 if (!isGameDrew && winnerName == null)
                     PersianText(stringResource(R.string.undefined))
-                PersianText(
-                    text = stringResource(R.string.game_result),
-                    color = MaterialTheme.colorScheme.primary
-                )
             }
         })
 }

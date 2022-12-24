@@ -25,11 +25,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextDirection
@@ -37,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.ui.theme.Samim
+import io.github.yamin8000.dooz.util.Utility.getCurrentLocale
 
 @Composable
 fun PersianText(
@@ -46,7 +49,7 @@ fun PersianText(
     fontSize: TextUnit = 14.sp,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
-    fontFamily: FontFamily = Samim,
+    fontFamily: FontFamily? = null,
     letterSpacing: TextUnit = TextUnit.Unspecified,
     textDecoration: TextDecoration? = null,
     textAlign: TextAlign? = null,
@@ -55,8 +58,15 @@ fun PersianText(
     softWrap: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl)
+    style: TextStyle = LocalTextStyle.current
 ) {
+    var localStyle = style
+    var localFontFamily = fontFamily
+    val currentLocale = getCurrentLocale(LocalContext.current)
+    if (currentLocale.language == Locale("fa").language) {
+        localFontFamily = Samim
+        localStyle = LocalTextStyle.current.copy(textDirection = TextDirection.Rtl)
+    }
     Text(
         text,
         modifier,
@@ -64,7 +74,7 @@ fun PersianText(
         fontSize,
         fontStyle,
         fontWeight,
-        fontFamily,
+        localFontFamily,
         letterSpacing,
         textDecoration,
         textAlign,
@@ -73,6 +83,6 @@ fun PersianText(
         softWrap,
         maxLines,
         onTextLayout,
-        style
+        localStyle
     )
 }

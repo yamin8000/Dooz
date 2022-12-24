@@ -31,8 +31,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
@@ -57,13 +59,14 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun RadioGroupPreview() {
     PreviewTheme {
         Card {
             RadioGroup(
-                options = listOf("On", "Off", "Automatic"),
+                columns = GridCells.Fixed(3),
+                options = listOf("On", "Off", "System Default"),
                 currentOption = "On",
                 onOptionChange = {},
                 optionStringProvider = { it }
@@ -72,8 +75,8 @@ private fun RadioGroupPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
 @Composable
 private fun SwitchWithTextPreview() {
     PreviewTheme {
@@ -202,41 +205,46 @@ fun SwitchWithText(
 @Composable
 fun <T> RadioGroup(
     //unstable
+    columns: GridCells = GridCells.Fixed(2),
     options: List<T>,
     currentOption: T,
     onOptionChange: (T) -> Unit,
     optionStringProvider: (T) -> String
 ) {
-    Row(
-        modifier = Modifier
-            .selectableGroup()
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        options.forEach { option ->
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                modifier = Modifier
-                    .selectable(
-                        selected = (option == currentOption),
-                        onClick = { onOptionChange(option) },
-                        role = Role.RadioButton
+    LazyVerticalGrid(
+        modifier = Modifier.height(100.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        columns = columns,
+        content = {
+            items(options) { option ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier
+                        .selectable(
+                            selected = (option == currentOption),
+                            onClick = { onOptionChange(option) },
+                            role = Role.RadioButton
+                        )
+                ) {
+                    PersianText(
+                        text = optionStringProvider(option),
+                        modifier = Modifier
+                            .padding(vertical = 16.dp, horizontal = 2.dp)
+                            .weight(5f)
                     )
-            ) {
-                PersianText(
-                    text = optionStringProvider(option),
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
-                RadioButton(
-                    selected = (option == currentOption),
-                    onClick = null,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
+                    RadioButton(
+                        selected = (option == currentOption),
+                        onClick = null,
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .weight(1f)
+                    )
+                }
             }
         }
-    }
+    )
 }
 
 @Composable

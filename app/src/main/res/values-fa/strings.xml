@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~     Dooz/Dooz.app.main
+  ~     strings.xml Copyrighted by Yamin Siahmargooei at 2022/12/24
+  ~     strings.xml Last modified at 2022/12/24
+  ~     This file is part of Dooz/Dooz.app.main.
+  ~     Copyright (C) 2022  Yamin Siahmargooei
+  ~
+  ~     Dooz/Dooz.app.main is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Dooz/Dooz.app.main is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">دوز</string>
+    <string name="play_with_computer">بازی یک نفره</string>
+    <string name="play_with_human">بازی دو نفره</string>
+    <string name="settings">تنظیمات</string>
+    <string name="decrease">کم کردن</string>
+    <string name="increase">اضافه کردن</string>
+    <string name="game_board_size">اندازه زمین بازی</string>
+    <string name="player_names">نام بازیکن ها</string>
+    <string name="save">ذخیره</string>
+    <string name="start_game">شروع بازی</string>
+    <string name="player_turn">نوبت بازیکن</string>
+    <string name="game_is_drew">بازی مساوی شد</string>
+    <string name="first_player_name">اسم بازیکن اول</string>
+    <string name="enter_name">نامی بنویسید</string>
+    <string name="second_player_name">نام بازیکن دوم</string>
+    <string name="player_shapes">نماد بازیکن ها</string>
+    <string name="player_shapes_equal">نماد بازیکن ها نمیتواند یکی باشد</string>
+    <string name="player_names_equal_or_empty">نام بازیکن ها نمیتواند یکسان یا خالی باشد</string>
+    <string name="second_player_shape">نماد بازیکن دوم</string>
+    <string name="first_player_shape">نماد بازیکن اول</string>
+    <string name="x_is_winner">برنده بازی %s بود</string>
+    <string name="game_info">اطلاعات بازی</string>
+    <string name="computer">کامپیوتر</string>
+    <string name="ai_difficulty_var">درجه دشواری: %s</string>
+    <string name="ai_difficulty">درجه دشواری</string>
+    <string name="undefined">نامشخص</string>
+    <string name="game_result">نتیجه بازی</string>
+    <string name="theme">زمینه</string>
+    <string name="game_general_settings">تنظیمات عمومی بازی</string>
+    <string name="theme_system">هماهنگ سیستم</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">تاریک</string>
+    <string name="dice_rolling_start">شروع با ریختن تاس</string>
+    <string name="human_first_start">شروع همیشه با کاربر</string>
+    <string name="game">بازی</string>
+    <string name="players">بازیکن ها</string>
+    <string name="general">عمومی</string>
+    <string name="effects">جلوه ها</string>
+    <string name="dynamic_theme_notice">در نسخه های اندروید 12 به بعد زمینه برنامه بر اساس رنگ قالب تصویر پس زمینه گوشی شما تعیین می شود</string>
+    <string name="sound_effects">صداها</string>
+    <string name="haptic_feedback">لرزش (ویبره)</string>
+    <string name="undo">واگرد</string>
+    <string name="data_saved">داده ها ذخیره شد</string>
+    <string name="player_names_empty">نام بازیکن نمیتواند خالی باشد</string>
+    <string name="first_player_default_name">ارسلان</string>
+    <string name="second_player_default_name">امیر</string>
+    <string name="about">درباره</string>
+    <string name="gplv3_image_description">لوگو پروانه برنامه GPLv3</string>
+    <string name="version_name">نگارش</string>
+    <string name="license_header">این یک برنامه آزاد طبق پروانه گنو است که توضیحات بیشتر آن در ادامه آورده شده است</string>
+    <string name="easy">آسان</string>
+    <string name="medium">معمولی</string>
+    <string name="hard">سخت</string>
+</resources>

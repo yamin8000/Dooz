@@ -83,7 +83,7 @@ internal fun AiDifficultyCard(
                             )
                     ) {
                         PersianText(
-                            text = difficulty.persianName,
+                            text = stringResource(difficulty.persianNameStringResource),
                             modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)
                         )
                         RadioButton(

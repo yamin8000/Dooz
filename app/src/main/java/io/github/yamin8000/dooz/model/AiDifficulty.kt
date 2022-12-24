@@ -21,11 +21,14 @@
 package io.github.yamin8000.dooz.model
 
 import android.os.Parcelable
+import androidx.annotation.StringRes
+import androidx.compose.material.ContentAlpha.medium
+import io.github.yamin8000.dooz.R
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class AiDifficulty(
-    val persianName: String
+    @StringRes val persianNameStringResource: Int
 ) : Parcelable {
-    Easy("آسان"), Medium("معمولی"), Hard("سخت")
+    Easy(R.string.easy), Medium(R.string.medium), Hard(R.string.hard)
 }
