@@ -1,0 +1,24 @@
+I created this implementation using Kotlin and Jetpack Compose for Android devices.
+Features
+Technical
+
+    Jetpack Compose
+    Material3 and Dynamic Color
+
+Game
+
+    Variable game board grid size from three-by-three to nine-by-nine (Larger than nine-by-nine is simply ridiculous and unplayable in mobile phones)
+    Variable game ai difficulty (easy, medium, hard)
+
+Variations
+Simple Game
+
+The Simple game is the most simple variation of Tic-tac-tao with a three-by-three grid with two players. The player who succeeds in placing three of their marks in horizontal, vertical, or diagonal is the winner.
+
+Simple Game AI
+
+Currently, in hard mode, AI uses a strategy rather than an AI search algorithm like MinMax. This strategy consists of these steps: Win, Block, Fork, Block Fork, Center Play, Corner Play, and Side Play.
+
+Strategy's source: Flexible Strategy Use in Young Children's Tic-Tac-Toe by Kevin Crowley, Robert S. Siegler
+
+In Easy difficulty, AI plays a random empty cell in the grid. In Medium difficulty, AI chooses between Easy difficulty and Hard difficulty for each move based on a 50/50 chance.
