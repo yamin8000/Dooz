@@ -44,7 +44,7 @@ Just play it!
 
 ### Game
 
-- Variable game board grid size from three-by-three to nine-by-nine (Larger than nine-by-nine is
+- Variable game board grid size from three-by-three to seven-by-seven (Larger than seven-by-seven is
   simply ridiculous and unplayable in mobile phones)
 - Variable game ai difficulty (easy, medium, hard)
 
