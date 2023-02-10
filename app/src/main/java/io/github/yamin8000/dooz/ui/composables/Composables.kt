@@ -25,10 +25,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -36,6 +33,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.ArrowDropDownCircle
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -56,6 +55,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.ui.DefaultCornerShape
 import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 
 //@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
@@ -86,6 +86,70 @@ private fun SwitchWithTextPreview() {
             onCheckedChange = {}
         )
     }
+}
+
+@Composable
+fun SettingsItemCard(
+    modifier: Modifier = Modifier,
+    columnModifier: Modifier = Modifier,
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalAlignment = Alignment.Start,
+    ) {
+        PersianText(
+            text = title,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+        Card(
+            modifier = modifier,
+            shape = DefaultCornerShape
+        ) {
+            Column(
+                modifier = columnModifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                content = { content() }
+            )
+        }
+    }
+}
+
+@Composable
+fun SettingsItem(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    Box(
+        modifier = modifier.clickable(
+            interactionSource = interactionSource,
+            indication = LocalIndication.current,
+            onClick = onClick,
+        ),
+        content = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(vertical = 16.dp),
+                    content = content
+                )
+                Icon(
+                    imageVector = Icons.TwoTone.ArrowDropDownCircle,
+                    contentDescription = ""
+                )
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -192,11 +256,11 @@ fun SwitchWithText(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                PersianText(caption)
                 Switch(
                     checked = checked,
                     onCheckedChange = null
                 )
-                PersianText(caption)
             }
         }
     )
