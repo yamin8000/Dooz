@@ -63,8 +63,8 @@
     <string name="undo">Undo</string>
     <string name="data_saved">Data saved</string>
     <string name="player_names_empty">Players\' names cannot be empty</string>
-    <string name="first_player_default_name">Arsalan</string>
-    <string name="second_player_default_name">Amir</string>
+    <string name="first_player_default_name">First Player</string>
+    <string name="second_player_default_name">Second Player</string>
     <string name="about">About</string>
     <string name="github_source" translatable="false">https://github.com/yamin8000/Dooz</string>
     <string name="license_link" translatable="false">https://raw.githubusercontent.com/yamin8000/Dooz/master/LICENSE</string>

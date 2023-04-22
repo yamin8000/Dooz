@@ -21,12 +21,14 @@
 package io.github.yamin8000.dooz.util
 
 import android.content.Context
-import android.os.Build
-import java.util.*
+import android.util.Log
+import io.github.yamin8000.dooz.BuildConfig
+import java.util.Locale
 
 object Utility {
 
-    private fun getCurrentLocale(context: Context): Locale = context.resources.configuration.locales.get(0)
+    private fun getCurrentLocale(context: Context): Locale =
+        context.resources.configuration.locales.get(0)
 
     //simple 90 degrees rotation
     fun <T> List<List<T>>.rotated(): List<List<T>> {
@@ -55,6 +57,21 @@ object Utility {
 
     fun Context.isLocalePersian(text: String): Boolean {
         val currentLocale = getCurrentLocale(this).language
-        return currentLocale == Locale("fa").language || Constants.PERSIAN_REGEX.containsMatchIn(text)
+        return currentLocale == Locale("fa").language || Constants.PERSIAN_REGEX.containsMatchIn(
+            text
+        )
+    }
+
+    fun log(
+        message: String
+    ) {
+        if (BuildConfig.DEBUG)
+            Log.d(Constants.LOG_TAG, message)
+    }
+
+    fun log(
+        exception: Exception
+    ) {
+        log(exception.stackTraceToString())
     }
 }

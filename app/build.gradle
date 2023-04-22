@@ -32,10 +32,24 @@ android {
         applicationId "io.github.yamin8000.dooz"
         minSdk 24
         targetSdk 33
-        versionCode 5
-        versionName "1.0.4"
+        versionCode 6
+        versionName "1.0.5"
         vectorDrawables {
             useSupportLibrary true
+        }
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        irMarket {
+            dimension "version"
+            manifestPlaceholders = [launcherActivity: "io.github.yamin8000.dooz.content.AdMainActivity"]
+        }
+
+        free {
+            dimension "version"
+            applicationIdSuffix ".free"
+            manifestPlaceholders = [launcherActivity: "io.github.yamin8000.dooz.content.FreeMainActivity"]
         }
     }
 
@@ -62,6 +76,7 @@ android {
 
     buildFeatures {
         compose true
+        buildConfig true
     }
 
     composeOptions {
@@ -94,4 +109,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     //datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    //ad
+    irMarketImplementation("ir.tapsell.plus:tapsell-plus-sdk-android:2.1.8")
 }

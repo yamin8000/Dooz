@@ -84,7 +84,8 @@ fun AboutContent(onBackClick: () -> Unit) {
                             Alignment.CenterHorizontally
                         )
                     ) {
-                        PersianText(stringResource(R.string.version_name))
+                        val version = stringResource(R.string.version_name)
+                        PersianText("$version - ${BuildConfig.FLAVOR}")
                         PersianText(BuildConfig.VERSION_NAME)
                     }
                     PersianText(

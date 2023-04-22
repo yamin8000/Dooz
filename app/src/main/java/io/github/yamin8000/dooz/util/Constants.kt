@@ -56,4 +56,6 @@ object Constants {
     val diceRange = 1..6
 
     val PERSIAN_REGEX = Regex("[\\u0621-\\u064a]+")
+
+    const val LOG_TAG = "<==>"
 }

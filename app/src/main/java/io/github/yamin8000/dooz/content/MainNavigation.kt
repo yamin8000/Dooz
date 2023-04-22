@@ -1,15 +1,16 @@
 /*
- *     Dooz
- *     MainActivity.kt Created/Updated by Yamin Siahmargooei at 2022/9/14
- *     This file is part of Dooz.
- *     Copyright (C) 2022  Yamin Siahmargooei
+ *     Dooz/Dooz.app.main
+ *     MainNavigation.kt Copyrighted by Yamin Siahmargooei at 2023/4/22
+ *     MainNavigation.kt Last modified at 2023/4/22
+ *     This file is part of Dooz/Dooz.app.main.
+ *     Copyright (C) 2023  Yamin Siahmargooei
  *
- *     Dooz is free software: you can redistribute it and/or modify
+ *     Dooz/Dooz.app.main is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
  *
- *     Dooz is distributed in the hope that it will be useful,
+ *     Dooz/Dooz.app.main is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
@@ -20,22 +21,16 @@
 
 package io.github.yamin8000.dooz.content
 
-import android.content.Context
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -47,35 +42,27 @@ import io.github.yamin8000.dooz.ui.theme.DoozTheme
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 
-val Context.settings: DataStore<Preferences> by preferencesDataStore(name = "settings")
+@Composable
+fun MainNavigation(
+    adContent: @Composable () -> Unit
+) {
+    val context = LocalContext.current
+    var theme by remember { mutableStateOf(ThemeSetting.System) }
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
-
-        super.onCreate(savedInstanceState)
-        setContent { MainContent() }
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+    LaunchedEffect(Unit) {
+        val dataStore = DataStoreHelper(context.settings)
+        theme = ThemeSetting.valueOf(
+            dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
+        )
     }
-
-    @Composable
-    private fun MainContent() {
-        var theme by remember { mutableStateOf(ThemeSetting.System) }
-
-        LaunchedEffect(Unit) {
-            val dataStore = DataStoreHelper(settings)
-            theme = ThemeSetting.valueOf(
-                dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
-            )
-        }
-
-        DoozTheme(
-            isDarkTheme = isDarkTheme(theme, isSystemInDarkTheme()),
-            isDynamicColor = theme == ThemeSetting.System
-        ) {
+    DoozTheme(
+        isDarkTheme = isDarkTheme(theme, isSystemInDarkTheme()),
+        isDynamicColor = theme == ThemeSetting.System
+    ) {
+        Column {
             val navController = rememberNavController()
             NavHost(
+                modifier = Modifier.weight(1f),
                 navController = navController,
                 startDestination = Nav.Routes.game
             ) {
@@ -95,16 +82,17 @@ class MainActivity : ComponentActivity() {
 
                 composable(Nav.Routes.about) { AboutContent(onBackClick = { navController.popBackStack() }) }
             }
+            adContent()
         }
     }
+}
 
-    private fun isDarkTheme(
-        themeSetting: ThemeSetting,
-        isSystemInDarkTheme: Boolean
-    ): Boolean {
-        if (themeSetting == ThemeSetting.Light) return false
-        if (themeSetting == ThemeSetting.System) return isSystemInDarkTheme
-        if (themeSetting == ThemeSetting.Dark) return true
-        return false
-    }
+private fun isDarkTheme(
+    themeSetting: ThemeSetting,
+    isSystemInDarkTheme: Boolean
+): Boolean {
+    if (themeSetting == ThemeSetting.Light) return false
+    if (themeSetting == ThemeSetting.System) return isSystemInDarkTheme
+    if (themeSetting == ThemeSetting.Dark) return true
+    return false
 }
