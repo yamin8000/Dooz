@@ -26,14 +26,7 @@ import java.util.*
 
 object Utility {
 
-    @Suppress("DEPRECATION")
-    fun getCurrentLocale(
-        context: Context
-    ): Locale {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.resources.configuration.locales.get(0)
-        } else context.resources.configuration.locale
-    }
+    private fun getCurrentLocale(context: Context): Locale = context.resources.configuration.locales.get(0)
 
     //simple 90 degrees rotation
     fun <T> List<List<T>>.rotated(): List<List<T>> {
@@ -58,5 +51,10 @@ object Utility {
         for (i in this.indices)
             diagonal.add(this[i][i])
         return diagonal
+    }
+
+    fun Context.isLocalePersian(text: String): Boolean {
+        val currentLocale = getCurrentLocale(this).language
+        return currentLocale == Locale("fa").language || Constants.PERSIAN_REGEX.containsMatchIn(text)
     }
 }

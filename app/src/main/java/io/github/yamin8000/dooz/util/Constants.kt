@@ -49,9 +49,11 @@ object Constants {
         const val rectangleShape = "rectangleShape"
     }
 
-    val difficulties = listOf(AiDifficulty.Hard, AiDifficulty.Medium, AiDifficulty.Easy)
+    val difficulties = listOf(AiDifficulty.Easy, AiDifficulty.Medium, AiDifficulty.Hard)
 
     val aiPlayDelayRange = 250L..750L
 
     val diceRange = 1..6
+
+    val PERSIAN_REGEX = Regex("[\\u0621-\\u064a]+")
 }

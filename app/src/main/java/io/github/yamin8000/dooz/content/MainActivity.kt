@@ -25,7 +25,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.datastore.core.DataStore
@@ -81,8 +86,14 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                composable(Nav.Routes.settings) { SettingsContent { newTheme -> theme = newTheme } }
-                composable(Nav.Routes.about) { AboutContent() }
+                composable(Nav.Routes.settings) {
+                    SettingsContent(
+                        onThemeChanged = { newTheme -> theme = newTheme },
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
+
+                composable(Nav.Routes.about) { AboutContent(onBackClick = { navController.popBackStack() }) }
             }
         }
     }

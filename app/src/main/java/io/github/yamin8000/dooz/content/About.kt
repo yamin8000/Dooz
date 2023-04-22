@@ -25,6 +25,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,67 +38,70 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.BuildConfig
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.Ripple
+import io.github.yamin8000.dooz.ui.composables.ScaffoldWithTitle
 
-@Preview
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutContent() {
-    Surface(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            val uriHandler = LocalUriHandler.current
-            val sourceUri = stringResource(R.string.github_source)
-            val licenseUri = stringResource(R.string.license_link)
-            Ripple(
-                onClick = { uriHandler.openUri(licenseUri) },
-                content = {
-                    Image(
-                        painterResource(id = R.drawable.ic_gplv3),
-                        stringResource(id = R.string.gplv3_image_description),
-                        modifier = Modifier
-                            .padding(32.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.FillWidth,
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-                    )
-                }
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)
+fun AboutContent(onBackClick: () -> Unit) {
+    ScaffoldWithTitle(
+        title = stringResource(R.string.about),
+        onBackClick = onBackClick,
+        content = {
+            Surface(
+                modifier = Modifier.fillMaxSize()
             ) {
-                PersianText(
-                    text = stringResource(R.string.version_name),
-                )
-                PersianText(
-                    text = BuildConfig.VERSION_NAME
-                )
-            }
-            PersianText(
-                stringResource(id = R.string.license_header),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Ripple(
-                onClick = { uriHandler.openUri(sourceUri) },
-                content = {
-                    Text(
-                        text = sourceUri,
-                        textDecoration = TextDecoration.Underline
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ) {
+                    val uriHandler = LocalUriHandler.current
+                    val sourceUri = stringResource(R.string.github_source)
+                    val licenseUri = stringResource(R.string.license_link)
+                    Ripple(
+                        onClick = { uriHandler.openUri(licenseUri) },
+                        content = {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_gplv3),
+                                contentDescription = stringResource(id = R.string.gplv3_image_description),
+                                modifier = Modifier
+                                    .padding(32.dp)
+                                    .fillMaxWidth(),
+                                contentScale = ContentScale.FillWidth,
+                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                            )
+                        }
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(
+                            8.dp,
+                            Alignment.CenterHorizontally
+                        )
+                    ) {
+                        PersianText(stringResource(R.string.version_name))
+                        PersianText(BuildConfig.VERSION_NAME)
+                    }
+                    PersianText(
+                        text = stringResource(R.string.license_header),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Ripple(
+                        onClick = { uriHandler.openUri(sourceUri) },
+                        content = {
+                            Text(
+                                text = sourceUri,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        }
                     )
                 }
-            )
+            }
         }
-    }
+    )
 }

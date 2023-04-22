@@ -20,7 +20,6 @@
 
 package io.github.yamin8000.dooz.content.settings.content
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,23 +31,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
 import io.github.yamin8000.dooz.content.settings.rememberSettingsState
 import io.github.yamin8000.dooz.ui.composables.MySnackbar
 import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.theme.PreviewTheme
+import io.github.yamin8000.dooz.ui.composables.ScaffoldWithTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsContent(
-    onThemeChanged: (ThemeSetting) -> Unit
+    onThemeChanged: (ThemeSetting) -> Unit,
+    onBackClick: () -> Unit
 ) {
     val state = rememberSettingsState()
-
-    Scaffold(
+    ScaffoldWithTitle(
+        title = stringResource(R.string.settings),
+        onBackClick = onBackClick,
         snackbarHost = {
             SnackbarHost(state.snackbarHostState) { data ->
                 MySnackbar {
@@ -60,18 +60,14 @@ fun SettingsContent(
                 }
             }
         },
-        content = { padding ->
+        content = {
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
+                modifier = Modifier.fillMaxSize()
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState())
+                    modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     val tabTitles = listOf(
                         stringResource(R.string.general),
@@ -104,6 +100,7 @@ fun SettingsContent(
                                 isVibrationOnChange = { state.isVibrationOn = it }
                             )
                         }
+
                         stringResource(R.string.game) -> {
                             GeneralGameSettings(
                                 gamePlayersType = state.gamePlayersType,
@@ -121,6 +118,7 @@ fun SettingsContent(
                                 onDifficultyChanged = { state.aiDifficulty = it }
                             )
                         }
+
                         stringResource(R.string.players) -> {
                             PlayerCustomization(
                                 onSave = { state.saveNames() },
@@ -137,12 +135,6 @@ fun SettingsContent(
                     }
                 }
             }
-        })
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Composable
-private fun Preview() {
-    PreviewTheme { SettingsContent {} }
+        }
+    )
 }

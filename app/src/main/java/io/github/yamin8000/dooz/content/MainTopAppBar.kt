@@ -20,7 +20,6 @@
 
 package io.github.yamin8000.dooz.content
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,14 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.ui.composables.AnimatedAppIcon
 import io.github.yamin8000.dooz.ui.composables.ClickableIcon
 import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.theme.PreviewTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +47,7 @@ fun MainTopAppBar(
     onSettingsIconClick: () -> Unit,
     onAboutIconClick: () -> Unit
 ) {
-    val appName = stringResource(id = R.string.app_name)
+    val appName = stringResource(R.string.app_name)
     CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,
         title = { PersianText(text = appName, fontSize = 20.sp) },
@@ -91,19 +88,11 @@ private fun NavigationIcon(
     Icon(
         painter = painterResource(R.drawable.ic_launcher_foreground),
         contentDescription = appName,
+        tint = MaterialTheme.colorScheme.background,
         modifier = Modifier
             .padding(8.dp)
             .size(32.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onBackground),
-        tint = MaterialTheme.colorScheme.background
+            .background(MaterialTheme.colorScheme.onBackground)
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Composable
-private fun Preview() {
-    PreviewTheme { MainTopAppBar(TopAppBarDefaults.enterAlwaysScrollBehavior(), {}, {}) }
 }

@@ -34,6 +34,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.icons.twotone.ArrowDropDownCircle
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
@@ -45,11 +46,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -450,4 +453,54 @@ fun Context.findActivity(): Activity? = when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext.findActivity()
     else -> null
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScaffoldWithTitle(
+    title: String,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+    onBackClick: () -> Unit,
+    snackbarHost: @Composable () -> Unit = {},
+    content: @Composable BoxScope.() -> Unit
+) {
+    Scaffold(
+        snackbarHost = snackbarHost,
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            Surface(
+                shadowElevation = 8.dp
+            ) {
+                TopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        PersianText(
+                            text = title,
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    actions = {
+                        ClickableIcon(
+                            imageVector = Icons.TwoTone.ArrowBack,
+                            contentDescription = "",
+                            onClick = { onBackClick() }
+                        )
+                    }
+                )
+            }
+        },
+        content = {
+            Box(
+                modifier = Modifier
+                    .padding(it)
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 4.dp)
+                    .fillMaxHeight(),
+                content = { content() }
+            )
+        }
+    )
 }
