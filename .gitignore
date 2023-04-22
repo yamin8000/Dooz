@@ -16,3 +16,5 @@ local.properties
 /.idea/
 /app/release/
 /app/src/irMarket/java/io/github/yamin8000/dooz/ad/AdConstants.kt
+/app/free/
+/app/irMarket/
