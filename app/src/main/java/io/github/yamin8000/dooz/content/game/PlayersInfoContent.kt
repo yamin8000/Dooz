@@ -20,30 +20,28 @@
 
 package io.github.yamin8000.dooz.content.game
 
-import android.content.res.Configuration
 import androidx.compose.animation.*
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.model.Player
 import io.github.yamin8000.dooz.ui.ShapePreview
 import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.theme.PreviewTheme
+import io.github.yamin8000.dooz.ui.composables.isFontScaleNormal
 import io.github.yamin8000.dooz.ui.toShape
 
 @Composable
@@ -83,42 +81,39 @@ internal fun PlayerCard(
     firstPlayerPolicy: FirstPlayerPolicy,
     isCurrentPlayer: Boolean = true
 ) {
-    val iconTint =
-        if (isCurrentPlayer) MaterialTheme.colorScheme.secondary
-        else MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
-
-    val borderColor =
-        if (isCurrentPlayer) MaterialTheme.colorScheme.outline
-        else MaterialTheme.colorScheme.outlineVariant
+    val alpha = if (isCurrentPlayer) ContentAlpha.high else ContentAlpha.disabled
 
     OutlinedCard(
-        border = BorderStroke(1.dp, borderColor),
-        modifier = modifier
+        modifier = modifier.alpha(alpha)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (firstPlayerPolicy == FirstPlayerPolicy.DiceRolling) {
+            if (firstPlayerPolicy == FirstPlayerPolicy.DiceRolling && isFontScaleNormal()) {
                 AnimatedContent(
                     targetState = player.diceIndex,
                     transitionSpec = {
                         slideInVertically { it } + fadeIn() with
                                 slideOutVertically { -it } + fadeOut()
                     },
-                    content = { PlayerDice(iconTint = iconTint, diceIndex = it) }
+                    content = { PlayerDice( diceIndex = it) }
                 )
             }
-            player.shape?.toShape()?.let { shape -> ShapePreview(shape, 30.dp, iconTint) }
-            PersianText(text = player.name, modifier = Modifier.weight(2f))
+            player.shape?.toShape()?.let { shape -> ShapePreview(shape, 30.dp) }
+            PersianText(
+                text = player.name,
+                modifier = Modifier.weight(2f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
 
 @Composable
 private fun PlayerDice(
-    iconTint: Color,
     diceIndex: Int = 1
 ) {
     val icon = when (diceIndex) {
@@ -133,19 +128,5 @@ private fun PlayerDice(
     Icon(
         painter = painterResource(icon),
         contentDescription = stringResource(R.string.player_turn),
-        tint = iconTint
     )
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Composable
-private fun PlayerCardsPreview() {
-    PreviewTheme {
-        PlayerCards(
-            firstPlayerPolicy = FirstPlayerPolicy.DiceRolling,
-            players = listOf(Player("Yamin"), Player("Amir")),
-            currentPlayer = null
-        )
-    }
 }

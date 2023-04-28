@@ -21,7 +21,6 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -32,7 +31,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.Gamepad
+import androidx.compose.material.icons.twotone.Games
 import androidx.compose.material.icons.twotone.Undo
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
@@ -46,19 +45,17 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.MainTopAppBar
 import io.github.yamin8000.dooz.model.*
-import io.github.yamin8000.dooz.ui.XShape
-import io.github.yamin8000.dooz.ui.composables.ButtonWithIcon
-import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.theme.PreviewTheme
+import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
+import io.github.yamin8000.dooz.ui.composables.isFontScaleNormal
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -70,10 +67,25 @@ fun GameContent(
 
     val gameState = rememberHomeState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val undoRepeats = remember {
+        if (gameState.gamePlayersType.value == GamePlayersType.PvC) 2 else 1
+    }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = { MainTopAppBar(scrollBehavior, onNavigateToSettings, onNavigateToAbout) },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                text = { SingleLinePersianText(stringResource(R.string.new_game)) },
+                onClick = { gameState.newGame() },
+                icon = {
+                    Icon(
+                        imageVector = Icons.TwoTone.Games,
+                        contentDescription = null
+                    )
+                }
+            )
+        },
         content = { contentPadding ->
             Surface(
                 modifier = Modifier
@@ -89,28 +101,40 @@ fun GameContent(
                         .verticalScroll(rememberScrollState())
                 ) {
                     Row(
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        ButtonWithIcon(
+                        AnimatedVisibility(
+                            visible = gameState.isGameStarted.value,
+                            enter = slideInHorizontally(
+                                initialOffsetX = { -it },
+                                animationSpec = tween(300)
+                            )
+                        ) {
+                            GameInfoCard(
+                                modifier = Modifier.weight(1f),
+                                playersType = gameState.gamePlayersType.value,
+                                aiDifficulty = gameState.aiDifficulty.value,
+                                winnerName = gameState.winner.value?.name,
+                                isGameDrew = gameState.isGameDrew.value
+                            )
+                        }
+
+                        FilledIconButton(
                             onClick = { gameState.newGame() },
-                            enabled = !gameState.isRollingDices.value,
-                            content = { PersianText(stringResource(R.string.start_game)) },
-                            icon = {
+                            content = {
                                 Icon(
-                                    imageVector = Icons.TwoTone.Gamepad,
-                                    contentDescription = stringResource(R.string.start_game)
+                                    imageVector = Icons.TwoTone.Games,
+                                    contentDescription = null
                                 )
                             }
                         )
-                        val undoRepeats =
-                            if (gameState.gamePlayersType.value == GamePlayersType.PvC) 2
-                            else 1
-                        ButtonWithIcon(
+
+                        FilledIconButton(
                             onClick = { repeat(undoRepeats) { gameState.undo() } },
                             enabled = gameState.isGameStarted.value && gameState.lastPlayedCells.value.isNotEmpty(),
-                            content = { PersianText(stringResource(R.string.undo)) },
-                            icon = {
+                            content = {
                                 Icon(
                                     imageVector = Icons.TwoTone.Undo,
                                     stringResource(R.string.undo)
@@ -122,29 +146,14 @@ fun GameContent(
                     AnimatedVisibility(
                         visible = gameState.isGameStarted.value,
                         enter = slideInHorizontally(
-                            initialOffsetX = { -it },
-                            animationSpec = tween(300)
-                        )
-                    ) {
-                        GameInfoCard(
-                            gameState.winner.value?.name,
-                            gameState.isGameDrew.value,
-                            gameState.gamePlayersType.value,
-                            gameState.aiDifficulty.value,
-                        )
-                    }
-
-                    AnimatedVisibility(
-                        visible = gameState.isGameStarted.value,
-                        enter = slideInHorizontally(
                             initialOffsetX = { it },
                             animationSpec = tween(300)
                         )
                     ) {
                         PlayerCards(
-                            gameState.firstPlayerPolicy.value,
-                            gameState.players.value,
-                            gameState.currentPlayer.value
+                            firstPlayerPolicy = gameState.firstPlayerPolicy.value,
+                            players = gameState.players.value,
+                            currentPlayer = gameState.currentPlayer.value
                         )
                     }
 
@@ -163,6 +172,7 @@ fun GameContent(
                             onItemClick = { gameState.playCell(it) }
                         )
                     }
+                    Spacer(modifier = Modifier.height(64.dp))
                 }
             }
         }
@@ -170,50 +180,69 @@ fun GameContent(
 }
 
 @Composable
-private fun GameInfoCard(
+fun GameResult(
     winnerName: String?,
-    isGameDrew: Boolean = true,
+    isGameDrew: Boolean
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        if (isFontScaleNormal()) {
+            PersianText(
+                text = stringResource(R.string.game_result),
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+        if (isGameDrew)
+            SingleLinePersianText(stringResource(R.string.game_is_drew))
+        if (winnerName != null)
+            SingleLinePersianText(stringResource(R.string.x_is_winner, winnerName))
+        if (!isGameDrew && winnerName == null)
+            SingleLinePersianText(stringResource(R.string.undefined))
+    }
+}
+
+@Composable
+private fun GameInfoCard(
+    modifier: Modifier = Modifier,
     playersType: GamePlayersType = GamePlayersType.PvP,
     aiDifficulty: AiDifficulty = AiDifficulty.Easy,
+    winnerName: String?,
+    isGameDrew: Boolean
 ) {
-    InfoCard(
-        modifier = Modifier.fillMaxWidth(),
-        columnModifier = Modifier.fillMaxWidth(),
-        header = {
-            PersianText(
-                text = stringResource(R.string.game_info),
-                fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        },
+    Card(
+        modifier = modifier,
         content = {
-            PersianText(stringResource(playersType.persianNameStringResource))
-
-            if (playersType == GamePlayersType.PvC) {
-                PersianText(
-                    stringResource(
-                        R.string.ai_difficulty_var,
-                        stringResource(aiDifficulty.persianNameStringResource)
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                content = {
+                    PersianText(
+                        text = stringResource(R.string.game_info),
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.primary
                     )
-                )
-            }
-        },
-        footer = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                PersianText(
-                    text = stringResource(R.string.game_result),
-                    color = MaterialTheme.colorScheme.primary
-                )
-                if (isGameDrew)
-                    PersianText(stringResource(R.string.game_is_drew))
-                if (winnerName != null)
-                    PersianText(stringResource(R.string.x_is_winner, winnerName))
-                if (!isGameDrew && winnerName == null)
-                    PersianText(stringResource(R.string.undefined))
-            }
-        })
+                    SingleLinePersianText(stringResource(playersType.persianNameStringResource))
+
+                    if (playersType == GamePlayersType.PvC) {
+                        SingleLinePersianText(
+                            stringResource(
+                                R.string.ai_difficulty_var,
+                                stringResource(aiDifficulty.persianNameStringResource)
+                            )
+                        )
+                    }
+                    GameResult(
+                        winnerName = winnerName,
+                        isGameDrew = isGameDrew
+                    )
+                }
+            )
+        }
+    )
 }
 
 @Composable
@@ -304,54 +333,6 @@ fun DoozItem(
                     )
                 }
             }
-        }
-    }
-}
-
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Composable
-private fun Preview() = PreviewTheme { GameContent({}, {}) }
-
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Composable
-private fun DoozItemPreview() {
-    PreviewTheme {
-        DoozItem(
-            shape = XShape,
-            clickable = true,
-            itemSize = 40.dp,
-            doozCellOwner = Player("Player"),
-            itemBackgroundColor = MaterialTheme.colorScheme.primary,
-            itemContentColor = MaterialTheme.colorScheme.onPrimary,
-            onClick = {}
-        )
-    }
-}
-
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-//@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO, showBackground = true)
-@Composable
-private fun GameBoardPreview() {
-    PreviewTheme {
-        Surface {
-            GameBoard(
-                gameSize = 3,
-                gameCells = buildList {
-                    for (i in 1..3) {
-                        val row = mutableListOf<DoozCell>()
-                        for (j in 1..3)
-                            row.add(DoozCell(i, j))
-                        add(row)
-                    }
-                },
-                winnerCells = buildList { },
-                isGameFinished = false,
-                currentPlayerType = null,
-                shapeProvider = { XShape },
-                onItemClick = {}
-            )
         }
     }
 }

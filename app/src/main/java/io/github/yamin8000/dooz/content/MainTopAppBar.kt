@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
@@ -50,11 +51,18 @@ fun MainTopAppBar(
     val appName = stringResource(R.string.app_name)
     CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,
-        title = { PersianText(text = appName, fontSize = 20.sp) },
         navigationIcon = { AnimatedAppIcon() },
         actions = {
             SettingsIcon(onSettingsIconClick)
             AboutIcon(onAboutIconClick)
+        },
+        title = {
+            PersianText(
+                text = appName,
+                fontSize = 16.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     )
 }

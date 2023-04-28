@@ -25,13 +25,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -39,10 +40,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathOperation
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -124,44 +131,58 @@ fun ClickableShapes(
     shapes: List<Shape>,
     lastSelectedShape: Shape? = null,
     size: Dp = 30.dp,
-    backgroundColor: Color = MaterialTheme.colorScheme.secondary,
     header: (@Composable () -> Unit) = {},
     onShapeSelected: (Shape) -> Unit
 ) {
+    val disabled = ContentAlpha.disabled
+    val high = ContentAlpha.high
+
     val selectedIndex = remember { mutableStateOf(-1) }
-    val colors = remember { mutableStateOf(listOf<Color>()) }
-    colors.value = buildList {
+    val alphas = remember { mutableStateOf(listOf<Float>()) }
+    alphas.value = buildList {
         shapes.forEach {
             if (it == lastSelectedShape)
-                add(backgroundColor.copy(alpha = 0.5f))
-            else add(backgroundColor)
+                add(disabled)
+            else add(high)
         }
     }
-    LazyRow(
+    Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        itemsIndexed(shapes) { index, shape ->
-            ClickableShape(
-                shape = shape,
-                backgroundColor = colors.value[index],
-                size = size
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            header()
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
             ) {
-                selectedIndex.value = index
-                if (selectedIndex.value != -1 && selectedIndex.value == index) {
-                    onShapeSelected(shapes[index])
-                    colors.value = buildList {
-                        for (i in shapes.indices) {
-                            if (i == selectedIndex.value)
-                                add(backgroundColor.copy(alpha = 0.5f))
-                            else add(backgroundColor)
+                shapes.forEachIndexed { index, shape ->
+                    ClickableShape(
+                        shape = shape,
+                        modifier = Modifier.alpha(alphas.value[index]),
+                        size = size
+                    ) {
+                        selectedIndex.value = index
+                        if (selectedIndex.value != -1 && selectedIndex.value == index) {
+                            onShapeSelected(shapes[index])
+                            alphas.value = buildList {
+                                for (i in shapes.indices) {
+                                    if (i == selectedIndex.value)
+                                        add(disabled)
+                                    else add(high)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        item { header() }
     }
 }
 

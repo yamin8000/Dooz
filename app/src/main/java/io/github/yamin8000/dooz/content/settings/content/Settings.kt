@@ -108,14 +108,14 @@ fun SettingsContent(
                                 firstPlayerPolicy = state.firstPlayerPolicy,
                                 onFirstPlayerPolicyChange = { state.firstPlayerPolicy = it }
                             )
+                            AiDifficultyCard(
+                                aiDifficulty = state.aiDifficulty,
+                                onDifficultyChanged = { state.aiDifficulty = it }
+                            )
                             GameSizeChanger(
                                 gameSize = state.gameSize,
                                 onGameSizeIncrease = { state.gameSize++ },
                                 onGameSizeDecrease = { state.gameSize-- }
-                            )
-                            AiDifficultyCard(
-                                aiDifficulty = state.aiDifficulty,
-                                onDifficultyChanged = { state.aiDifficulty = it }
                             )
                         }
 

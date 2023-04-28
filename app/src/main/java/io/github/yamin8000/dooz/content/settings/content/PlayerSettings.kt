@@ -34,12 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.ui.ClickableShapes
 import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.PersianText
+import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
 import io.github.yamin8000.dooz.ui.shapes
 import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape
@@ -59,40 +61,49 @@ internal fun PlayerCustomization(
 ) {
     InfoCard(
         modifier = Modifier.fillMaxWidth(),
-        columnModifier = Modifier.fillMaxWidth(),
         header = {
             PersianText(
                 text = stringResource(R.string.player_names),
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         content = {
             PlayerNamesCustomizer(
-                firstPlayerName,
-                onFirstPlayerNameChange,
-                secondPlayerName,
-                onSecondPlayerNameChange
+                firstPlayerName = firstPlayerName,
+                onFirstPlayerNameChange = onFirstPlayerNameChange,
+                secondPlayerName = secondPlayerName,
+                onSecondPlayerNameChange = onSecondPlayerNameChange
             )
             PersianText(
                 text = stringResource(R.string.player_shapes),
                 fontSize = 16.sp,
                 modifier = Modifier.padding(top = 16.dp),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             PlayerShapesCustomizer(
-                firstPlayerShape,
-                onFirstPlayerShapeChange,
-                secondPlayerShape,
-                onSecondPlayerShapeChange
+                firstPlayerShape = firstPlayerShape,
+                onFirstPlayerShapeChange = onFirstPlayerShapeChange,
+                secondPlayerShape = secondPlayerShape,
+                onSecondPlayerShapeChange = onSecondPlayerShapeChange
             )
             Button(
+                onClick = { onSave() },
                 modifier = Modifier
                     .fillMaxWidth(.5f)
                     .padding(top = 16.dp),
-                onClick = { onSave() }) {
-                PersianText(text = stringResource(R.string.save))
-            }
+                content = {
+                    PersianText(
+                        text = stringResource(R.string.save),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            )
         }
     )
 }
@@ -107,13 +118,13 @@ internal fun PlayerShapesCustomizer(
     ClickableShapes(
         shapes = shapes,
         lastSelectedShape = firstPlayerShape.toShape(),
-        header = { PersianText(stringResource(R.string.first_player_shape)) },
+        header = { SingleLinePersianText(stringResource(R.string.first_player_shape)) },
         onShapeSelected = { onFirstPlayerShapeChange(it.toName() ?: Constants.Shapes.ringShape) }
     )
     ClickableShapes(
         shapes = shapes,
         lastSelectedShape = secondPlayerShape.toShape(),
-        header = { PersianText(stringResource(R.string.second_player_shape)) },
+        header = { SingleLinePersianText(stringResource(R.string.second_player_shape)) },
         onShapeSelected = { onSecondPlayerShapeChange(it.toName() ?: Constants.Shapes.xShape) }
     )
 }

@@ -28,7 +28,7 @@
     <string name="game_board_size">Game\'s board size</string>
     <string name="player_names">Players\' names</string>
     <string name="save">Save</string>
-    <string name="start_game">Start game</string>
+    <string name="new_game">New game</string>
     <string name="player_turn">Player\'s turn</string>
     <string name="game_is_drew">Game\'s drew</string>
     <string name="first_player_name">First player\'s name</string>
@@ -59,7 +59,7 @@
     <string name="effects">Effects</string>
     <string name="dynamic_theme_notice">On Android 12+ your app theme colors are based on your home screen background</string>
     <string name="sound_effects">Sounds</string>
-    <string name="haptic_feedback">Haptic feedback (vibrations)</string>
+    <string name="haptic_feedback">Vibrations</string>
     <string name="undo">Undo</string>
     <string name="data_saved">Data saved</string>
     <string name="player_names_empty">Players\' names cannot be empty</string>
@@ -74,4 +74,5 @@
     <string name="easy">Easy</string>
     <string name="medium">Medium</string>
     <string name="hard">Hard</string>
+    <string name="developer_uri" translatable="false">https://yamins.ir</string>
 </resources>

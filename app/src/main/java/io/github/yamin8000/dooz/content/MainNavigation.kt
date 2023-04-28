@@ -48,9 +48,9 @@ fun MainNavigation(
 ) {
     val context = LocalContext.current
     var theme by remember { mutableStateOf(ThemeSetting.System) }
+    val dataStore = DataStoreHelper(context.settings)
 
     LaunchedEffect(Unit) {
-        val dataStore = DataStoreHelper(context.settings)
         theme = ThemeSetting.valueOf(
             dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
         )

@@ -62,6 +62,7 @@ fun AboutContent(onBackClick: () -> Unit) {
                     val uriHandler = LocalUriHandler.current
                     val sourceUri = stringResource(R.string.github_source)
                     val licenseUri = stringResource(R.string.license_link)
+                    val developerUri = stringResource(R.string.developer_uri)
                     Ripple(
                         onClick = { uriHandler.openUri(licenseUri) },
                         content = {
@@ -97,6 +98,15 @@ fun AboutContent(onBackClick: () -> Unit) {
                         content = {
                             Text(
                                 text = sourceUri,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        }
+                    )
+                    Ripple(
+                        onClick = { uriHandler.openUri(developerUri) },
+                        content = {
+                            Text(
+                                text = developerUri,
                                 textDecoration = TextDecoration.Underline
                             )
                         }

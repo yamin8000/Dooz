@@ -21,7 +21,11 @@
 package io.github.yamin8000.dooz.content.settings.content
 
 import android.os.Build
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
@@ -29,17 +33,25 @@ import androidx.compose.material.icons.twotone.DisplaySettings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.content.settings.SettingsItem
+import io.github.yamin8000.dooz.content.settings.SettingsItemCard
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
-import io.github.yamin8000.dooz.ui.composables.*
+import io.github.yamin8000.dooz.ui.composables.InfoCard
+import io.github.yamin8000.dooz.ui.composables.PersianText
+import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
+import io.github.yamin8000.dooz.ui.composables.SwitchWithText
 
 @Composable
 internal fun ThemeChangerCard(
@@ -66,10 +78,7 @@ internal fun ThemeChangerCard(
                         imageVector = Icons.TwoTone.DisplaySettings,
                         contentDescription = stringResource(R.string.theme)
                     )
-                    PersianText(
-                        text = stringResource(currentTheme.persianNameStringResource),
-                        modifier = Modifier.padding()
-                    )
+                    SingleLinePersianText(stringResource(currentTheme.persianNameStringResource))
                 }
             )
             if (currentTheme == ThemeSetting.System && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
@@ -139,7 +148,6 @@ internal fun EffectsCard(
 ) {
     InfoCard(
         modifier = Modifier.fillMaxWidth(),
-        columnModifier = Modifier.fillMaxWidth(),
         header = stringResource(R.string.effects),
         content = {
             SwitchWithText(

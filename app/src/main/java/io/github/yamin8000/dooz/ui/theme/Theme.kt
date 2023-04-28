@@ -23,12 +23,20 @@ package io.github.yamin8000.dooz.ui.theme
 import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Density
 import androidx.core.view.WindowCompat
 
 private val LightColors = lightColorScheme(
@@ -99,15 +107,20 @@ fun DoozTheme(
     isDynamicColor: Boolean,
     content: @Composable () -> Unit
 ) {
-    val isDynamicColorReadyDevice = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    //CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, 1f)) {}
+
+    val isDynamicColorReadyDevice =
+        isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     val colors = when {
         isDynamicColorReadyDevice && isDarkTheme -> {
             dynamicDarkColorScheme(LocalContext.current).injectBrandColors(DarkColors)
         }
+
         isDynamicColorReadyDevice && !isDarkTheme -> {
             dynamicLightColorScheme(LocalContext.current).injectBrandColors(LightColors)
         }
+
         isDarkTheme -> DarkColors
         else -> LightColors
     }
@@ -117,7 +130,8 @@ fun DoozTheme(
         SideEffect {
             activity.window.statusBarColor = colors.surface.toArgb()
             activity.window.navigationBarColor = colors.surface.toArgb()
-            val wic = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+            val wic =
+                WindowCompat.getInsetsController(activity.window, activity.window.decorView)
             wic.isAppearanceLightStatusBars = !isDarkTheme
             wic.isAppearanceLightNavigationBars = !isDarkTheme
         }

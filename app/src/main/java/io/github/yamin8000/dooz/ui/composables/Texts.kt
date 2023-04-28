@@ -144,3 +144,14 @@ fun PersianText(
         )
     }
 }
+
+@Composable
+fun SingleLinePersianText(
+    text: String
+) {
+    PersianText(
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+}

@@ -29,7 +29,7 @@
     <string name="game_board_size">اندازه زمین بازی</string>
     <string name="player_names">نام بازیکن ها</string>
     <string name="save">ذخیره</string>
-    <string name="start_game">شروع بازی</string>
+    <string name="new_game">بازی جدید</string>
     <string name="player_turn">نوبت بازیکن</string>
     <string name="game_is_drew">بازی مساوی شد</string>
     <string name="first_player_name">اسم بازیکن اول</string>
