@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        compose_libs_version = '1.4.2'
-        compose_ui_libs_version = '1.4.2'
-        compose_compiler_version = '1.4.6'
+        compose_libs_version = '1.4.3'
+        compose_ui_libs_version = '1.4.3'
+        compose_compiler_version = '1.4.7'
     }
 }/*
  *     Dooz
@@ -26,9 +26,9 @@ buildscript {
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id 'com.android.application' version '8.0.0' apply false
-    id 'com.android.library' version '8.0.0' apply false
-    id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
+    id 'com.android.application' version '8.0.1' apply false
+    id 'com.android.library' version '8.0.1' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.21' apply false
 }
 
 task clean(type: Delete) {
