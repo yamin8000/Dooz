@@ -32,8 +32,8 @@ android {
         applicationId "io.github.yamin8000.dooz"
         minSdk 24
         targetSdk 33
-        versionCode 9
-        versionName "1.0.9"
+        versionCode 10
+        versionName "1.0.10"
         vectorDrawables {
             useSupportLibrary true
         }

@@ -73,19 +73,35 @@ fun GameContent(
 
     Scaffold(
         topBar = { MainTopAppBar(scrollBehavior, onNavigateToSettings, onNavigateToAbout) },
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                text = { SingleLinePersianText(stringResource(R.string.new_game)) },
-                onClick = { gameState.newGame() },
-                icon = {
-                    Icon(
-                        imageVector = Icons.TwoTone.Games,
-                        contentDescription = null
+        bottomBar = {
+            BottomAppBar(
+                actions = {
+                    FilledIconButton(
+                        onClick = { repeat(undoRepeats) { gameState.undo() } },
+                        enabled = gameState.isGameStarted.value && gameState.lastPlayedCells.value.isNotEmpty(),
+                        content = {
+                            Icon(
+                                imageVector = Icons.TwoTone.Undo,
+                                stringResource(R.string.undo)
+                            )
+                        }
+                    )
+                },
+                floatingActionButton = {
+                    ExtendedFloatingActionButton(
+                        text = { SingleLinePersianText(stringResource(R.string.new_game)) },
+                        onClick = { gameState.newGame() },
+                        icon = {
+                            Icon(
+                                imageVector = Icons.TwoTone.Games,
+                                contentDescription = null
+                            )
+                        }
                     )
                 }
             )
         },
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         content = { contentPadding ->
             Surface(
                 modifier = Modifier
@@ -100,46 +116,19 @@ fun GameContent(
                         .padding(vertical = 16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        AnimatedVisibility(
-                            visible = gameState.isGameStarted.value,
-                            enter = slideInHorizontally(
-                                initialOffsetX = { -it },
-                                animationSpec = tween(300)
-                            )
-                        ) {
-                            GameInfoCard(
-                                modifier = Modifier.weight(1f),
-                                playersType = gameState.gamePlayersType.value,
-                                aiDifficulty = gameState.aiDifficulty.value,
-                                winnerName = gameState.winner.value?.name,
-                                isGameDrew = gameState.isGameDrew.value
-                            )
-                        }
-
-                        FilledIconButton(
-                            onClick = { gameState.newGame() },
-                            content = {
-                                Icon(
-                                    imageVector = Icons.TwoTone.Games,
-                                    contentDescription = null
-                                )
-                            }
+                    AnimatedVisibility(
+                        visible = gameState.isGameStarted.value,
+                        enter = slideInHorizontally(
+                            initialOffsetX = { -it },
+                            animationSpec = tween(300)
                         )
-
-                        FilledIconButton(
-                            onClick = { repeat(undoRepeats) { gameState.undo() } },
-                            enabled = gameState.isGameStarted.value && gameState.lastPlayedCells.value.isNotEmpty(),
-                            content = {
-                                Icon(
-                                    imageVector = Icons.TwoTone.Undo,
-                                    stringResource(R.string.undo)
-                                )
-                            }
+                    ) {
+                        GameInfoCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            playersType = gameState.gamePlayersType.value,
+                            aiDifficulty = gameState.aiDifficulty.value,
+                            winnerName = gameState.winner.value?.name,
+                            isGameDrew = gameState.isGameDrew.value
                         )
                     }
 
@@ -216,9 +205,11 @@ private fun GameInfoCard(
         modifier = modifier,
         content = {
             Column(
-                modifier = Modifier.padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
                 content = {
                     PersianText(
                         text = stringResource(R.string.game_info),
