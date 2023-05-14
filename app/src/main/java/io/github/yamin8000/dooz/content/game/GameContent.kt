@@ -261,21 +261,17 @@ private fun GameBoard(
     ) {
         gameCells.forEachIndexed { _, row ->
             itemsIndexed(row) { _, cell ->
-                val colors = if (cell in winnerCells) listOf(
-                    MaterialTheme.colorScheme.secondary,
-                    MaterialTheme.colorScheme.onSecondary
-                ) else listOf(
-                    MaterialTheme.colorScheme.primary,
-                    MaterialTheme.colorScheme.onPrimary
-                )
+                val colors = if (cell in winnerCells)
+                    MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.onSecondary
+                else MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
                 DoozItem(
                     clickable = !isGameFinished && currentPlayerType == PlayerType.Human && cell.owner == null,
                     shape = shapeProvider(cell.owner),
                     itemSize = boxItemSize,
                     doozCellOwner = cell.owner,
                     onClick = { onItemClick(cell) },
-                    itemBackgroundColor = colors.first(),
-                    itemContentColor = colors.component2()
+                    itemBackgroundColor = colors.first,
+                    itemContentColor = colors.second
                 )
             }
         }
