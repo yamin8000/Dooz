@@ -34,9 +34,9 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-object AdHelper {
+internal object AdHelper {
 
-    suspend fun showTapsellAd(
+    internal suspend fun showTapsellAd(
         activity: Activity,
         adId: String,
         adView: ViewGroup?
@@ -58,7 +58,7 @@ object AdHelper {
             })
     }
 
-    suspend fun requestTapsellAd(
+    internal suspend fun requestTapsellAd(
         activity: Activity
     ) = suspendCancellableCoroutine { cancellableContinuation ->
         TapsellPlus.requestStandardBannerAd(

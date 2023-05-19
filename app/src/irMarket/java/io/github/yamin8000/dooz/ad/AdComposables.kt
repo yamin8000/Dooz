@@ -31,7 +31,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import io.github.yamin8000.dooz.R
 
 @Composable
-fun TapsellAdContent(
+internal fun TapsellAdContent(
     modifier: Modifier = Modifier,
     onCreated: (ViewGroup) -> Unit,
     onUpdate: (ViewGroup) -> Unit
