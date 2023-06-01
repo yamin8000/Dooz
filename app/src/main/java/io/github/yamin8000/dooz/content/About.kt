@@ -47,7 +47,7 @@ import io.github.yamin8000.dooz.ui.composables.ScaffoldWithTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AboutContent(onBackClick: () -> Unit) {
+internal fun AboutContent(onBackClick: () -> Unit) {
     ScaffoldWithTitle(
         title = stringResource(R.string.about),
         onBackClick = onBackClick,
