@@ -36,7 +36,7 @@
         android:windowSoftInputMode="adjustResize"
         tools:targetApi="s">
         <activity
-            android:name="${launcherActivity}"
+            android:name="io.github.yamin8000.dooz.content.MainActivity"
             android:configChanges="locale|fontScale|orientation|screenSize|keyboardHidden|keyboard|locale|screenLayout|screenSize|layoutDirection"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
