@@ -73,7 +73,6 @@ internal fun PlayerCards(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 internal fun PlayerCard(
     modifier: Modifier = Modifier,
