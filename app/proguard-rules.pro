@@ -325,3 +325,46 @@
 # kept. Suspend functions are wrapped in continuations where the type argument
 # is used.
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
+-dontwarn com.google.ads.interactivemedia.v3.api.Ad
+-dontwarn com.google.ads.interactivemedia.v3.api.AdDisplayContainer
+-dontwarn com.google.ads.interactivemedia.v3.api.AdError
+-dontwarn com.google.ads.interactivemedia.v3.api.AdErrorEvent$AdErrorListener
+-dontwarn com.google.ads.interactivemedia.v3.api.AdErrorEvent
+-dontwarn com.google.ads.interactivemedia.v3.api.AdEvent$AdEventListener
+-dontwarn com.google.ads.interactivemedia.v3.api.AdEvent$AdEventType
+-dontwarn com.google.ads.interactivemedia.v3.api.AdEvent
+-dontwarn com.google.ads.interactivemedia.v3.api.AdsLoader$AdsLoadedListener
+-dontwarn com.google.ads.interactivemedia.v3.api.AdsLoader
+-dontwarn com.google.ads.interactivemedia.v3.api.AdsManager
+-dontwarn com.google.ads.interactivemedia.v3.api.AdsManagerLoadedEvent
+-dontwarn com.google.ads.interactivemedia.v3.api.AdsRenderingSettings
+-dontwarn com.google.ads.interactivemedia.v3.api.AdsRequest
+-dontwarn com.google.ads.interactivemedia.v3.api.CompanionAdSlot
+-dontwarn com.google.ads.interactivemedia.v3.api.ImaSdkFactory
+-dontwarn com.google.ads.interactivemedia.v3.api.ImaSdkSettings
+-dontwarn com.google.ads.interactivemedia.v3.api.player.AdMediaInfo
+-dontwarn com.google.ads.interactivemedia.v3.api.player.ContentProgressProvider
+-dontwarn com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer$VideoAdPlayerCallback
+-dontwarn com.google.ads.interactivemedia.v3.api.player.VideoAdPlayer
+-dontwarn com.google.ads.interactivemedia.v3.api.player.VideoProgressUpdate
+-dontwarn com.google.android.exoplayer2.ExoPlayerLibraryInfo
+-dontwarn com.google.android.exoplayer2.Player$Listener
+-dontwarn com.google.android.exoplayer2.Player
+-dontwarn com.google.android.exoplayer2.Timeline$Period
+-dontwarn com.google.android.exoplayer2.Timeline$Window
+-dontwarn com.google.android.exoplayer2.Timeline
+-dontwarn com.google.android.exoplayer2.Tracks
+-dontwarn com.google.android.exoplayer2.source.ads.AdPlaybackState$AdGroup
+-dontwarn com.google.android.exoplayer2.source.ads.AdPlaybackState
+-dontwarn com.google.android.exoplayer2.source.ads.AdsLoader$EventListener
+-dontwarn com.google.android.exoplayer2.source.ads.AdsLoader
+-dontwarn com.google.android.exoplayer2.source.ads.AdsMediaSource$AdLoadException
+-dontwarn com.google.android.exoplayer2.ui.StyledPlayerView
+-dontwarn com.google.android.exoplayer2.util.Assertions
+-dontwarn com.google.android.exoplayer2.util.Log
+-dontwarn com.google.android.exoplayer2.util.Util
+-dontwarn com.google.common.collect.BiMap
+-dontwarn com.google.common.collect.ImmutableList
