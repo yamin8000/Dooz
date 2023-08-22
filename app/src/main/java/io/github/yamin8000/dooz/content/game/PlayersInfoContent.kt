@@ -94,11 +94,12 @@ internal fun PlayerCard(
             if (firstPlayerPolicy == FirstPlayerPolicy.DiceRolling && isFontScaleNormal()) {
                 AnimatedContent(
                     targetState = player.diceIndex,
+                    label = "",
+                    content = { PlayerDice(diceIndex = it) },
                     transitionSpec = {
-                        slideInVertically { it } + fadeIn() with
-                                slideOutVertically { -it } + fadeOut()
-                    },
-                    content = { PlayerDice( diceIndex = it) }
+                        (slideInVertically { it } + fadeIn())
+                            .togetherWith(slideOutVertically { -it } + fadeOut())
+                    }
                 )
             }
             player.shape?.toShape()?.let { shape -> ShapePreview(shape, 30.dp) }

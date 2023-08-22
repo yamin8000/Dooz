@@ -26,12 +26,12 @@ plugins {
 
 android {
     namespace 'io.github.yamin8000.dooz'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "io.github.yamin8000.dooz"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 12
         versionName "1.0.12"
         vectorDrawables {
