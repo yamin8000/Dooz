@@ -102,7 +102,7 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class:$material3_version")
     implementation("androidx.compose.material:material-icons-extended:$compose_libs_version")
     //navigation
-    def nav_version = "2.7.0"
+    def nav_version = "2.7.1"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     //datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
