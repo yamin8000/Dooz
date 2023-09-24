@@ -45,16 +45,16 @@ Just play it!
 ### Game
 
 - Variable game board grid size from three-by-three to seven-by-seven (Larger than seven-by-seven is
-  simply ridiculous and unplayable in mobile phones)
-- Variable game ai difficulty (easy, medium, hard)
+  simply ridiculous and unplayable on mobile phones)
+- Variable game AI difficulty (easy, medium, hard)
 
 ### Variations
 
 #### Simple Game
 
 The Simple game is the most simple variation of Tic-tac-tao with a three-by-three grid with two
-players. The player who succeeds in placing three of their marks in horizontal, vertical, or
-diagonal is the winner.
+players. The player who succeeds in placing three of their marks horizontally, vertically, or
+diagonally is the winner.
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Tic_tac_toe.svg" alt="preview" width="200"/>
 
@@ -70,7 +70,15 @@ Siegler
 [More info on the strategy here](https://onlinelibrary.wiley.com/doi/abs/10.1207/s15516709cog1704_3)
 
 In Easy difficulty, AI plays a random empty cell in the grid. In Medium difficulty, AI chooses
-between Easy difficulty and Hard difficulty for each move based on a 50/50 chance.
+between Easy and Hard Difficult for each move based on a 50/50 chance.
+
+## Translation
+
+<a href="https://hosted.weblate.org/engage/dooz/">
+<img src="https://hosted.weblate.org/widget/dooz/dooz/287x66-grey.png" alt="Translation status" />
+</a>
+
+Dooz uses [weblate](https://hosted.weblate.org/engage/dooz/) for translation, contribution is greatly appreciated.
 
 ## Changelog
 
