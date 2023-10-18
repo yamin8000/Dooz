@@ -72,12 +72,6 @@ Siegler
 In Easy difficulty, AI plays a random empty cell in the grid. In Medium difficulty, AI chooses
 between Easy and Hard Difficult for each move based on a 50/50 chance.
 
-## Translation
-
-<a href="https://hosted.weblate.org/engage/dooz/">
-<img src="https://hosted.weblate.org/widget/dooz/dooz/287x66-grey.png" alt="Translation status" />
-</a>
-
 Dooz uses [weblate](https://hosted.weblate.org/engage/dooz/) for translation, contribution is greatly appreciated.
 
 ## Changelog
