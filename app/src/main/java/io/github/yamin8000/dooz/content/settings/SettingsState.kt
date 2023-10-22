@@ -23,7 +23,9 @@ package io.github.yamin8000.dooz.content.settings
 import android.content.Context
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,7 +47,7 @@ class SettingsState(
     private val context: Context,
     private val scope: LifecycleCoroutineScope,
     private val _gamePlayersType: MutableState<GamePlayersType>,
-    private val _gameSize: MutableState<Int>,
+    private val _gameSize: MutableIntState,
     private val _firstPlayerName: MutableState<String>,
     private val _secondPlayerName: MutableState<String>,
     private val _firstPlayerShape: MutableState<String>,
@@ -64,10 +66,10 @@ class SettingsState(
         }
 
     var gameSize: Int
-        get() = _gameSize.value
+        get() = _gameSize.intValue
         set(value) {
-            if (value in Constants.gameSizeRange) {
-                _gameSize.value = value
+            if (value in GameConstants.gameSizeRange) {
+                _gameSize.intValue = value
                 scope.launch { dataStore.setInt(Constants.gameSize, value) }
             }
         }
@@ -168,7 +170,7 @@ class SettingsState(
             _gamePlayersType.value = GamePlayersType.valueOf(
                 dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
             )
-            _gameSize.value = dataStore.getInt(Constants.gameSize) ?: GameConstants.gameDefaultSize
+            _gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GameConstants.gameDefaultSize
             _firstPlayerName.value =
                 dataStore.getString(Constants.firstPlayerName) ?: defaultFirstPlayerName
             _secondPlayerName.value =
@@ -197,7 +199,7 @@ fun rememberSettingsState(
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(GamePlayersType.PvC)
     },
-    gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(GameConstants.gameDefaultSize) },
+    gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(GameConstants.gameDefaultSize) },
     firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.first_player_default_name)) },
     secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.second_player_default_name)) },
     firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },

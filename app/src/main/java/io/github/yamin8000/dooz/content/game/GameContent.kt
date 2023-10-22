@@ -57,7 +57,7 @@ import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
 import io.github.yamin8000.dooz.ui.composables.isFontScaleNormal
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameContent(
     onNavigateToSettings: () -> Unit,
@@ -278,7 +278,6 @@ private fun GameBoard(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DoozItem(
     shape: Shape,

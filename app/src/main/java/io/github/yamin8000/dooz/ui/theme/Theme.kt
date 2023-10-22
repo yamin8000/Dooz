@@ -30,16 +30,13 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.unit.Density
 import androidx.core.view.WindowCompat
 
-private val LightColors = lightColorScheme(
+private val lightColors = lightColorScheme(
     primary = md_theme_light_primary,
     onPrimary = md_theme_light_onPrimary,
     primaryContainer = md_theme_light_primaryContainer,
@@ -70,7 +67,7 @@ private val LightColors = lightColorScheme(
 )
 
 
-private val DarkColors = darkColorScheme(
+private val darkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
     primaryContainer = md_theme_dark_primaryContainer,
@@ -107,22 +104,20 @@ fun DoozTheme(
     isDynamicColor: Boolean,
     content: @Composable () -> Unit
 ) {
-    //CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, 1f)) {}
-
     val isDynamicColorReadyDevice =
         isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
     val colors = when {
         isDynamicColorReadyDevice && isDarkTheme -> {
-            dynamicDarkColorScheme(LocalContext.current).injectBrandColors(DarkColors)
+            dynamicDarkColorScheme(LocalContext.current).injectBrandColors(darkColors)
         }
 
         isDynamicColorReadyDevice && !isDarkTheme -> {
-            dynamicLightColorScheme(LocalContext.current).injectBrandColors(LightColors)
+            dynamicLightColorScheme(LocalContext.current).injectBrandColors(lightColors)
         }
 
-        isDarkTheme -> DarkColors
-        else -> LightColors
+        isDarkTheme -> darkColors
+        else -> lightColors
     }
 
     if (!isPreviewing) {

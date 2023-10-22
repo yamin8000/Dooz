@@ -25,7 +25,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,19 +75,19 @@ fun SettingsContent(
                         stringResource(R.string.players)
                     )
 
-                    val tabIndex = rememberSaveable { mutableStateOf(1) }
+                    val tabIndex = rememberSaveable { mutableIntStateOf(1) }
                     ScrollableTabRow(
-                        selectedTabIndex = tabIndex.value,
+                        selectedTabIndex = tabIndex.intValue,
                         tabs = {
                             tabTitles.forEachIndexed { index, title ->
                                 Tab(
-                                    selected = tabIndex.value == index,
-                                    onClick = { tabIndex.value = index },
+                                    selected = tabIndex.intValue == index,
+                                    onClick = { tabIndex.intValue = index },
                                     text = { PersianText(title) })
                             }
                         }
                     )
-                    when (tabTitles[tabIndex.value]) {
+                    when (tabTitles[tabIndex.intValue]) {
                         stringResource(R.string.general) -> {
                             ThemeChangerCard(state.themeSetting) { newTheme ->
                                 state.themeSetting = newTheme

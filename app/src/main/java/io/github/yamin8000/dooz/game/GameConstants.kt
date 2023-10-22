@@ -21,6 +21,6 @@
 package io.github.yamin8000.dooz.game
 
 object GameConstants {
-    const val gameMaxSize = 9
+    val gameSizeRange = 3..7
     const val gameDefaultSize = 3
 }

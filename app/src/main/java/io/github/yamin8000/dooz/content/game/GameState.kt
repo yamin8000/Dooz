@@ -23,7 +23,9 @@ package io.github.yamin8000.dooz.content.game
 import android.content.Context
 import android.media.MediaPlayer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -60,7 +62,7 @@ class GameState(
     private val context: Context,
     private val scope: LifecycleCoroutineScope,
     var gameCells: MutableState<List<List<DoozCell>>>,
-    val gameSize: MutableState<Int>,
+    val gameSize: MutableIntState,
     var currentPlayer: MutableState<Player?>,
     var players: MutableState<List<Player>>,
     var gamePlayersType: MutableState<GamePlayersType>,
@@ -152,7 +154,7 @@ class GameState(
     }
 
     private suspend fun prepareGameRules() {
-        gameSize.value = dataStore.getInt(Constants.gameSize) ?: gameDefaultSize
+        gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: gameDefaultSize
         gamePlayersType.value = GamePlayersType.valueOf(
             dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
         )
@@ -167,15 +169,15 @@ class GameState(
     private fun prepareGameLogic() {
         when (gameType.value) {
             GameType.Simple -> gameLogic =
-                SimpleGameLogic(gameCells.value, gameSize.value, aiDifficulty.value)
+                SimpleGameLogic(gameCells.value, gameSize.intValue, aiDifficulty.value)
         }
     }
 
     private fun getEmptyBoard(): List<List<DoozCell>> {
         val columns = mutableListOf<List<DoozCell>>()
-        for (x in 0 until gameSize.value) {
+        for (x in 0 until gameSize.intValue) {
             val row = mutableListOf<DoozCell>()
-            for (y in 0 until gameSize.value)
+            for (y in 0 until gameSize.intValue)
                 row.add(DoozCell(x, y))
             columns.add(row)
         }
@@ -368,7 +370,7 @@ fun rememberHomeState(
     context: Context = LocalContext.current,
     coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
     doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
-    gameSize: MutableState<Int> = rememberSaveable { mutableStateOf(gameDefaultSize) },
+    gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(gameDefaultSize) },
     currentPlayer: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
     players: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
