@@ -152,7 +152,7 @@ fun GameContent(
                         exit = scaleOut()
                     ) {
                         GameBoard(
-                            gameSize = gameState.gameSize.value,
+                            gameSize = gameState.gameSize.intValue,
                             gameCells = gameState.gameCells.value,
                             winnerCells = gameState.winnerCells.value,
                             isGameFinished = gameState.isGameFinished.value,

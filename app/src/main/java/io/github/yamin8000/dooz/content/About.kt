@@ -77,18 +77,6 @@ internal fun AboutContent(onBackClick: () -> Unit) {
                             )
                         }
                     )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(
-                            8.dp,
-                            Alignment.CenterHorizontally
-                        )
-                    ) {
-                        val version = stringResource(R.string.version_name)
-                        PersianText("$version - ${BuildConfig.FLAVOR}")
-                        PersianText(BuildConfig.VERSION_NAME)
-                    }
                     PersianText(
                         text = stringResource(R.string.license_header),
                         modifier = Modifier.fillMaxWidth()
