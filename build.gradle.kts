@@ -1,6 +1,6 @@
 /*
  *     Dooz
- *     settings.gradle Created by Yamin Siahmargooei at 2022/3/31
+ *     build.gradle Created by Yamin Siahmargooei at 2022/3/31
  *     This file is part of Dooz.
  *     Copyright (C) 2022  Yamin Siahmargooei
  *
@@ -18,19 +18,9 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id("com.android.application") version "8.2.0" apply false
+    id("com.android.library") version "8.2.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.21" apply false
 }
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-rootProject.name = "Dooz"
-include ':app'
