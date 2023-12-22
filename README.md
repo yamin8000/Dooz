@@ -3,6 +3,10 @@
 Dooz or Tic-Tac-Tao is a simple pen-and-paper game. I created this implementation using Kotlin and
 Jetpack Compose for Android devices.
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/io.github.yamin8000.dooz)
+
 ---
 
 | Icon |                Item                 |
