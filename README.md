@@ -5,6 +5,8 @@
 <h1>Dooz/Tic-Tac-Tao</h1>
 </div>
 
+[![Android CI](https://github.com/yamin8000/Dooz/actions/workflows/android.yml/badge.svg)](https://github.com/yamin8000/Dooz/actions/workflows/android.yml)
+
 Dooz or Tic-Tac-Tao is a simple pen-and-paper game. I created this implementation using Kotlin and
 Jetpack Compose for Android Devices.
 
