@@ -9,8 +9,8 @@ Dooz or Tic-Tac-Tao is a simple pen-and-paper game. I created this implementatio
 Jetpack Compose for Android Devices.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-    alt="Get it on F-Droid"
-    height="80">](https://f-droid.org/packages/io.github.yamin8000.dooz)
+alt="Get it on F-Droid"
+height="80">](https://f-droid.org/packages/io.github.yamin8000.dooz)
 
 ---
 
@@ -80,8 +80,6 @@ Siegler
 
 In Easy difficulty, AI plays a random empty cell in the grid. In Medium difficulty, AI chooses
 between Easy and Hard Difficult for each move based on a 50/50 chance.
-
-Dooz uses [weblate](https://hosted.weblate.org/engage/dooz/) for translation, contribution is greatly appreciated.
 
 ## Changelog
 
