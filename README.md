@@ -1,4 +1,9 @@
-# Dooz/Tic-Tac-Tao
+<div align="center">
+<img src="app/src/main/ic_launcher-playstore.png"
+    alt="Get it on F-Droid"
+    height="80">
+<h1>Dooz/Tic-Tac-Tao</h1>
+</div>
 
 Dooz or Tic-Tac-Tao is a simple pen-and-paper game. I created this implementation using Kotlin and
 Jetpack Compose for Android Devices.
