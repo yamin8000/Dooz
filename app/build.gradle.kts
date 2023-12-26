@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+
 /*
  *     Dooz
  *     build.gradle Created by Yamin Siahmargooei at 2022/3/31
@@ -40,6 +42,7 @@ android {
         versionCode = 15
         versionName = "1.0.15"
         vectorDrawables.useSupportLibrary = true
+        archivesName = "$applicationId-v$versionCode($versionName)"
     }
 
     buildTypes {
