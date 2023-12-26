@@ -43,9 +43,7 @@ import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 
 @Composable
-fun MainNavigation(
-    adContent: @Composable () -> Unit
-) {
+fun MainNavigation() {
     val context = LocalContext.current
     var theme by remember { mutableStateOf(ThemeSetting.System) }
     val dataStore = DataStoreHelper(context.settings)
@@ -82,7 +80,6 @@ fun MainNavigation(
 
                 composable(Nav.Routes.about) { AboutContent(onBackClick = { navController.popBackStack() }) }
             }
-            adContent()
         }
     }
 }
