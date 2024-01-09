@@ -94,7 +94,7 @@ internal fun GeneralGameSettings(
             if (playerTypeDialogVisibility) {
                 SettingsSelectorDialog(
                     title = title,
-                    options = GamePlayersType.values().toList(),
+                    options = GamePlayersType.entries,
                     currentItem = gamePlayersType,
                     onDismiss = { playerTypeDialogVisibility = false },
                     onOptionChanged = onPlayerTypeChange,
@@ -105,7 +105,7 @@ internal fun GeneralGameSettings(
             if (firstPlayerPolicyVisibility) {
                 SettingsSelectorDialog(
                     title = title,
-                    options = FirstPlayerPolicy.values().toList(),
+                    options = FirstPlayerPolicy.entries,
                     currentItem = firstPlayerPolicy,
                     onDismiss = { firstPlayerPolicyVisibility = false },
                     onOptionChanged = onFirstPlayerPolicyChange,

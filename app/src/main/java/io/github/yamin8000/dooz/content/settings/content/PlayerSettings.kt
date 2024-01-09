@@ -20,8 +20,6 @@
 
 package io.github.yamin8000.dooz.content.settings.content
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,7 +27,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -37,8 +34,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
+import io.github.yamin8000.dooz.content.settings.SettingsItemCard
 import io.github.yamin8000.dooz.ui.ClickableShapes
-import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
 import io.github.yamin8000.dooz.ui.shapes
@@ -58,17 +55,8 @@ internal fun PlayerCustomization(
     onSecondPlayerShapeChange: (String) -> Unit,
     onSave: () -> Unit
 ) {
-    InfoCard(
-        modifier = Modifier.fillMaxWidth(),
-        header = {
-            PersianText(
-                text = stringResource(R.string.player_names),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.primary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        },
+    SettingsItemCard(
+        title = stringResource(R.string.player_names),
         content = {
             PlayerNamesCustomizer(
                 firstPlayerName = firstPlayerName,
@@ -98,6 +86,7 @@ internal fun PlayerCustomization(
                 content = {
                     PersianText(
                         text = stringResource(R.string.save),
+                        fontSize = 16.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -129,32 +118,24 @@ internal fun PlayerShapesCustomizer(
 }
 
 @Composable
-internal fun PlayerNamesCustomizer(
+private fun PlayerNamesCustomizer(
     firstPlayerName: String,
     onFirstPlayerNameChange: (String) -> Unit,
     secondPlayerName: String,
     onSecondPlayerNameChange: (String) -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        NameField(
-            modifier = Modifier.weight(1f),
-            label = stringResource(R.string.second_player_name),
-            placeholder = stringResource(R.string.enter_name),
-            value = secondPlayerName,
-            onValueChange = onSecondPlayerNameChange
-        )
-        NameField(
-            modifier = Modifier.weight(1f),
-            label = stringResource(R.string.first_player_name),
-            placeholder = stringResource(R.string.enter_name),
-            value = firstPlayerName,
-            onValueChange = onFirstPlayerNameChange
-        )
-    }
+    NameField(
+        label = stringResource(R.string.second_player_name),
+        placeholder = stringResource(R.string.enter_name),
+        value = secondPlayerName,
+        onValueChange = onSecondPlayerNameChange
+    )
+    NameField(
+        label = stringResource(R.string.first_player_name),
+        placeholder = stringResource(R.string.enter_name),
+        value = firstPlayerName,
+        onValueChange = onFirstPlayerNameChange
+    )
 }
 
 @Composable

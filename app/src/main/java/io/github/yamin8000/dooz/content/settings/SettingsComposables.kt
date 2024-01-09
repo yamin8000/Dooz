@@ -63,24 +63,26 @@ internal fun SettingsItemCard(
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.Start,
-    ) {
-        PersianText(
-            text = title,
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Card(
-            modifier = modifier,
-            shape = DefaultCornerShape
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                content = { content() }
+        content = {
+            PersianText(
+                text = title,
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.primary
             )
-        }
-    }
+            Card(
+                modifier = modifier,
+                shape = DefaultCornerShape,
+                content = {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        content = content
+                    )
+                }
+            )
+        },
+    )
 }
 
 @Composable
@@ -100,19 +102,20 @@ internal fun SettingsItem(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 16.dp),
-                    content = content
-                )
-                Icon(
-                    imageVector = Icons.TwoTone.ArrowDropDownCircle,
-                    contentDescription = ""
-                )
-            }
+                verticalAlignment = Alignment.CenterVertically,
+                content = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        content = content
+                    )
+                    Icon(
+                        imageVector = Icons.TwoTone.ArrowDropDownCircle,
+                        contentDescription = null
+                    )
+                }
+            )
         }
     )
 }
@@ -140,35 +143,37 @@ internal fun <T> SettingsSelectorDialog(
                 modifier = Modifier
                     .padding(16.dp)
                     .selectableGroup()
-                    .fillMaxWidth()
-            ) {
-                options.forEach { item ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.Start),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (item == currentItem),
-                                role = Role.RadioButton,
-                                onClick = {
-                                    onOptionChanged(item)
-                                    onDismiss()
-                                }
-                            )
-                    ) {
-                        RadioButton(
-                            selected = (item == currentItem),
-                            onClick = null,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                        PersianText(
-                            text = displayProvider(item, context),
-                            modifier = Modifier.padding(vertical = 16.dp)
+                    .fillMaxWidth(),
+                content = {
+                    options.forEach { item ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.Start),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = (item == currentItem),
+                                    role = Role.RadioButton,
+                                    onClick = {
+                                        onOptionChanged(item)
+                                        onDismiss()
+                                    }
+                                ),
+                            content = {
+                                RadioButton(
+                                    selected = (item == currentItem),
+                                    onClick = null,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                                PersianText(
+                                    text = displayProvider(item, context),
+                                    modifier = Modifier.padding(vertical = 16.dp)
+                                )
+                            }
                         )
                     }
                 }
-            }
+            )
         }
     )
 }

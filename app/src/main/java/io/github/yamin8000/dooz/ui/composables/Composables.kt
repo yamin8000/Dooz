@@ -23,10 +23,31 @@ package io.github.yamin8000.dooz.ui.composables
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -35,9 +56,31 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonElevation
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -255,61 +298,6 @@ fun ClickableIcon(
             onClick()
         }
     )
-}
-
-@Composable
-fun InfoCard(
-    modifier: Modifier = Modifier,
-    contentPadding: Dp = 8.dp,
-    elementVerticalSpacing: Dp = 8.dp,
-    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    header: String,
-    content: @Composable () -> Unit,
-    footer: @Composable (() -> Unit)? = null
-) {
-    InfoCard(
-        header = {
-            PersianText(
-                text = header,
-                fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        },
-        modifier = modifier,
-        contentPadding = contentPadding,
-        elementVerticalSpacing = elementVerticalSpacing,
-        horizontalAlignment = horizontalAlignment,
-        content = content,
-        footer = footer
-    )
-}
-
-
-@Composable
-fun InfoCard(
-    modifier: Modifier = Modifier,
-    contentPadding: Dp = 8.dp,
-    elementVerticalSpacing: Dp = 8.dp,
-    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
-    header: @Composable () -> Unit,
-    content: @Composable () -> Unit,
-    footer: @Composable (() -> Unit)? = null
-) {
-    Card(
-        modifier = modifier,
-    ) {
-        Column(
-            horizontalAlignment = horizontalAlignment,
-            verticalArrangement = Arrangement.spacedBy(elementVerticalSpacing),
-            modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxWidth()
-        ) {
-            header()
-            content()
-            if (footer != null) footer()
-        }
-    }
 }
 
 @Composable

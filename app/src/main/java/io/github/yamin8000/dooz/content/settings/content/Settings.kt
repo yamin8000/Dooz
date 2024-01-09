@@ -20,12 +20,25 @@
 
 package io.github.yamin8000.dooz.content.settings.content
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.twotone.Games
+import androidx.compose.material.icons.twotone.People
+import androidx.compose.material.icons.twotone.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,79 +75,97 @@ fun SettingsContent(
         },
         content = {
             Surface(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                ) {
-                    val tabTitles = listOf(
-                        stringResource(R.string.general),
-                        stringResource(R.string.game),
-                        stringResource(R.string.players)
-                    )
-
+                modifier = Modifier.fillMaxSize(),
+                content = {
                     val tabIndex = rememberSaveable { mutableIntStateOf(1) }
-                    ScrollableTabRow(
-                        selectedTabIndex = tabIndex.intValue,
-                        tabs = {
-                            tabTitles.forEachIndexed { index, title ->
-                                Tab(
-                                    selected = tabIndex.intValue == index,
-                                    onClick = { tabIndex.intValue = index },
-                                    text = { PersianText(title) })
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
+                        content = {
+                            val tabTitles = listOf(
+                                stringResource(R.string.general),
+                                stringResource(R.string.game),
+                                stringResource(R.string.players)
+                            )
+
+                            ScrollableTabRow(
+                                selectedTabIndex = tabIndex.intValue,
+                                tabs = {
+                                    val icons = remember {
+                                        listOf(
+                                            Icons.TwoTone.Settings,
+                                            Icons.TwoTone.Games,
+                                            Icons.TwoTone.People
+                                        )
+                                    }
+
+                                    tabTitles.forEachIndexed { index, title ->
+                                        Tab(
+                                            selected = tabIndex.intValue == index,
+                                            onClick = { tabIndex.intValue = index },
+                                            text = { PersianText(title) },
+                                            icon = {
+                                                Icon(
+                                                    imageVector = icons.getOrNull(index)
+                                                        ?: Icons.TwoTone.Settings,
+                                                    contentDescription = title
+                                                )
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                            when (tabTitles[tabIndex.intValue]) {
+                                stringResource(R.string.general) -> {
+                                    ThemeChangerCard(state.themeSetting) { newTheme ->
+                                        state.themeSetting = newTheme
+                                        onThemeChanged(newTheme)
+                                    }
+                                    EffectsCard(
+                                        isSoundOn = state.isSoundOn,
+                                        isSoundOnChange = { state.isSoundOn = it },
+                                        isVibrationOn = state.isVibrationOn,
+                                        isVibrationOnChange = { state.isVibrationOn = it }
+                                    )
+                                }
+
+                                stringResource(R.string.game) -> {
+                                    GeneralGameSettings(
+                                        gamePlayersType = state.gamePlayersType,
+                                        onPlayerTypeChange = { state.gamePlayersType = it },
+                                        firstPlayerPolicy = state.firstPlayerPolicy,
+                                        onFirstPlayerPolicyChange = { state.firstPlayerPolicy = it }
+                                    )
+                                    AiDifficultyCard(
+                                        aiDifficulty = state.aiDifficulty,
+                                        onDifficultyChanged = { state.aiDifficulty = it }
+                                    )
+                                    GameSizeChanger(
+                                        gameSize = state.gameSize,
+                                        onGameSizeIncrease = { state.gameSize++ },
+                                        onGameSizeDecrease = { state.gameSize-- }
+                                    )
+                                }
+
+                                stringResource(R.string.players) -> {
+                                    PlayerCustomization(
+                                        onSave = { state.saveNames() },
+                                        firstPlayerName = state.firstPlayerName,
+                                        onFirstPlayerNameChange = { state.firstPlayerName = it },
+                                        secondPlayerName = state.secondPlayerName,
+                                        onSecondPlayerNameChange = { state.secondPlayerName = it },
+                                        firstPlayerShape = state.firstPlayerShape,
+                                        onFirstPlayerShapeChange = { state.firstPlayerShape = it },
+                                        secondPlayerShape = state.secondPlayerShape,
+                                        onSecondPlayerShapeChange = { state.secondPlayerShape = it }
+                                    )
+                                }
                             }
                         }
                     )
-                    when (tabTitles[tabIndex.intValue]) {
-                        stringResource(R.string.general) -> {
-                            ThemeChangerCard(state.themeSetting) { newTheme ->
-                                state.themeSetting = newTheme
-                                onThemeChanged(newTheme)
-                            }
-                            EffectsCard(
-                                isSoundOn = state.isSoundOn,
-                                isSoundOnChange = { state.isSoundOn = it },
-                                isVibrationOn = state.isVibrationOn,
-                                isVibrationOnChange = { state.isVibrationOn = it }
-                            )
-                        }
-
-                        stringResource(R.string.game) -> {
-                            GeneralGameSettings(
-                                gamePlayersType = state.gamePlayersType,
-                                onPlayerTypeChange = { state.gamePlayersType = it },
-                                firstPlayerPolicy = state.firstPlayerPolicy,
-                                onFirstPlayerPolicyChange = { state.firstPlayerPolicy = it }
-                            )
-                            AiDifficultyCard(
-                                aiDifficulty = state.aiDifficulty,
-                                onDifficultyChanged = { state.aiDifficulty = it }
-                            )
-                            GameSizeChanger(
-                                gameSize = state.gameSize,
-                                onGameSizeIncrease = { state.gameSize++ },
-                                onGameSizeDecrease = { state.gameSize-- }
-                            )
-                        }
-
-                        stringResource(R.string.players) -> {
-                            PlayerCustomization(
-                                onSave = { state.saveNames() },
-                                firstPlayerName = state.firstPlayerName,
-                                onFirstPlayerNameChange = { state.firstPlayerName = it },
-                                secondPlayerName = state.secondPlayerName,
-                                onSecondPlayerNameChange = { state.secondPlayerName = it },
-                                firstPlayerShape = state.firstPlayerShape,
-                                onFirstPlayerShapeChange = { state.firstPlayerShape = it },
-                                secondPlayerShape = state.secondPlayerShape,
-                                onSecondPlayerShapeChange = { state.secondPlayerShape = it }
-                            )
-                        }
-                    }
                 }
-            }
+            )
         }
     )
 }

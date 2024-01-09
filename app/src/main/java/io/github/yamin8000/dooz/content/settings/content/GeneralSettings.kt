@@ -48,7 +48,6 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings.SettingsItem
 import io.github.yamin8000.dooz.content.settings.SettingsItemCard
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
-import io.github.yamin8000.dooz.ui.composables.InfoCard
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
 import io.github.yamin8000.dooz.ui.composables.SwitchWithText
@@ -88,12 +87,12 @@ internal fun ThemeChangerCard(
 }
 
 @Composable
-fun ThemeChangerDialog(
+private fun ThemeChangerDialog(
     currentTheme: ThemeSetting,
     onCurrentThemeChange: (ThemeSetting) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val themes = remember { ThemeSetting.values() }
+    val themes = remember { ThemeSetting.entries.toTypedArray() }
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = { /*ignored*/ },
@@ -146,9 +145,8 @@ internal fun EffectsCard(
     isVibrationOn: Boolean,
     isVibrationOnChange: (Boolean) -> Unit
 ) {
-    InfoCard(
-        modifier = Modifier.fillMaxWidth(),
-        header = stringResource(R.string.effects),
+    SettingsItemCard(
+        title = stringResource(R.string.effects),
         content = {
             SwitchWithText(
                 caption = stringResource(R.string.sound_effects),
@@ -165,7 +163,7 @@ internal fun EffectsCard(
 }
 
 @Composable
-fun DynamicThemeNotice() {
+private fun DynamicThemeNotice() {
     PersianText(
         text = stringResource(R.string.dynamic_theme_notice),
         textAlign = TextAlign.Justify

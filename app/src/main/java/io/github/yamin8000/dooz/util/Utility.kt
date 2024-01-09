@@ -21,12 +21,9 @@
 package io.github.yamin8000.dooz.util
 
 import android.content.Context
-import android.util.Log
-import io.github.yamin8000.dooz.BuildConfig
 import java.util.Locale
 
 object Utility {
-
     private fun getCurrentLocale(context: Context): Locale =
         context.resources.configuration.locales.get(0)
 
@@ -60,18 +57,5 @@ object Utility {
         return currentLocale == Locale("fa").language || Constants.PERSIAN_REGEX.containsMatchIn(
             text
         )
-    }
-
-    fun log(
-        message: String
-    ) {
-        if (BuildConfig.DEBUG)
-            Log.d(Constants.LOG_TAG, message)
-    }
-
-    fun log(
-        exception: Exception
-    ) {
-        log(exception.stackTraceToString())
     }
 }
