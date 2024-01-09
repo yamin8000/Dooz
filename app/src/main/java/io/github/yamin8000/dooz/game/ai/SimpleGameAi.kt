@@ -79,43 +79,42 @@ class SimpleGameAi(
     }
 
     private fun hardPlay(): DoozCell {
-        var cell = winOrWinBlockPlay().getReadyToPlayCell()
-        if (cell != null) return cell
-        cell = forkOrForkBlockPlayHandler().getReadyToPlayCell()
-        if (cell != null) return cell
-        cell = centerPlay().getReadyToPlayCell()
-        if (cell != null) return cell
-        cell = cornerPlay().getReadyToPlayCell()
-        if (cell != null) return cell
-        return easyPlay()
+        return ((winOrWinBlockPlay() ?: forkOrForkBlockPlayHandler() ?: centerPlay()
+        ?: cornerPlay()).getReadyToPlayCell() ?: easyPlay())
     }
 
     private fun cornerPlay(): DoozCell? {
-        val corners = buildList {
-            add(gameCells.firstOrNull()?.firstOrNull())
-            add(gameCells.firstOrNull()?.lastOrNull())
-            add(gameCells.lastOrNull()?.lastOrNull())
-            add(gameCells.lastOrNull()?.firstOrNull())
-        }.filter { it?.owner == null }
+        val corners = playableCorners()
         if (corners.isEmpty()) return null
         val cell = when {
             gameCells.firstOrNull()
                 ?.firstOrNull()?.owner?.type == PlayerType.Human -> gameCells.lastOrNull()
                 ?.lastOrNull()
+
             gameCells.firstOrNull()
                 ?.lastOrNull()?.owner?.type == PlayerType.Human -> gameCells.lastOrNull()
                 ?.firstOrNull()
+
             gameCells.lastOrNull()
                 ?.lastOrNull()?.owner?.type == PlayerType.Human -> gameCells.firstOrNull()
                 ?.firstOrNull()
+
             gameCells.lastOrNull()
                 ?.firstOrNull()?.owner?.type == PlayerType.Human -> gameCells.firstOrNull()
                 ?.lastOrNull()
+
             else -> corners.getOrNull(random.nextInt(corners.indices))
         } ?: return null
         return if (cell.owner == null) cell
         else corners.getOrNull(random.nextInt(corners.indices))
     }
+
+    private fun playableCorners() = buildList {
+        add(gameCells.firstOrNull()?.firstOrNull())
+        add(gameCells.firstOrNull()?.lastOrNull())
+        add(gameCells.lastOrNull()?.lastOrNull())
+        add(gameCells.lastOrNull()?.firstOrNull())
+    }.filter { it?.owner == null }
 
     private fun centerPlay(): DoozCell? {
         val center = gameSize / 2
@@ -149,11 +148,7 @@ class SimpleGameAi(
         gameCells: List<List<DoozCell>>,
         compareGameCells: List<List<DoozCell>>
     ): DoozCell? {
-        var cell = forkPlay(gameCells, compareGameCells)
-        if (cell != null) return cell
-        cell = forkBlockPlay(gameCells, compareGameCells)
-        if (cell != null) return cell
-        return null
+        return forkPlay(gameCells, compareGameCells) ?: forkBlockPlay(gameCells, compareGameCells)
     }
 
     private fun forkPlay(
