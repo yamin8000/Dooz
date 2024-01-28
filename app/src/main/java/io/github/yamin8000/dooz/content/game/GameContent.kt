@@ -31,8 +31,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.twotone.Undo
 import androidx.compose.material.icons.twotone.Games
-import androidx.compose.material.icons.twotone.Undo
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -81,7 +81,7 @@ fun GameContent(
                         enabled = gameState.isGameStarted.value && gameState.lastPlayedCells.value.isNotEmpty(),
                         content = {
                             Icon(
-                                imageVector = Icons.TwoTone.Undo,
+                                imageVector = Icons.AutoMirrored.TwoTone.Undo,
                                 stringResource(R.string.undo)
                             )
                         }

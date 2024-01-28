@@ -54,7 +54,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.ArrowBack
+import androidx.compose.material.icons.automirrored.twotone.ArrowBack
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -379,7 +379,7 @@ fun ScaffoldWithTitle(
                     },
                     actions = {
                         ClickableIcon(
-                            imageVector = Icons.TwoTone.ArrowBack,
+                            imageVector = Icons.AutoMirrored.TwoTone.ArrowBack,
                             contentDescription = "",
                             onClick = { onBackClick() }
                         )

@@ -26,9 +26,10 @@ plugins {
     id("kotlin-parcelize")
 }
 
-private val composeLibsVersion = "1.5.4"
-private val composeUiLibsVersion = "1.5.4"
-private val composeCompilerVersion = "1.5.7"
+private val composeLibsVersion = "1.6.0"
+private val composeUiLibsVersion = "1.6.0"
+private val composeCompilerVersion = "1.5.8"
+
 private val appId = "io.github.yamin8000.dooz"
 
 android {
@@ -71,7 +72,6 @@ android {
 
     buildFeatures {
         compose = true
-        buildConfig = true
     }
 
     composeOptions {

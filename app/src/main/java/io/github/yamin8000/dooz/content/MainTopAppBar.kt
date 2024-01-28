@@ -25,9 +25,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.Help
+import androidx.compose.material.icons.automirrored.twotone.Help
 import androidx.compose.material.icons.twotone.Settings
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -72,7 +76,7 @@ fun AboutIcon(
     onAboutIconClick: () -> Unit
 ) {
     ClickableIcon(
-        imageVector = Icons.TwoTone.Help,
+        imageVector = Icons.AutoMirrored.TwoTone.Help,
         contentDescription = stringResource(R.string.about),
         onClick = onAboutIconClick
     )
