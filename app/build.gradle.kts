@@ -97,7 +97,7 @@ dependencies {
     implementation("androidx.compose.material:material:$composeLibsVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeLibsVersion")
     //material3
-    val material3Version = "1.1.2"
+    val material3Version = "1.2.0"
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
     //compose navigation
