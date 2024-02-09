@@ -134,7 +134,6 @@ fun DoozTheme(
 
     MaterialTheme(
         colorScheme = colors,
-        typography = AppTypography,
         content = content
     )
 }

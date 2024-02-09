@@ -105,35 +105,37 @@ private fun ThemeChangerDialog(
                 modifier = Modifier
                     .padding(16.dp)
                     .selectableGroup()
-                    .fillMaxWidth()
-            ) {
-                themes.forEach { theme ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.Start),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (theme == currentTheme),
-                                role = Role.RadioButton,
-                                onClick = {
-                                    onCurrentThemeChange(theme)
-                                    onDismiss()
-                                }
-                            )
-                    ) {
-                        RadioButton(
-                            selected = (theme == currentTheme),
-                            onClick = null,
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                        PersianText(
-                            text = stringResource(theme.persianNameStringResource),
-                            modifier = Modifier.padding(vertical = 16.dp)
+                    .fillMaxWidth(),
+                content = {
+                    themes.forEach { theme ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.Start),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = (theme == currentTheme),
+                                    role = Role.RadioButton,
+                                    onClick = {
+                                        onCurrentThemeChange(theme)
+                                        onDismiss()
+                                    }
+                                ),
+                            content = {
+                                RadioButton(
+                                    selected = (theme == currentTheme),
+                                    onClick = null,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                                PersianText(
+                                    text = stringResource(theme.persianNameStringResource),
+                                    modifier = Modifier.padding(vertical = 16.dp)
+                                )
+                            }
                         )
                     }
                 }
-            }
+            )
         }
     )
 }

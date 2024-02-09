@@ -21,20 +21,44 @@
 package io.github.yamin8000.dooz.content.game
 
 import android.content.pm.ActivityInfo
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.twotone.Undo
 import androidx.compose.material.icons.twotone.Games
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.*
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,7 +75,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.MainTopAppBar
-import io.github.yamin8000.dooz.model.*
+import io.github.yamin8000.dooz.model.AiDifficulty
+import io.github.yamin8000.dooz.model.DoozCell
+import io.github.yamin8000.dooz.model.GamePlayersType
+import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.model.PlayerType
 import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
 import io.github.yamin8000.dooz.ui.composables.PersianText
 import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
@@ -107,63 +135,68 @@ fun GameContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding)
-                    .padding(horizontal = 16.dp)
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    AnimatedVisibility(
-                        visible = gameState.isGameStarted.value,
-                        enter = slideInHorizontally(
-                            initialOffsetX = { -it },
-                            animationSpec = tween(300)
-                        )
-                    ) {
-                        GameInfoCard(
-                            modifier = Modifier.fillMaxWidth(),
-                            playersType = gameState.gamePlayersType.value,
-                            aiDifficulty = gameState.aiDifficulty.value,
-                            winnerName = gameState.winner.value?.name,
-                            isGameDrew = gameState.isGameDrew.value
-                        )
-                    }
+                    .padding(horizontal = 16.dp),
+                content = {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                            .verticalScroll(rememberScrollState()),
+                        content = {
+                            AnimatedVisibility(
+                                visible = gameState.isGameStarted.value,
+                                enter = slideInHorizontally(
+                                    initialOffsetX = { -it },
+                                    animationSpec = tween(300)
+                                ),
+                                content = {
+                                    GameInfoCard(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        playersType = gameState.gamePlayersType.value,
+                                        aiDifficulty = gameState.aiDifficulty.value,
+                                        winnerName = gameState.winner.value?.name,
+                                        isGameDrew = gameState.isGameDrew.value
+                                    )
+                                }
+                            )
 
-                    AnimatedVisibility(
-                        visible = gameState.isGameStarted.value,
-                        enter = slideInHorizontally(
-                            initialOffsetX = { it },
-                            animationSpec = tween(300)
-                        )
-                    ) {
-                        PlayerCards(
-                            firstPlayerPolicy = gameState.firstPlayerPolicy.value,
-                            players = gameState.players.value,
-                            currentPlayer = gameState.currentPlayer.value
-                        )
-                    }
+                            AnimatedVisibility(
+                                visible = gameState.isGameStarted.value,
+                                enter = slideInHorizontally(
+                                    initialOffsetX = { it },
+                                    animationSpec = tween(300)
+                                ),
+                                content = {
+                                    PlayerCards(
+                                        firstPlayerPolicy = gameState.firstPlayerPolicy.value,
+                                        players = gameState.players.value,
+                                        currentPlayer = gameState.currentPlayer.value
+                                    )
+                                }
+                            )
 
-                    AnimatedVisibility(
-                        visible = gameState.isGameStarted.value && !gameState.isRollingDices.value,
-                        enter = scaleIn(),
-                        exit = scaleOut()
-                    ) {
-                        GameBoard(
-                            gameSize = gameState.gameSize.intValue,
-                            gameCells = gameState.gameCells.value,
-                            winnerCells = gameState.winnerCells.value,
-                            isGameFinished = gameState.isGameFinished.value,
-                            currentPlayerType = gameState.currentPlayer.value?.type,
-                            shapeProvider = { gameState.getOwnerShape(it) },
-                            onItemClick = { gameState.playCell(it) }
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(64.dp))
+                            AnimatedVisibility(
+                                visible = gameState.isGameStarted.value && !gameState.isRollingDices.value,
+                                enter = scaleIn(),
+                                exit = scaleOut(),
+                                content = {
+                                    GameBoard(
+                                        gameSize = gameState.gameSize.intValue,
+                                        gameCells = gameState.gameCells.value,
+                                        winnerCells = gameState.winnerCells.value,
+                                        isGameFinished = gameState.isGameFinished.value,
+                                        currentPlayerType = gameState.currentPlayer.value?.type,
+                                        shapeProvider = gameState::getOwnerShape,
+                                        onItemClick = gameState::playCell
+                                    )
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(64.dp))
+                        }
+                    )
                 }
-            }
+            )
         }
     )
 }
@@ -257,68 +290,65 @@ private fun GameBoard(
         columns = GridCells.Fixed(gameSize),
         horizontalArrangement = Arrangement.spacedBy(itemMargin),
         verticalArrangement = Arrangement.spacedBy(itemMargin),
-        userScrollEnabled = false
-    ) {
-        gameCells.forEachIndexed { _, row ->
-            itemsIndexed(row) { _, cell ->
-                val colors = if (cell in winnerCells)
-                    MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.onSecondary
-                else MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
-                DoozItem(
-                    clickable = !isGameFinished && currentPlayerType == PlayerType.Human && cell.owner == null,
-                    shape = shapeProvider(cell.owner),
-                    itemSize = boxItemSize,
-                    doozCellOwner = cell.owner,
-                    onClick = { onItemClick(cell) },
-                    itemBackgroundColor = colors.first,
-                    itemContentColor = colors.second
-                )
+        userScrollEnabled = false,
+        content = {
+            gameCells.forEachIndexed { _, row ->
+                itemsIndexed(row) { _, cell ->
+                    val colors = if (cell in winnerCells)
+                        MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.onSecondary
+                    else MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
+                    DoozItem(
+                        clickable = !isGameFinished && currentPlayerType == PlayerType.Human && cell.owner == null,
+                        shape = shapeProvider(cell.owner),
+                        size = boxItemSize,
+                        hasOwner = cell.owner != null,
+                        onClick = { onItemClick(cell) },
+                        backgroundColor = colors.first,
+                        contentColor = colors.second
+                    )
+                }
             }
         }
-    }
+    )
 }
 
 @Composable
-fun DoozItem(
+private fun DoozItem(
     shape: Shape,
     clickable: Boolean,
-    itemSize: Dp,
-    doozCellOwner: Player?,
-    itemBackgroundColor: Color,
-    itemContentColor: Color,
+    size: Dp,
+    hasOwner: Boolean,
+    backgroundColor: Color,
+    contentColor: Color,
     onClick: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentSize(Alignment.Center)
+            .size(size)
+            .clip(RoundedCornerShape(5.dp))
+            .background(backgroundColor)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
                 enabled = clickable,
                 onClick = onClick
-            )
-    ) {
-        Box(
-            modifier = Modifier
-                .size(itemSize)
-                .clip(RoundedCornerShape(5.dp))
-                .background(itemBackgroundColor),
-            contentAlignment = Alignment.Center
-        ) {
-            androidx.compose.animation.AnimatedVisibility(
-                visible = doozCellOwner != null,
-                enter = scaleIn(animationSpec = tween(150))
-            ) {
-                if (doozCellOwner != null) {
-                    Box(
-                        modifier = Modifier
-                            .size((itemSize.value / 2).dp)
-                            .clip(shape)
-                            .background(itemContentColor),
-                    )
+            ),
+        contentAlignment = Alignment.Center,
+        content = {
+            AnimatedVisibility(
+                visible = hasOwner,
+                enter = scaleIn(animationSpec = tween(150)),
+                content = {
+                    if (hasOwner) {
+                        Box(
+                            modifier = Modifier
+                                .size((size.value / 2).dp)
+                                .clip(shape)
+                                .background(contentColor),
+                        )
+                    }
                 }
-            }
+            )
         }
-    }
+    )
 }

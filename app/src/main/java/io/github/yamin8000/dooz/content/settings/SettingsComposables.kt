@@ -81,7 +81,7 @@ internal fun SettingsItemCard(
                     )
                 }
             )
-        },
+        }
     )
 }
 
@@ -91,10 +91,9 @@ internal fun SettingsItem(
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = modifier.clickable(
-            interactionSource = interactionSource,
+            interactionSource = remember { MutableInteractionSource() },
             indication = LocalIndication.current,
             onClick = onClick,
         ),

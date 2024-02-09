@@ -47,7 +47,7 @@ import io.github.yamin8000.dooz.ui.composables.PersianText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTopAppBar(
+internal fun MainTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onSettingsIconClick: () -> Unit,
     onAboutIconClick: () -> Unit
@@ -72,7 +72,7 @@ fun MainTopAppBar(
 }
 
 @Composable
-fun AboutIcon(
+private fun AboutIcon(
     onAboutIconClick: () -> Unit
 ) {
     ClickableIcon(

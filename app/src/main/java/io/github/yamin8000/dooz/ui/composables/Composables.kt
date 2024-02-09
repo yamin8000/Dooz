@@ -79,7 +79,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -104,19 +103,18 @@ import io.github.yamin8000.dooz.R
 @Composable
 fun Ripple(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+    content: @Composable BoxScope.() -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit = {}
 ) {
     Box(
-        modifier = modifier
-            .combinedClickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(),
-                onClick = onClick,
-                onLongClick = onLongClick
-            ),
-        content = { content() }
+        content = content,
+        modifier = modifier.combinedClickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = rememberRipple(),
+            onClick = onClick,
+            onLongClick = onLongClick
+        )
     )
 }
 
@@ -148,12 +146,13 @@ fun ButtonWithIcon(
             Row(
                 modifier = modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)
-            ) {
-                if (isFontScaleNormal())
-                    icon()
-                content()
-            }
+                horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                content = {
+                    if (isFontScaleNormal())
+                        icon()
+                    content()
+                }
+            )
         }
     )
 }
@@ -192,29 +191,26 @@ fun SwitchWithText(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
-    val internalChecked = rememberSaveable { mutableStateOf(checked) }
     Box(
         modifier = Modifier
             .padding(16.dp)
             .clickable(
                 role = Role.Switch,
-                onClick = {
-                    internalChecked.value = !internalChecked.value
-                    onCheckedChange(internalChecked.value)
-                }
+                onClick = { onCheckedChange(!checked) }
             ),
         content = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                PersianText(text = caption)
-                Switch(
-                    checked = checked,
-                    onCheckedChange = null
-                )
-            }
+                horizontalArrangement = Arrangement.SpaceBetween,
+                content = {
+                    PersianText(text = caption)
+                    Switch(
+                        checked = checked,
+                        onCheckedChange = null
+                    )
+                }
+            )
         }
     )
 }
@@ -243,22 +239,23 @@ fun <T> RadioGroup(
                             selected = (option == currentOption),
                             onClick = { onOptionChange(option) },
                             role = Role.RadioButton
+                        ),
+                    content = {
+                        PersianText(
+                            text = optionStringProvider(option),
+                            modifier = Modifier
+                                .padding(vertical = 16.dp, horizontal = 2.dp)
+                                .weight(5f)
                         )
-                ) {
-                    PersianText(
-                        text = optionStringProvider(option),
-                        modifier = Modifier
-                            .padding(vertical = 16.dp, horizontal = 2.dp)
-                            .weight(5f)
-                    )
-                    RadioButton(
-                        selected = (option == currentOption),
-                        onClick = null,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .weight(1f)
-                    )
-                }
+                        RadioButton(
+                            selected = (option == currentOption),
+                            onClick = null,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .weight(1f)
+                        )
+                    }
+                )
             }
         }
     )
@@ -366,26 +363,27 @@ fun ScaffoldWithTitle(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             Surface(
-                shadowElevation = 8.dp
-            ) {
-                TopAppBar(
-                    scrollBehavior = scrollBehavior,
-                    title = {
-                        PersianText(
-                            text = title,
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    actions = {
-                        ClickableIcon(
-                            imageVector = Icons.AutoMirrored.TwoTone.ArrowBack,
-                            contentDescription = "",
-                            onClick = { onBackClick() }
-                        )
-                    }
-                )
-            }
+                shadowElevation = 8.dp,
+                content = {
+                    TopAppBar(
+                        scrollBehavior = scrollBehavior,
+                        title = {
+                            PersianText(
+                                text = title,
+                                fontSize = 20.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        actions = {
+                            ClickableIcon(
+                                imageVector = Icons.AutoMirrored.TwoTone.ArrowBack,
+                                contentDescription = "",
+                                onClick = onBackClick
+                            )
+                        }
+                    )
+                }
+            )
         },
         content = {
             Box(
@@ -393,7 +391,7 @@ fun ScaffoldWithTitle(
                     .padding(it)
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 4.dp)
                     .fillMaxHeight(),
-                content = { content() }
+                content = content
             )
         }
     )

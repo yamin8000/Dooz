@@ -49,60 +49,64 @@ import io.github.yamin8000.dooz.ui.composables.ScaffoldWithTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AboutContent(onBackClick: () -> Unit) {
+internal fun AboutContent(
+    onBackClick: () -> Unit
+) {
     ScaffoldWithTitle(
         title = stringResource(R.string.about),
         onBackClick = onBackClick,
         content = {
             Surface(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                ) {
-                    val uriHandler = LocalUriHandler.current
-                    val sourceUri = stringResource(R.string.github_source)
-                    val licenseUri = stringResource(R.string.license_link)
-                    val developerUri = stringResource(R.string.developer_uri)
-                    Ripple(
-                        onClick = { uriHandler.openUri(licenseUri) },
+                modifier = Modifier.fillMaxSize(),
+                content = {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
                         content = {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_gplv3),
-                                contentDescription = stringResource(id = R.string.gplv3_image_description),
-                                modifier = Modifier
-                                    .padding(32.dp)
-                                    .fillMaxWidth(),
-                                contentScale = ContentScale.FillWidth,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                            val uriHandler = LocalUriHandler.current
+                            val sourceUri = stringResource(R.string.github_source)
+                            val licenseUri = stringResource(R.string.license_link)
+                            val developerUri = stringResource(R.string.developer_uri)
+                            Ripple(
+                                onClick = { uriHandler.openUri(licenseUri) },
+                                content = {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.ic_gplv3),
+                                        contentDescription = stringResource(id = R.string.gplv3_image_description),
+                                        modifier = Modifier
+                                            .padding(32.dp)
+                                            .fillMaxWidth(),
+                                        contentScale = ContentScale.FillWidth,
+                                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                                    )
+                                }
                             )
-                        }
-                    )
-                    PersianText(
-                        text = stringResource(R.string.license_header),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Ripple(
-                        onClick = { uriHandler.openUri(sourceUri) },
-                        content = {
-                            Text(
-                                text = sourceUri,
-                                textDecoration = TextDecoration.Underline
+                            PersianText(
+                                text = stringResource(R.string.license_header),
+                                modifier = Modifier.fillMaxWidth()
                             )
-                        }
-                    )
-                    Ripple(
-                        onClick = { uriHandler.openUri(developerUri) },
-                        content = {
-                            Text(
-                                text = developerUri,
-                                textDecoration = TextDecoration.Underline
+                            Ripple(
+                                onClick = { uriHandler.openUri(sourceUri) },
+                                content = {
+                                    Text(
+                                        text = sourceUri,
+                                        textDecoration = TextDecoration.Underline
+                                    )
+                                }
+                            )
+                            Ripple(
+                                onClick = { uriHandler.openUri(developerUri) },
+                                content = {
+                                    Text(
+                                        text = developerUri,
+                                        textDecoration = TextDecoration.Underline
+                                    )
+                                }
                             )
                         }
                     )
                 }
-            }
+            )
         }
     )
 }

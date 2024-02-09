@@ -32,15 +32,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -59,26 +58,22 @@ import io.github.yamin8000.dooz.util.Constants
 
 val DefaultCornerShape = RoundedCornerShape(15.dp)
 
-fun Shape.toName(): String? {
-    return when (this) {
-        TriangleShape -> Constants.Shapes.triangleShape
-        CircleShape -> Constants.Shapes.circleShape
-        RectangleShape -> Constants.Shapes.rectangleShape
-        XShape -> Constants.Shapes.xShape
-        RingShape -> Constants.Shapes.ringShape
-        else -> null
-    }
+fun Shape.toName() = when (this) {
+    TriangleShape -> Constants.Shapes.triangleShape
+    CircleShape -> Constants.Shapes.circleShape
+    RectangleShape -> Constants.Shapes.rectangleShape
+    XShape -> Constants.Shapes.xShape
+    RingShape -> Constants.Shapes.ringShape
+    else -> null
 }
 
-fun String.toShape(): Shape? {
-    return when (this) {
-        Constants.Shapes.triangleShape -> TriangleShape
-        Constants.Shapes.circleShape -> CircleShape
-        Constants.Shapes.rectangleShape -> RectangleShape
-        Constants.Shapes.xShape -> XShape
-        Constants.Shapes.ringShape -> RingShape
-        else -> null
-    }
+fun String.toShape() = when (this) {
+    Constants.Shapes.triangleShape -> TriangleShape
+    Constants.Shapes.circleShape -> CircleShape
+    Constants.Shapes.rectangleShape -> RectangleShape
+    Constants.Shapes.xShape -> XShape
+    Constants.Shapes.ringShape -> RingShape
+    else -> null
 }
 
 val TriangleShape = GenericShape { size, _ ->
@@ -134,16 +129,16 @@ fun ClickableShapes(
     header: (@Composable () -> Unit) = {},
     onShapeSelected: (Shape) -> Unit
 ) {
-    val disabled = ContentAlpha.disabled
-    val high = ContentAlpha.high
+    val selected = MaterialTheme.colorScheme.tertiary
+    val other = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.38f)
 
-    val selectedIndex = remember { mutableStateOf(-1) }
-    val alphas = remember { mutableStateOf(listOf<Float>()) }
-    alphas.value = buildList {
+    val selectedIndex = remember { mutableIntStateOf(-1) }
+    val colors = remember { mutableStateOf(listOf<Color>()) }
+    colors.value = buildList {
         shapes.forEach {
             if (it == lastSelectedShape)
-                add(disabled)
-            else add(high)
+                add(selected)
+            else add(other)
         }
     }
     Row(
@@ -165,21 +160,22 @@ fun ClickableShapes(
                 shapes.forEachIndexed { index, shape ->
                     ClickableShape(
                         shape = shape,
-                        modifier = Modifier.alpha(alphas.value[index]),
-                        size = size
-                    ) {
-                        selectedIndex.value = index
-                        if (selectedIndex.value != -1 && selectedIndex.value == index) {
-                            onShapeSelected(shapes[index])
-                            alphas.value = buildList {
-                                for (i in shapes.indices) {
-                                    if (i == selectedIndex.value)
-                                        add(disabled)
-                                    else add(high)
+                        color = colors.value[index],
+                        size = size,
+                        onClick = {
+                            selectedIndex.intValue = index
+                            if (selectedIndex.intValue != -1 && selectedIndex.intValue == index) {
+                                onShapeSelected(shapes[index])
+                                colors.value = buildList {
+                                    for (i in shapes.indices) {
+                                        if (i == selectedIndex.intValue)
+                                            add(selected)
+                                        else add(other)
+                                    }
                                 }
                             }
                         }
-                    }
+                    )
                 }
             }
         }
@@ -191,7 +187,7 @@ fun ClickableShape(
     shape: Shape,
     modifier: Modifier = Modifier,
     size: Dp = 50.dp,
-    backgroundColor: Color = MaterialTheme.colorScheme.secondary,
+    color: Color,
     onClick: () -> Unit
 ) {
     Box(
@@ -201,15 +197,16 @@ fun ClickableShape(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(),
                 onClick = onClick
+            ),
+        content = {
+            Box(
+                modifier = modifier
+                    .size(size)
+                    .clip(shape)
+                    .background(color)
             )
-    ) {
-        Box(
-            modifier = modifier
-                .size(size)
-                .clip(shape)
-                .background(backgroundColor)
-        )
-    }
+        }
+    )
 }
 
 @Preview(showBackground = true)

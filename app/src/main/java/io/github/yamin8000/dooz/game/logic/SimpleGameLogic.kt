@@ -54,9 +54,7 @@ class SimpleGameLogic(
 
     override fun isGameDrew(): Boolean {
         winner = findWinner()
-        if (winner == null && gameCells.all { row -> row.all { it.owner != null } })
-            return true
-        return false
+        return winner == null && gameCells.all { row -> row.all { it.owner != null } }
     }
 
     private fun findRowOrColumnWinner(

@@ -43,7 +43,7 @@ import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.util.DataStoreHelper
 
 @Composable
-fun MainNavigation() {
+internal fun MainNavigation() {
     val context = LocalContext.current
     var theme by remember { mutableStateOf(ThemeSetting.System) }
     val dataStore = DataStoreHelper(context.settings)
@@ -55,41 +55,42 @@ fun MainNavigation() {
     }
     DoozTheme(
         isDarkTheme = isDarkTheme(theme, isSystemInDarkTheme()),
-        isDynamicColor = theme == ThemeSetting.System
-    ) {
-        Column {
-            val navController = rememberNavController()
-            NavHost(
-                modifier = Modifier.weight(1f),
-                navController = navController,
-                startDestination = Nav.Routes.game
-            ) {
-                composable(Nav.Routes.game) {
-                    GameContent(
-                        onNavigateToSettings = { navController.navigate(Nav.Routes.settings) },
-                        onNavigateToAbout = { navController.navigate(Nav.Routes.about) }
-                    )
-                }
+        isDynamicColor = theme == ThemeSetting.System,
+        content = {
+            Column {
+                val navController = rememberNavController()
+                NavHost(
+                    modifier = Modifier.weight(1f),
+                    navController = navController,
+                    startDestination = Nav.Routes.game,
+                    builder = {
+                        composable(Nav.Routes.game) {
+                            GameContent(
+                                onNavigateToSettings = { navController.navigate(Nav.Routes.settings) },
+                                onNavigateToAbout = { navController.navigate(Nav.Routes.about) }
+                            )
+                        }
 
-                composable(Nav.Routes.settings) {
-                    SettingsContent(
-                        onThemeChanged = { newTheme -> theme = newTheme },
-                        onBackClick = { navController.popBackStack() }
-                    )
-                }
+                        composable(Nav.Routes.settings) {
+                            SettingsContent(
+                                onThemeChanged = { newTheme -> theme = newTheme },
+                                onBackClick = { navController.popBackStack() }
+                            )
+                        }
 
-                composable(Nav.Routes.about) { AboutContent(onBackClick = { navController.popBackStack() }) }
+                        composable(Nav.Routes.about) { AboutContent(onBackClick = { navController.popBackStack() }) }
+                    }
+                )
             }
         }
-    }
+    )
 }
 
 private fun isDarkTheme(
     themeSetting: ThemeSetting,
     isSystemInDarkTheme: Boolean
-): Boolean {
-    if (themeSetting == ThemeSetting.Light) return false
-    if (themeSetting == ThemeSetting.System) return isSystemInDarkTheme
-    if (themeSetting == ThemeSetting.Dark) return true
-    return false
+) = when (themeSetting) {
+    ThemeSetting.Light -> false
+    ThemeSetting.System -> isSystemInDarkTheme
+    else -> themeSetting == ThemeSetting.Dark
 }
