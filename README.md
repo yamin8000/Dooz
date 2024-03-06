@@ -7,7 +7,7 @@
 
 [![Android CI](https://github.com/yamin8000/Dooz/actions/workflows/android.yml/badge.svg)](https://github.com/yamin8000/Dooz/actions/workflows/android.yml)
 
-Dooz or Tic-Tac-Tao is a simple pen-and-paper game. I created this implementation using Kotlin and
+Dooz or Tic-tac-toe is a simple pen-and-paper game. I created this implementation using Kotlin and
 Jetpack Compose for Android Devices.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
@@ -51,7 +51,7 @@ Just play it!
 
 #### Simple Game
 
-The Simple game is the most simple variation of Tic-tac-tao with a three-by-three grid with two
+The Simple game is the simplest variation of Tic-tac-toe with a three-by-three grid with two
 players. The player who succeeds in placing three of their marks horizontally, vertically, or
 diagonally is the winner.
 
@@ -68,7 +68,7 @@ Siegler
 
 [More info on the strategy here](https://onlinelibrary.wiley.com/doi/abs/10.1207/s15516709cog1704_3)
 
-In Easy difficulty, AI plays a random empty cell in the grid. In Medium difficulty, AI chooses
+On Easy difficulty, the AI plays a random empty cell in the grid. In Medium difficulty, AI chooses
 between Easy and Hard Difficult for each move based on a 50/50 chance.
 
 ## Changelog
