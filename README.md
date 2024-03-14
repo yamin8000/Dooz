@@ -16,6 +16,8 @@ height="80">](https://f-droid.org/packages/io.github.yamin8000.dooz)
 
 ## Preview
 
+### [Featured on AndroidDevNotes](https://twitter.com/androiddevnotes/status/1604571703350161409)
+
 <img src="./fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" alt="preview" width="300"/>
 
 https://github.com/yamin8000/Dooz/assets/5001708/bd9f0905-2677-45d5-b5f3-c1ed8ef894d5
