@@ -26,8 +26,8 @@ plugins {
     id("kotlin-parcelize")
 }
 
-private val composeLibsVersion = "1.6.2"
-private val composeUiLibsVersion = "1.6.2"
+private val composeLibsVersion = "1.6.4"
+private val composeUiLibsVersion = "1.6.4"
 private val composeCompilerVersion = "1.5.10"
 
 private val appId = "io.github.yamin8000.dooz"
@@ -97,7 +97,7 @@ dependencies {
     implementation("androidx.compose.material:material:$composeLibsVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeLibsVersion")
     //material3
-    val material3Version = "1.2.0"
+    val material3Version = "1.2.1"
     implementation("androidx.compose.material3:material3:$material3Version")
     implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
     //compose navigation
