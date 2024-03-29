@@ -28,7 +28,7 @@ plugins {
 
 private val composeLibsVersion = "1.6.4"
 private val composeUiLibsVersion = "1.6.4"
-private val composeCompilerVersion = "1.5.10"
+private val composeCompilerVersion = "1.5.11"
 
 private val appId = "io.github.yamin8000.dooz"
 
@@ -40,8 +40,8 @@ android {
         applicationId = appId
         minSdk = 24
         targetSdk = 34
-        versionCode = 16
-        versionName = "1.0.16"
+        versionCode = 15
+        versionName = "1.0.15"
         vectorDrawables.useSupportLibrary = true
         archivesName = "$applicationId-v$versionCode($versionName)"
     }
