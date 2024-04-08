@@ -26,7 +26,7 @@ plugins {
     id("kotlin-parcelize")
 }
 
-private val composeLibsVersion = "1.6.4"
+private val composeLibsVersion = "1.6.5"
 private val composeUiLibsVersion = "1.6.4"
 private val composeCompilerVersion = "1.5.11"
 
