@@ -92,7 +92,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiLibsVersion")
-    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.activity:activity-compose:1.9.0")
     //compose material3
     implementation("androidx.compose.material:material:$composeLibsVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeLibsVersion")
