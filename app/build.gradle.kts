@@ -87,7 +87,7 @@ android {
 
 dependencies {
     //core android
-    implementation("androidx.core:core-ktx:1.13.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     //compose core
     debugImplementation("androidx.compose.ui:ui-tooling:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui:$composeUiLibsVersion")
