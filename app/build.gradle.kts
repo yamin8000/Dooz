@@ -26,8 +26,8 @@ plugins {
     id("kotlin-parcelize")
 }
 
-private val composeLibsVersion = "1.6.6"
-private val composeUiLibsVersion = "1.6.6"
+private val composeLibsVersion = "1.6.7"
+private val composeUiLibsVersion = "1.6.7"
 private val composeCompilerVersion = "1.5.12"
 
 private val appId = "io.github.yamin8000.dooz"
@@ -87,7 +87,7 @@ android {
 
 dependencies {
     //core android
-    implementation("androidx.core:core-ktx:1.13.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     //compose core
     debugImplementation("androidx.compose.ui:ui-tooling:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui:$composeUiLibsVersion")
@@ -103,5 +103,5 @@ dependencies {
     //compose navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
     //datastore
-    implementation("androidx.datastore:datastore-preferences:1.1.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
 }
