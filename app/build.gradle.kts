@@ -28,7 +28,7 @@ plugins {
 
 private val composeLibsVersion = "1.6.7"
 private val composeUiLibsVersion = "1.6.7"
-private val composeCompilerVersion = "1.5.12"
+private val composeCompilerVersion = "1.5.14"
 
 private val appId = "io.github.yamin8000.dooz"
 
