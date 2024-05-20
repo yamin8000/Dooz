@@ -26,8 +26,6 @@ plugins {
     id("kotlin-parcelize")
 }
 
-private val composeLibsVersion = "1.6.7"
-private val composeUiLibsVersion = "1.6.7"
 private val composeCompilerVersion = "1.5.14"
 
 private val appId = "io.github.yamin8000.dooz"
@@ -40,8 +38,8 @@ android {
         applicationId = appId
         minSdk = 24
         targetSdk = 34
-        versionCode = 16
-        versionName = "1.0.16"
+        versionCode = 17
+        versionName = "1.0.17"
         vectorDrawables.useSupportLibrary = true
         archivesName = "$applicationId-v$versionCode($versionName)"
     }
@@ -89,6 +87,8 @@ dependencies {
     //core android
     implementation("androidx.core:core-ktx:1.13.1")
     //compose core
+    val composeLibsVersion = "1.6.7"
+    val composeUiLibsVersion = "1.6.7"
     debugImplementation("androidx.compose.ui:ui-tooling:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiLibsVersion")
