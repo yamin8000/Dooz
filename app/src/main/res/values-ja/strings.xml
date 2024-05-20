@@ -1,0 +1,78 @@
+<!--
+  ~     Dooz
+  ~     strings.xml Created by Yamin Siahmargooei at 2022/3/31
+  ~     This file is part of Dooz.
+  ~     Copyright (C) 2022  Yamin Siahmargooei
+  ~
+  ~     Dooz is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Dooz is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="app_name">Dooz</string>
+    <string name="play_with_computer">プレイヤー対コンピューター</string>
+    <string name="play_with_human">プレイヤー対プレイヤー</string>
+    <string name="settings">設定</string>
+    <string name="decrease">減らす</string>
+    <string name="increase">増やす</string>
+    <string name="game_board_size">ゲームのボードサイズ</string>
+    <string name="player_names">プレイヤーの名前</string>
+    <string name="save">保存</string>
+    <string name="new_game">新しいゲーム</string>
+    <string name="player_turn">プレイヤーのターン</string>
+    <string name="game_is_drew">引き分け</string>
+    <string name="first_player_name">一番手の名前</string>
+    <string name="enter_name">名前を入力</string>
+    <string name="second_player_name">二番手の名前</string>
+    <string name="player_shapes">プレイヤーの形</string>
+    <string name="player_shapes_equal">プレイヤーの形は同じ形あってはいけません</string>
+    <string name="player_names_equal_or_empty">プレイヤーの名前が空であったり、同じ名前であってはいけません</string>
+    <string name="second_player_shape">二番手の形</string>
+    <string name="first_player_shape">一番手の形</string>
+    <string name="x_is_winner">%sの勝利</string>
+    <string name="game_info">ゲーム情報</string>
+    <string name="computer">コンピューター</string>
+    <string name="ai_difficulty_var">難易度：％s</string>
+    <string name="ai_difficulty">難易度</string>
+    <string name="undefined">不明</string>
+    <string name="game_result">結果：</string>
+    <string name="theme">テーマ</string>
+    <string name="game_general_settings">ゲームの設定</string>
+    <string name="theme_system">システムに合わせる</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+    <string name="dice_rolling_start">サイコロを振って始める</string>
+    <string name="human_first_start">常に人間がスタート</string>
+    <string name="game">ゲーム</string>
+    <string name="players">プレイヤー</string>
+    <string name="general">一般</string>
+    <string name="effects">エフェクト</string>
+    <string name="dynamic_theme_notice">Android 12+では、テーマの色はホーム画面の背景に基づいています</string>
+    <string name="sound_effects">サウンド</string>
+    <string name="haptic_feedback">振動</string>
+    <string name="undo">元に戻す</string>
+    <string name="data_saved">データを保存しました</string>
+    <string name="player_names_empty">プレイヤーの名前は空にすることは出来ません</string>
+    <string name="first_player_default_name">一番手</string>
+    <string name="second_player_default_name">二番手</string>
+    <string name="about">詳細</string>
+    <string name="github_source" translatable="false">https://github.com/yamin8000/Dooz</string>
+    <string name="license_link" translatable="false">https://raw.githubusercontent.com/yamin8000/Dooz/master/LICENSE</string>
+    <string name="gplv3_image_description">GPLv3 License Image</string>
+    <string name="version_name">バージョン</string>
+    <string name="license_header">これはGNUライセンスに基づく無料のアプリケーションです。詳細はこちらをご覧ください。</string>
+    <string name="easy">簡単</string>
+    <string name="medium">普通</string>
+    <string name="hard">難しい</string>
+    <string name="developer_uri" translatable="false">https://yamins.ir</string>
+</resources>
