@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
-
 /*
  *     Dooz
  *     build.gradle Created by Yamin Siahmargooei at 2022/3/31
@@ -23,10 +21,8 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
-
-private val composeCompilerVersion = "1.5.14"
 
 private val appId = "io.github.yamin8000.dooz"
 
@@ -41,7 +37,7 @@ android {
         versionCode = 17
         versionName = "1.0.17"
         vectorDrawables.useSupportLibrary = true
-        archivesName = "$applicationId-v$versionCode($versionName)"
+        base.archivesName = "$applicationId-v$versionCode($versionName)"
     }
 
     buildTypes {
@@ -70,10 +66,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = composeCompilerVersion
     }
 
     packaging {
