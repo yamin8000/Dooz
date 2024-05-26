@@ -19,3 +19,4 @@ local.properties
 /app/free/
 /app/irMarket/
 /app/src/main/java/io/github/yamin8000/dooz/Previews.kt
+/.kotlin/
