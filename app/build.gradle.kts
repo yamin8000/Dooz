@@ -38,7 +38,7 @@ android {
         versionCode = 18
         versionName = "1.0.18"
         vectorDrawables.useSupportLibrary = true
-        base.archivesName = "$applicationId-v$versionCode($versionName)"
+        base.archivesName = "$applicationId-v$versionCode-n$versionName"
     }
 
     buildTypes {
