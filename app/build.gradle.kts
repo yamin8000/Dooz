@@ -81,7 +81,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     //compose core
     val composeLibsVersion = "1.6.7"
-    val composeUiLibsVersion = "1.6.7"
+    val composeUiLibsVersion = "1.6.8"
     debugImplementation("androidx.compose.ui:ui-tooling:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui:$composeUiLibsVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeUiLibsVersion")
