@@ -19,10 +19,10 @@
  */
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("kotlin-parcelize")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.plugin)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 private val appId = "io.github.yamin8000.dooz"
@@ -78,23 +78,19 @@ android {
 
 dependencies {
     //core android
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation(libs.androidx.core.ktx)
     //compose core
-    val composeLibsVersion = "1.6.8"
-    val composeUiLibsVersion = "1.6.8"
-    debugImplementation("androidx.compose.ui:ui-tooling:$composeUiLibsVersion")
-    implementation("androidx.compose.ui:ui:$composeUiLibsVersion")
-    implementation("androidx.compose.ui:ui-tooling-preview:$composeUiLibsVersion")
-    implementation("androidx.activity:activity-compose:1.9.1")
-    //compose material3
-    implementation("androidx.compose.material:material:$composeLibsVersion")
-    implementation("androidx.compose.material:material-icons-extended:$composeLibsVersion")
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.compose.material.icons.extended)
     //material3
-    val material3Version = "1.2.1"
-    implementation("androidx.compose.material3:material3:$material3Version")
-    implementation("androidx.compose.material3:material3-window-size-class:$material3Version")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material3.window.size)
     //compose navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.navigation.compose)
     //datastore
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation(libs.androidx.datastore.preferences)
 }
