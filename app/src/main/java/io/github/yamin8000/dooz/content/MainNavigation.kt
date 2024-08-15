@@ -74,11 +74,13 @@ internal fun MainNavigation() {
                         composable(Nav.Routes.settings) {
                             SettingsContent(
                                 onThemeChanged = { newTheme -> theme = newTheme },
-                                onBackClick = { navController.popBackStack() }
+                                onBackClick = { navController.navigateUp() }
                             )
                         }
 
-                        composable(Nav.Routes.about) { AboutContent(onBackClick = { navController.popBackStack() }) }
+                        composable(Nav.Routes.about) {
+                            AboutContent(onBackClick = { navController.navigateUp() })
+                        }
                     }
                 )
             }
