@@ -79,8 +79,8 @@ class SimpleGameAi(
     }
 
     private fun hardPlay(): DoozCell {
-        return ((winOrWinBlockPlay() ?: forkOrForkBlockPlayHandler() ?: centerPlay()
-        ?: cornerPlay()).getReadyToPlayCell() ?: easyPlay())
+        return (winOrWinBlockPlay() ?: forkOrForkBlockPlayHandler() ?: centerPlay()
+        ?: cornerPlay()).getReadyToPlayCell() ?: easyPlay()
     }
 
     private fun cornerPlay(): DoozCell? {
