@@ -151,7 +151,7 @@ internal fun <T> SettingsSelectorDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .selectable(
-                                    selected = (item == currentItem),
+                                    selected = item == currentItem,
                                     role = Role.RadioButton,
                                     onClick = {
                                         onOptionChanged(item)
@@ -160,7 +160,7 @@ internal fun <T> SettingsSelectorDialog(
                                 ),
                             content = {
                                 RadioButton(
-                                    selected = (item == currentItem),
+                                    selected = item == currentItem,
                                     onClick = null,
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
