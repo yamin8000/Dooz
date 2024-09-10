@@ -34,16 +34,21 @@ import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings
 import io.github.yamin8000.dooz.game.FirstPlayerPolicy
-import io.github.yamin8000.dooz.game.GameConstants.gameDefaultSize
+import io.github.yamin8000.dooz.game.GameConstants.GAME_DEFAULT_SIZE
 import io.github.yamin8000.dooz.game.logic.GameLogic
 import io.github.yamin8000.dooz.game.logic.SimpleGameLogic
-import io.github.yamin8000.dooz.model.*
+import io.github.yamin8000.dooz.model.AiDifficulty
+import io.github.yamin8000.dooz.model.DoozCell
+import io.github.yamin8000.dooz.model.GamePlayersType
+import io.github.yamin8000.dooz.model.GameType
+import io.github.yamin8000.dooz.model.Player
+import io.github.yamin8000.dooz.model.PlayerType
 import io.github.yamin8000.dooz.ui.RingShape
 import io.github.yamin8000.dooz.ui.XShape
 import io.github.yamin8000.dooz.ui.toName
@@ -154,7 +159,7 @@ class GameState(
     }
 
     private suspend fun prepareGameRules() {
-        gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: gameDefaultSize
+        gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GAME_DEFAULT_SIZE
         gamePlayersType.value = GamePlayersType.valueOf(
             dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
         )
@@ -370,7 +375,7 @@ fun rememberHomeState(
     context: Context = LocalContext.current,
     coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
     doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
-    gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(gameDefaultSize) },
+    gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(GAME_DEFAULT_SIZE) },
     currentPlayer: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
     players: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {

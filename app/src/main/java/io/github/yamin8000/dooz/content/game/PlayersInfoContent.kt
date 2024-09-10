@@ -20,12 +20,16 @@
 
 package io.github.yamin8000.dooz.content.game
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
@@ -80,7 +84,7 @@ internal fun PlayerCard(
     firstPlayerPolicy: FirstPlayerPolicy,
     isCurrentPlayer: Boolean = true
 ) {
-    val alpha = if (isCurrentPlayer) ContentAlpha.high else ContentAlpha.disabled
+    val alpha = if (isCurrentPlayer) 1f else .38f
 
     OutlinedCard(
         modifier = modifier.alpha(alpha)

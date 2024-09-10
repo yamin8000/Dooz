@@ -30,7 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
@@ -170,7 +170,7 @@ class SettingsState(
             _gamePlayersType.value = GamePlayersType.valueOf(
                 dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
             )
-            _gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GameConstants.gameDefaultSize
+            _gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GameConstants.GAME_DEFAULT_SIZE
             _firstPlayerName.value =
                 dataStore.getString(Constants.firstPlayerName) ?: defaultFirstPlayerName
             _secondPlayerName.value =
@@ -199,7 +199,7 @@ fun rememberSettingsState(
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(GamePlayersType.PvC)
     },
-    gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(GameConstants.gameDefaultSize) },
+    gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(GameConstants.GAME_DEFAULT_SIZE) },
     firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.first_player_default_name)) },
     secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.second_player_default_name)) },
     firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
