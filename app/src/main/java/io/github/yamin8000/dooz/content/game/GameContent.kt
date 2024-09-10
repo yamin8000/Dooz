@@ -281,9 +281,13 @@ private fun GameBoard(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val boxPadding = 16.dp
-    val boxSize = screenWidth - (2 * boxPadding.value).dp
+    val boxSize = remember(screenWidth) {
+        screenWidth - (2 * boxPadding.value).dp
+    }
     val itemMargin = 8.dp
-    val boxItemSize = ((boxSize.value - itemMargin.value * (gameSize - 1)) / gameSize).dp
+    val boxItemSize = remember(boxSize) {
+        ((boxSize.value - itemMargin.value * (gameSize - 1)) / gameSize).dp
+    }
 
     LazyVerticalGrid(
         modifier = Modifier.size(boxSize),
