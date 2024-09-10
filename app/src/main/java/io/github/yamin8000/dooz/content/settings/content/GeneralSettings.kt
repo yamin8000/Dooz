@@ -114,7 +114,7 @@ private fun ThemeChangerDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .selectable(
-                                    selected = (theme == currentTheme),
+                                    selected = theme == currentTheme,
                                     role = Role.RadioButton,
                                     onClick = {
                                         onCurrentThemeChange(theme)
@@ -123,7 +123,7 @@ private fun ThemeChangerDialog(
                                 ),
                             content = {
                                 RadioButton(
-                                    selected = (theme == currentTheme),
+                                    selected = theme == currentTheme,
                                     onClick = null,
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
