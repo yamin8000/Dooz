@@ -103,11 +103,13 @@ class GameState(
 
             isGameStarted.value = true
 
-            if (firstPlayerPolicy.value == FirstPlayerPolicy.DiceRolling)
+            if (firstPlayerPolicy.value == FirstPlayerPolicy.DiceRolling) {
                 dummyDiceRolling()
+            }
 
-            if (isAiTurnToPlay())
+            if (isAiTurnToPlay()) {
                 scope.launch { playCellByAi() }
+            }
         }
     }
 
@@ -135,14 +137,17 @@ class GameState(
         changeCellOwner(cell)
         checkIfGameIsFinished()
 
-        if (isAiTurnToPlay())
+        if (isAiTurnToPlay()) {
             scope.launch { asyncPlayCellByAi() }
+        }
     }
 
     private fun playCellByAi() {
         checkIfGameIsFinished()
         val cell = gameLogic?.ai?.play()
-        if (cell != null) changeCellOwner(cell)
+        if (cell != null) {
+            changeCellOwner(cell)
+        }
         checkIfGameIsFinished()
     }
 
@@ -212,9 +217,11 @@ class GameState(
             secondPlayerName
         )
 
-        if (firstPlayerPolicy.value == FirstPlayerPolicy.DiceRolling)
+        if (firstPlayerPolicy.value == FirstPlayerPolicy.DiceRolling) {
             setFirstPlayerToDiceWinner()
-        else currentPlayer.value = players.value.first()
+        } else {
+            currentPlayer.value = players.value.first()
+        }
     }
 
     private fun setFirstPlayerToDiceWinner() {
@@ -251,10 +258,12 @@ class GameState(
     }
 
     private suspend fun dummyDiceRolling() {
-        if (isSoundOn)
+        if (isSoundOn) {
             MediaPlayer.create(context, R.raw.dice).start()
-        if (isVibrationOn)
+        }
+        if (isVibrationOn) {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        }
         isRollingDices.value = true
 
         val firstPlayerDice = players.value.first().diceIndex
@@ -279,23 +288,29 @@ class GameState(
 
     fun getOwnerShape(
         owner: Player?
-    ): Shape {
-        return if (owner == players.value.first()) owner.shape?.toShape() ?: XShape
-        else owner?.shape?.toShape() ?: RingShape
+    ) = if (owner == players.value.first()) {
+        owner.shape?.toShape() ?: XShape
+    } else {
+        owner?.shape?.toShape() ?: RingShape
     }
 
     private fun changePlayer() {
-        if (currentPlayer.value == players.value.first()) currentPlayer.value = players.value.last()
-        else currentPlayer.value = players.value.first()
+        if (currentPlayer.value == players.value.first()) {
+            currentPlayer.value = players.value.last()
+        } else {
+            currentPlayer.value = players.value.first()
+        }
     }
 
     private fun changeCellOwner(
         cell: DoozCell
     ) {
-        if (isVibrationOn)
+        if (isVibrationOn) {
             hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-        if (isSoundOn)
+        }
+        if (isSoundOn) {
             MediaPlayer.create(context, R.raw.pencil).start()
+        }
 
         if (cell.owner == null && isGameStarted.value) {
             lastPlayedCells.value = buildList {
@@ -309,10 +324,12 @@ class GameState(
 
     private fun checkIfGameIsFinished() {
         winner.value = findWinner()
-        if (winner.value != null)
+        if (winner.value != null) {
             finishGame()
-        if (gameLogic?.isGameDrew() == true)
+        }
+        if (gameLogic?.isGameDrew() == true) {
             handleDrewGame()
+        }
     }
 
     private fun handleDrewGame() {
@@ -342,7 +359,7 @@ class GameState(
 
             lastPlayedCells.value = buildList {
                 val new = lastPlayedCells.value.toMutableList()
-                new.removeLast()
+                new.remove(new.lastOrNull())
                 addAll(new)
             }
             prepareGameLogic()
@@ -351,19 +368,22 @@ class GameState(
             isGameDrew.value = false
             winnerCells.value = emptyList()
 
-            if (isAiTurnToPlay())
+            if (isAiTurnToPlay()) {
                 playCellByAi()
+            }
 
-            if (gamePlayersType.value == GamePlayersType.PvP)
+            if (gamePlayersType.value == GamePlayersType.PvP) {
                 changePlayer()
+            }
 
             if (lastPlayedCells.value.isEmpty()) {
                 val first = players.value.first()
                 val second = players.value.last()
 
                 currentPlayer.value = if (first.diceIndex > second.diceIndex) first else second
-                if (isAiTurnToPlay())
+                if (isAiTurnToPlay()) {
                     playCellByAi()
+                }
             }
         }
     }
