@@ -144,42 +144,47 @@ fun ClickableShapes(
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            header()
-            Row(
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        content = {
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
-            ) {
-                shapes.forEachIndexed { index, shape ->
-                    ClickableShape(
-                        shape = shape,
-                        color = colors.value[index],
-                        size = size,
-                        onClick = {
-                            selectedIndex.intValue = index
-                            if (selectedIndex.intValue != -1 && selectedIndex.intValue == index) {
-                                onShapeSelected(shapes[index])
-                                colors.value = buildList {
-                                    for (i in shapes.indices) {
-                                        if (i == selectedIndex.intValue)
-                                            add(selected)
-                                        else add(other)
+                verticalArrangement = Arrangement.spacedBy(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                content = {
+                    header()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(
+                            16.dp,
+                            Alignment.CenterHorizontally
+                        )
+                    ) {
+                        shapes.forEachIndexed { index, shape ->
+                            ClickableShape(
+                                shape = shape,
+                                color = colors.value[index],
+                                size = size,
+                                onClick = {
+                                    selectedIndex.intValue = index
+                                    if (selectedIndex.intValue != -1 && selectedIndex.intValue == index) {
+                                        onShapeSelected(shapes[index])
+                                        colors.value = buildList {
+                                            for (i in shapes.indices) {
+                                                if (i == selectedIndex.intValue)
+                                                    add(selected)
+                                                else add(other)
+                                            }
+                                        }
                                     }
                                 }
-                            }
+                            )
                         }
-                    )
+                    }
                 }
-            }
+            )
         }
-    }
+    )
 }
 
 @Composable

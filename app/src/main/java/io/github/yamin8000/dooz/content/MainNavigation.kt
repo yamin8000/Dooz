@@ -34,7 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import io.github.yamin8000.dooz.content.game.GameContent
+import io.github.yamin8000.dooz.content.game.GameScreen
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
 import io.github.yamin8000.dooz.content.settings.content.SettingsContent
 import io.github.yamin8000.dooz.ui.navigation.Nav
@@ -65,7 +65,7 @@ internal fun MainNavigation() {
                     startDestination = Nav.Routes.game,
                     builder = {
                         composable(Nav.Routes.game) {
-                            GameContent(
+                            GameScreen(
                                 onNavigateToSettings = { navController.navigate(Nav.Routes.settings) },
                                 onNavigateToAbout = { navController.navigate(Nav.Routes.about) }
                             )

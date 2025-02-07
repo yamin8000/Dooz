@@ -36,8 +36,8 @@ import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings.SettingsItemCard
 import io.github.yamin8000.dooz.ui.ClickableShapes
-import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
+import io.github.yamin8000.dooz.ui.components.PersianText
+import io.github.yamin8000.dooz.ui.components.SingleLinePersianText
 import io.github.yamin8000.dooz.ui.shapes
 import io.github.yamin8000.dooz.ui.toName
 import io.github.yamin8000.dooz.ui.toShape

@@ -21,6 +21,10 @@
 package io.github.yamin8000.dooz.util
 
 import android.content.Context
+import androidx.activity.compose.LocalActivity
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalDensity
 import java.util.Locale
 
 object Utility {
@@ -58,4 +62,24 @@ object Utility {
             text
         )
     }
+
+    @Composable
+    fun LockScreenOrientation(orientation: Int) {
+        val activity = LocalActivity.current
+        DisposableEffect(Unit) {
+            if (activity != null) {
+                val originalOrientation = activity.requestedOrientation
+                activity.requestedOrientation = orientation
+                onDispose {
+                    // restore original orientation when view disappears
+                    activity.requestedOrientation = originalOrientation
+                }
+            }
+            onDispose { }
+        }
+    }
+
+
+    @Composable
+    fun isFontScaleNormal() = LocalDensity.current.fontScale <= 1.0f
 }

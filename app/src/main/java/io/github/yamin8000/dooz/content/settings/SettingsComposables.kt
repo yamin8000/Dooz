@@ -51,8 +51,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.ui.DefaultCornerShape
-import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
+import io.github.yamin8000.dooz.ui.components.PersianText
+import io.github.yamin8000.dooz.ui.components.SingleLinePersianText
 
 @Composable
 internal fun SettingsItemCard(

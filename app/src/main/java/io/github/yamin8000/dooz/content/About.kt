@@ -43,9 +43,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.Ripple
-import io.github.yamin8000.dooz.ui.composables.ScaffoldWithTitle
+import io.github.yamin8000.dooz.ui.components.PersianText
+import io.github.yamin8000.dooz.ui.components.Ripple
+import io.github.yamin8000.dooz.ui.components.ScaffoldWithTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

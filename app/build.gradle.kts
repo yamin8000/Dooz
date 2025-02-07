@@ -29,7 +29,7 @@ private val appId = "io.github.yamin8000.dooz"
 
 android {
     namespace = appId
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = appId

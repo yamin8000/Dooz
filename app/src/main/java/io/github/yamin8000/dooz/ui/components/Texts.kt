@@ -18,7 +18,7 @@
  *     along with Dooz.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.yamin8000.dooz.ui.composables
+package io.github.yamin8000.dooz.ui.components
 
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text

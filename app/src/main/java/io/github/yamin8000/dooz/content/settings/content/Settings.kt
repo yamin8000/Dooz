@@ -48,9 +48,9 @@ import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
 import io.github.yamin8000.dooz.content.settings.rememberSettingsState
-import io.github.yamin8000.dooz.ui.composables.MySnackbar
-import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.ScaffoldWithTitle
+import io.github.yamin8000.dooz.ui.components.MySnackbar
+import io.github.yamin8000.dooz.ui.components.PersianText
+import io.github.yamin8000.dooz.ui.components.ScaffoldWithTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

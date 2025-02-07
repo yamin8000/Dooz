@@ -26,68 +26,45 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.twotone.Undo
 import androidx.compose.material.icons.twotone.Games
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.MainTopAppBar
-import io.github.yamin8000.dooz.model.AiDifficulty
-import io.github.yamin8000.dooz.model.DoozCell
+import io.github.yamin8000.dooz.content.game.components.GameBoard
+import io.github.yamin8000.dooz.content.game.components.GameInfoCard
+import io.github.yamin8000.dooz.content.game.components.PlayerCards
 import io.github.yamin8000.dooz.model.GamePlayersType
-import io.github.yamin8000.dooz.model.Player
-import io.github.yamin8000.dooz.model.PlayerType
-import io.github.yamin8000.dooz.ui.composables.LockScreenOrientation
-import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
-import io.github.yamin8000.dooz.ui.composables.isFontScaleNormal
+import io.github.yamin8000.dooz.ui.components.SingleLinePersianText
+import io.github.yamin8000.dooz.util.Utility.LockScreenOrientation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameContent(
+fun GameScreen(
     onNavigateToSettings: () -> Unit,
     onNavigateToAbout: () -> Unit
 ) {
@@ -195,162 +172,6 @@ fun GameContent(
                             Spacer(modifier = Modifier.height(64.dp))
                         }
                     )
-                }
-            )
-        }
-    )
-}
-
-@Composable
-fun GameResult(
-    winnerName: String?,
-    isGameDrew: Boolean
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        if (isFontScaleNormal()) {
-            PersianText(
-                text = stringResource(R.string.game_result),
-                color = MaterialTheme.colorScheme.primary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        if (isGameDrew)
-            SingleLinePersianText(stringResource(R.string.game_is_drew))
-        if (winnerName != null)
-            SingleLinePersianText(stringResource(R.string.x_is_winner, winnerName))
-        if (!isGameDrew && winnerName == null)
-            SingleLinePersianText(stringResource(R.string.undefined))
-    }
-}
-
-@Composable
-private fun GameInfoCard(
-    modifier: Modifier = Modifier,
-    playersType: GamePlayersType = GamePlayersType.PvP,
-    aiDifficulty: AiDifficulty = AiDifficulty.Easy,
-    winnerName: String?,
-    isGameDrew: Boolean
-) {
-    Card(
-        modifier = modifier,
-        content = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-                content = {
-                    PersianText(
-                        text = stringResource(R.string.game_info),
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    SingleLinePersianText(stringResource(playersType.persianNameStringResource))
-
-                    if (playersType == GamePlayersType.PvC) {
-                        SingleLinePersianText(
-                            stringResource(
-                                R.string.ai_difficulty_var,
-                                stringResource(aiDifficulty.persianNameStringResource)
-                            )
-                        )
-                    }
-                    GameResult(
-                        winnerName = winnerName,
-                        isGameDrew = isGameDrew
-                    )
-                }
-            )
-        }
-    )
-}
-
-@Composable
-private fun GameBoard(
-    gameSize: Int,
-    gameCells: List<List<DoozCell>>,
-    winnerCells: List<DoozCell>,
-    isGameFinished: Boolean,
-    currentPlayerType: PlayerType?,
-    shapeProvider: (Player?) -> Shape,
-    onItemClick: (DoozCell) -> Unit
-) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val boxPadding = 16.dp
-    val boxSize = remember(screenWidth) {
-        screenWidth - (2 * boxPadding.value).dp
-    }
-    val itemMargin = 8.dp
-    val boxItemSize = remember(boxSize) {
-        ((boxSize.value - itemMargin.value * (gameSize - 1)) / gameSize).dp
-    }
-
-    LazyVerticalGrid(
-        modifier = Modifier.size(boxSize),
-        columns = GridCells.Fixed(gameSize),
-        horizontalArrangement = Arrangement.spacedBy(itemMargin),
-        verticalArrangement = Arrangement.spacedBy(itemMargin),
-        userScrollEnabled = false,
-        content = {
-            gameCells.forEachIndexed { _, row ->
-                itemsIndexed(row) { _, cell ->
-                    val colors = if (cell in winnerCells)
-                        MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.onSecondary
-                    else MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
-                    DoozItem(
-                        clickable = !isGameFinished && currentPlayerType == PlayerType.Human && cell.owner == null,
-                        shape = shapeProvider(cell.owner),
-                        size = boxItemSize,
-                        hasOwner = cell.owner != null,
-                        onClick = { onItemClick(cell) },
-                        backgroundColor = colors.first,
-                        contentColor = colors.second
-                    )
-                }
-            }
-        }
-    )
-}
-
-@Composable
-private fun DoozItem(
-    shape: Shape,
-    clickable: Boolean,
-    size: Dp,
-    hasOwner: Boolean,
-    backgroundColor: Color,
-    contentColor: Color,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .size(size)
-            .clip(RoundedCornerShape(5.dp))
-            .background(backgroundColor)
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(),
-                enabled = clickable,
-                onClick = onClick
-            ),
-        contentAlignment = Alignment.Center,
-        content = {
-            AnimatedVisibility(
-                visible = hasOwner,
-                enter = scaleIn(animationSpec = tween(150)),
-                content = {
-                    if (hasOwner) {
-                        Box(
-                            modifier = Modifier
-                                .size((size.value / 2).dp)
-                                .clip(shape)
-                                .background(contentColor),
-                        )
-                    }
                 }
             )
         }

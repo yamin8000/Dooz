@@ -48,9 +48,9 @@ import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.content.settings.SettingsItem
 import io.github.yamin8000.dooz.content.settings.SettingsItemCard
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
-import io.github.yamin8000.dooz.ui.composables.PersianText
-import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
-import io.github.yamin8000.dooz.ui.composables.SwitchWithText
+import io.github.yamin8000.dooz.ui.components.PersianText
+import io.github.yamin8000.dooz.ui.components.SingleLinePersianText
+import io.github.yamin8000.dooz.ui.components.SwitchWithText
 
 @Composable
 internal fun ThemeChangerCard(

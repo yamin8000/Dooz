@@ -46,7 +46,7 @@ import io.github.yamin8000.dooz.content.settings.SettingsSelectorDialog
 import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.model.GamePlayersType
-import io.github.yamin8000.dooz.ui.composables.SingleLinePersianText
+import io.github.yamin8000.dooz.ui.components.SingleLinePersianText
 import io.github.yamin8000.dooz.util.Constants
 
 @Composable
