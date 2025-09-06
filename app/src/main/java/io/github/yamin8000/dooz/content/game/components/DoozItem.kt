@@ -3,6 +3,7 @@ package io.github.yamin8000.dooz.content.game.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -73,6 +74,7 @@ internal fun DoozItem(
             AnimatedVisibility(
                 visible = hasOwner,
                 enter = scaleIn(animationSpec = tween(150)),
+                exit = scaleOut(animationSpec = tween(150)),
                 content = {
                     if (hasOwner) {
                         Box(
