@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  *     Dooz
  *     build.gradle Created by Yamin Siahmargooei at 2022/3/31
@@ -29,12 +31,12 @@ private val appId = "io.github.yamin8000.dooz"
 
 android {
     namespace = appId
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = appId
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 18
         versionName = "1.0.18"
         vectorDrawables.useSupportLibrary = true
@@ -61,8 +63,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
 
     buildFeatures {
@@ -79,18 +83,22 @@ android {
 dependencies {
     //core android
     implementation(libs.androidx.core.ktx)
-    //compose core
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    //compose
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material.icons.extended)
-    //material3
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material3.window.size)
-    //compose navigation
-    implementation(libs.androidx.navigation.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.compose.ui)
+    implementation(libs.compose.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    androidTestApi(platform(libs.compose.bom))
+    debugApi(libs.compose.ui.tooling)
+    debugApi(libs.compose.ui.test.manifest)
+    implementation(libs.navigation.compose)
+    //material
+    implementation(libs.material.icons.extended)
+    implementation(libs.material3)
+    implementation(libs.compose.material3.window.size)
     //datastore
     implementation(libs.androidx.datastore.preferences)
 }

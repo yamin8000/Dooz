@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.content.settings.SettingsItemCard
+import io.github.yamin8000.dooz.content.settings.components.SettingsItemCard
 import io.github.yamin8000.dooz.ui.ClickableShapes
 import io.github.yamin8000.dooz.ui.components.PersianText
 import io.github.yamin8000.dooz.ui.components.SingleLinePersianText

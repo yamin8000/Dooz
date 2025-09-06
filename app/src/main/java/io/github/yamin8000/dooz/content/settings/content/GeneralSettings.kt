@@ -45,8 +45,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.content.settings.SettingsItem
-import io.github.yamin8000.dooz.content.settings.SettingsItemCard
+import io.github.yamin8000.dooz.content.settings.components.SettingsItem
+import io.github.yamin8000.dooz.content.settings.components.SettingsItemCard
 import io.github.yamin8000.dooz.content.settings.ThemeSetting
 import io.github.yamin8000.dooz.ui.components.PersianText
 import io.github.yamin8000.dooz.ui.components.SingleLinePersianText

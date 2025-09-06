@@ -40,9 +40,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.content.settings.SettingsItem
-import io.github.yamin8000.dooz.content.settings.SettingsItemCard
-import io.github.yamin8000.dooz.content.settings.SettingsSelectorDialog
+import io.github.yamin8000.dooz.content.settings.components.SettingsItem
+import io.github.yamin8000.dooz.content.settings.components.SettingsItemCard
+import io.github.yamin8000.dooz.content.settings.components.SettingsSelectorDialog
 import io.github.yamin8000.dooz.game.FirstPlayerPolicy
 import io.github.yamin8000.dooz.model.AiDifficulty
 import io.github.yamin8000.dooz.model.GamePlayersType

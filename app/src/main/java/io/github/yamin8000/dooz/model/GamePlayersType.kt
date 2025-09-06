@@ -27,7 +27,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class GamePlayersType(
-    @StringRes val persianNameStringResource: Int
+    @field:StringRes val persianNameStringResource: Int
 ) : Parcelable {
     PvP(R.string.play_with_human), PvC(R.string.play_with_computer);
 }

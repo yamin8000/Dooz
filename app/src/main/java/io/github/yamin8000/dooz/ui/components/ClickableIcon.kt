@@ -19,7 +19,7 @@ fun ClickableIcon(
         modifier = modifier,
         content = icon,
         onClick = {
-            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
             onClick()
         }
     )

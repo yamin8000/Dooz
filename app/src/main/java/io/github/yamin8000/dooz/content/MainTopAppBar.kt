@@ -25,15 +25,31 @@ import androidx.compose.material.icons.automirrored.twotone.Help
 import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.ui.components.AnimatedAppIcon
 import io.github.yamin8000.dooz.ui.components.ClickableIcon
 import io.github.yamin8000.dooz.ui.components.PersianText
+import io.github.yamin8000.dooz.ui.theme.PreviewTheme
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun Preview() {
+    PreviewTheme {
+        MainTopAppBar(
+            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+            onSettingsIconClick = {},
+            onAboutIconClick = {}
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,8 +63,17 @@ internal fun MainTopAppBar(
         scrollBehavior = scrollBehavior,
         navigationIcon = { AnimatedAppIcon() },
         actions = {
-            SettingsIcon(onSettingsIconClick)
-            AboutIcon(onAboutIconClick)
+            ClickableIcon(
+                imageVector = Icons.TwoTone.Settings,
+                contentDescription = stringResource(R.string.settings),
+                onClick = onSettingsIconClick
+            )
+
+            ClickableIcon(
+                imageVector = Icons.AutoMirrored.TwoTone.Help,
+                contentDescription = stringResource(R.string.about),
+                onClick = onAboutIconClick
+            )
         },
         title = {
             PersianText(
@@ -58,27 +83,5 @@ internal fun MainTopAppBar(
                 overflow = TextOverflow.Ellipsis
             )
         }
-    )
-}
-
-@Composable
-private fun AboutIcon(
-    onAboutIconClick: () -> Unit
-) {
-    ClickableIcon(
-        imageVector = Icons.AutoMirrored.TwoTone.Help,
-        contentDescription = stringResource(R.string.about),
-        onClick = onAboutIconClick
-    )
-}
-
-@Composable
-private fun SettingsIcon(
-    onSettingsIconClick: () -> Unit
-) {
-    ClickableIcon(
-        imageVector = Icons.TwoTone.Settings,
-        contentDescription = stringResource(R.string.settings),
-        onClick = onSettingsIconClick
     )
 }

@@ -27,7 +27,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class AiDifficulty(
-    @StringRes val persianNameStringResource: Int
+    @field:StringRes val persianNameStringResource: Int
 ) : Parcelable {
     Easy(R.string.easy), Medium(R.string.medium), Hard(R.string.hard)
 }

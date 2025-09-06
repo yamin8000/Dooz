@@ -41,11 +41,23 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
 import io.github.yamin8000.dooz.ui.components.PersianText
 import io.github.yamin8000.dooz.ui.components.Ripple
 import io.github.yamin8000.dooz.ui.components.ScaffoldWithTitle
+import io.github.yamin8000.dooz.ui.theme.PreviewTheme
+
+@Preview
+@Composable
+private fun Preview() {
+    PreviewTheme {
+        AboutContent(
+            onBackClick = {}
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,11 +85,11 @@ internal fun AboutContent(
                                     Image(
                                         painter = painterResource(id = R.drawable.ic_gplv3),
                                         contentDescription = stringResource(id = R.string.gplv3_image_description),
+                                        contentScale = ContentScale.FillWidth,
+                                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
                                         modifier = Modifier
                                             .padding(32.dp)
-                                            .fillMaxWidth(),
-                                        contentScale = ContentScale.FillWidth,
-                                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                                            .fillMaxWidth()
                                     )
                                 }
                             )
