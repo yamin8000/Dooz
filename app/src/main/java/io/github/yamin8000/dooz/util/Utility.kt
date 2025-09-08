@@ -28,8 +28,9 @@ import androidx.compose.ui.platform.LocalDensity
 import java.util.Locale
 
 object Utility {
-    private fun getCurrentLocale(context: Context): Locale =
-        context.resources.configuration.locales.get(0)
+    private fun getCurrentLocale(context: Context): Locale {
+        return context.resources.configuration.locales.get(0)
+    }
 
     //simple 90 degrees rotation
     fun <T> List<List<T>>.rotated(): List<List<T>> {

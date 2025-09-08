@@ -24,7 +24,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".content.App"
+        android:name=".core.App"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="false"
@@ -35,7 +35,7 @@
         android:windowSoftInputMode="adjustResize"
         tools:targetApi="s">
         <activity
-            android:name="io.github.yamin8000.dooz.content.MainActivity"
+            android:name="io.github.yamin8000.dooz.core.MainActivity"
             android:configChanges="locale|fontScale|orientation|screenSize|keyboardHidden|keyboard|locale|screenLayout|screenSize|layoutDirection"
             android:exported="true"
             android:theme="@style/Theme.Dooz">
