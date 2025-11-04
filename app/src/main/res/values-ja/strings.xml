@@ -62,14 +62,12 @@
     <string name="haptic_feedback">振動</string>
     <string name="undo">元に戻す</string>
     <string name="data_saved">データを保存しました</string>
-    <string name="player_names_empty">プレイヤーの名前は空にすることは出来ません</string>
     <string name="first_player_default_name">一番手</string>
     <string name="second_player_default_name">二番手</string>
     <string name="about">詳細</string>
     <string name="github_source" translatable="false">https://github.com/yamin8000/Dooz</string>
     <string name="license_link" translatable="false">https://raw.githubusercontent.com/yamin8000/Dooz/master/LICENSE</string>
     <string name="gplv3_image_description">GPLv3 License Image</string>
-    <string name="version_name">バージョン</string>
     <string name="license_header">これはGNUライセンスに基づく無料のアプリケーションです。詳細はこちらをご覧ください。</string>
     <string name="easy">簡単</string>
     <string name="medium">普通</string>

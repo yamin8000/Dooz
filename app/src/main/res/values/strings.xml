@@ -62,14 +62,12 @@
     <string name="haptic_feedback">Vibrations</string>
     <string name="undo">Undo</string>
     <string name="data_saved">Data saved</string>
-    <string name="player_names_empty">Players\' names cannot be empty</string>
     <string name="first_player_default_name">First Player</string>
     <string name="second_player_default_name">Second Player</string>
     <string name="about">About</string>
     <string name="github_source" translatable="false">https://github.com/yamin8000/Dooz</string>
     <string name="license_link" translatable="false">https://raw.githubusercontent.com/yamin8000/Dooz/master/LICENSE</string>
     <string name="gplv3_image_description">GPLv3 License Image</string>
-    <string name="version_name">Version</string>
     <string name="license_header">This is a free application under GNU license, see more:</string>
     <string name="easy">Easy</string>
     <string name="medium">Medium</string>
