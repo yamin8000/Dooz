@@ -1,5 +1,5 @@
 [versions]
-activityCompose = "1.11.0"
+activityCompose = "1.12.0"
 coreKtx = "1.17.0"
 datastorePreferences = "1.1.7"
 material3 = "1.4.0"
