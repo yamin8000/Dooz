@@ -6,7 +6,7 @@ material3 = "1.4.0"
 navigationCompose = "2.9.5"
 kotlin = "2.2.21"
 android-application = "8.13.0"
-composeBom = "2025.10.01"
+composeBom = "2025.11.01"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
