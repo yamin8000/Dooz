@@ -170,9 +170,13 @@ class SimpleGameAi(
         for (cells in gameCells) {
             if (!cells.isSuspectToFork(playerType)) continue
             for (intersectingCells in compareGameCells) {
-                if (!intersectingCells.isSuspectToFork(playerType)) continue
+                if (!intersectingCells.isSuspectToFork(playerType)) {
+                    continue
+                }
                 val cell = checkForkIntersection(cells, intersectingCells, isBlocking)
-                if (cell != null) return cell
+                if (cell != null) {
+                    return cell
+                }
             }
         }
         return null
@@ -183,12 +187,22 @@ class SimpleGameAi(
         intersectingCells: List<DoozCell>,
         isBlocking: Boolean
     ): DoozCell? {
-        val cellOwner = cells.find { it.owner != null }?.owner ?: return null
-        val intersectOwner = intersectingCells.find { it.owner != null }?.owner ?: return null
-        if (cellOwner != intersectOwner) return null
+        val cellOwner = cells.find { it.owner != null }?.owner
+        if (cellOwner == null) {
+            return null
+        }
+        val intersectOwner = intersectingCells.find { it.owner != null }?.owner
+        if (intersectOwner == null) {
+            return null
+        }
+        if (cellOwner != intersectOwner) {
+            return null
+        }
         if (isBlocking) {
             val forceBlockCell = findCellForOpponentForceBlock()
-            if (forceBlockCell != null) return forceBlockCell
+            if (forceBlockCell != null) {
+                return forceBlockCell
+            }
         }
         return cells.filter { it.owner == null }
             .intersect(intersectingCells.filter { it.owner == null }.toSet())
