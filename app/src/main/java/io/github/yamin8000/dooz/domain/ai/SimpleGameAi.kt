@@ -85,7 +85,9 @@ class SimpleGameAi(
 
     private fun cornerPlay(): DoozCell? {
         val corners = playableCorners()
-        if (corners.isEmpty()) return null
+        if (corners.isEmpty()) {
+            return null
+        }
         val cell = when {
             gameCells.firstOrNull()
                 ?.firstOrNull()?.owner?.type == PlayerType.Human -> gameCells.lastOrNull()
@@ -129,18 +131,26 @@ class SimpleGameAi(
         for (i in totalCells.indices) {
             val cells = totalCells.getOrNull(i) ?: return null
             val cell = winOrWinBlockSingleLineScanner(cells)
-            if (cell != null) return cell
+            if (cell != null) {
+                return cell
+            }
         }
         return null
     }
 
     private fun forkOrForkBlockPlayHandler(): DoozCell? {
         var cell = forkOrForkBlockPlay(gameCells, rotatedGameCells)
-        if (cell != null) return cell
+        if (cell != null) {
+            return cell
+        }
         cell = forkOrForkBlockPlay(gameCells, diagonals.toList())
-        if (cell != null) return cell
+        if (cell != null) {
+            return cell
+        }
         cell = forkOrForkBlockPlay(rotatedGameCells, diagonals.toList())
-        if (cell != null) return cell
+        if (cell != null) {
+            return cell
+        }
         return null
     }
 
@@ -168,7 +178,9 @@ class SimpleGameAi(
     ): DoozCell? {
         val playerType = if (isBlocking) PlayerType.Human else PlayerType.Computer
         for (cells in gameCells) {
-            if (!cells.isSuspectToFork(playerType)) continue
+            if (!cells.isSuspectToFork(playerType)) {
+                continue
+            }
             for (intersectingCells in compareGameCells) {
                 if (!intersectingCells.isSuspectToFork(playerType)) {
                     continue
@@ -222,7 +234,9 @@ class SimpleGameAi(
                 PlayerType.Computer,
                 SimpleGameBlankCell.Fork.count
             )
-            if (cell != null) return cell
+            if (cell != null) {
+                return cell
+            }
         }
         return null
     }
@@ -230,7 +244,9 @@ class SimpleGameAi(
     private fun List<DoozCell>.isSuspectToFork(
         relevantOwnerType: PlayerType
     ): Boolean {
-        if (isEmpty()) return false
+        if (isEmpty()) {
+            return false
+        }
         val owned = filter { it.owner != null }
         return owned.size == 1 && owned.all { it.owner?.type == relevantOwnerType }
     }
@@ -239,9 +255,13 @@ class SimpleGameAi(
         cells: List<DoozCell>
     ): DoozCell? {
         var cell = findCellForWin(cells)
-        if (cell != null) return cell
+        if (cell != null) {
+            return cell
+        }
         cell = findCellForWinBlock(cells)
-        if (cell != null) return cell
+        if (cell != null) {
+            return cell
+        }
         return null
     }
 
@@ -259,8 +279,12 @@ class SimpleGameAi(
         blankCells: Int = SimpleGameBlankCell.Win.count
     ): DoozCell? {
         val (vacant, owned) = cells.partition { it.owner == null }
-        if (vacant.size > blankCells) return null
-        if (owned.any { it.owner?.type != playerType }) return null
+        if (vacant.size > blankCells) {
+            return null
+        }
+        if (owned.any { it.owner?.type != playerType }) {
+            return null
+        }
         return vacant.firstOrNull()
     }
 }
