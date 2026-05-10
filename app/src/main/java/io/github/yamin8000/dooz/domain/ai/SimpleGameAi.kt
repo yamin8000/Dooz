@@ -167,31 +167,46 @@ class SimpleGameAi(
         isBlocking: Boolean
     ): DoozCell? {
         val playerType = if (isBlocking) PlayerType.Human else PlayerType.Computer
-
-        for (i in gameCells.indices) {
-            val cells = gameCells.getOrNull(i) ?: continue
+        for (cells in gameCells) {
             if (!cells.isSuspectToFork(playerType)) continue
-
-            for (j in compareGameCells.indices) {
-                val intersectingCells = compareGameCells.getOrNull(j) ?: continue
-                if (!intersectingCells.isSuspectToFork(playerType)) continue
-
-                if (cells.find { it.owner != null }?.owner == intersectingCells.find { it.owner != null }?.owner) {
-                    if (isBlocking) {
-                        val forceBlockCell = findCellForOpponentForceBlock()
-                        if (forceBlockCell != null)
-                            return forceBlockCell
-                    }
-
-                    val cell = cells.filter { it.owner == null }
-                        .intersect(intersectingCells.filter { it.owner == null }.toSet())
-                        .firstOrNull()
-                    if (cell != null && cell.owner == null)
-                        return cell
+            for (intersectingCells in compareGameCells) {
+                if (!intersectingCells.isSuspectToFork(playerType)) {
+                    continue
+                }
+                val cell = checkForkIntersection(cells, intersectingCells, isBlocking)
+                if (cell != null) {
+                    return cell
                 }
             }
         }
         return null
+    }
+
+    private fun checkForkIntersection(
+        cells: List<DoozCell>,
+        intersectingCells: List<DoozCell>,
+        isBlocking: Boolean
+    ): DoozCell? {
+        val cellOwner = cells.find { it.owner != null }?.owner
+        if (cellOwner == null) {
+            return null
+        }
+        val intersectOwner = intersectingCells.find { it.owner != null }?.owner
+        if (intersectOwner == null) {
+            return null
+        }
+        if (cellOwner != intersectOwner) {
+            return null
+        }
+        if (isBlocking) {
+            val forceBlockCell = findCellForOpponentForceBlock()
+            if (forceBlockCell != null) {
+                return forceBlockCell
+            }
+        }
+        return cells.filter { it.owner == null }
+            .intersect(intersectingCells.filter { it.owner == null }.toSet())
+            .firstOrNull()
     }
 
     private fun findCellForOpponentForceBlock(): DoozCell? {
