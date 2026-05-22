@@ -5,7 +5,7 @@ datastorePreferences = "1.2.1"
 material3 = "1.4.0"
 navigationCompose = "2.9.8"
 kotlin = "2.3.21"
-android-application = "8.13.0"
+android-application = "8.13.2"
 composeBom = "2025.10.01"
 
 [libraries]
