@@ -32,7 +32,7 @@ import androidx.compose.material.icons.twotone.People
 import androidx.compose.material.icons.twotone.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -46,11 +46,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.ui.settings.ThemeSetting
-import io.github.yamin8000.dooz.ui.settings.rememberSettingsState
 import io.github.yamin8000.dooz.ui.components.MySnackbar
 import io.github.yamin8000.dooz.ui.components.PersianText
 import io.github.yamin8000.dooz.ui.components.ScaffoldWithTitle
+import io.github.yamin8000.dooz.ui.settings.ThemeSetting
+import io.github.yamin8000.dooz.ui.settings.rememberSettingsState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,7 +89,7 @@ fun SettingsContent(
                                 stringResource(R.string.players)
                             )
 
-                            ScrollableTabRow(
+                            SecondaryScrollableTabRow(
                                 selectedTabIndex = tabIndex.intValue,
                                 tabs = {
                                     val icons = remember {

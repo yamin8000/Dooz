@@ -59,7 +59,8 @@ object Utility {
 
     fun Context.isLocalePersian(text: String): Boolean {
         val currentLocale = getCurrentLocale(this).language
-        return currentLocale == Locale("fa").language || Constants.PERSIAN_REGEX.containsMatchIn(
+
+        return currentLocale == Locale.forLanguageTag("fa").language || Constants.PERSIAN_REGEX.containsMatchIn(
             text
         )
     }
