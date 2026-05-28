@@ -22,7 +22,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.plugin)
     alias(libs.plugins.kotlin.parcelize)
 }
@@ -31,12 +30,12 @@ private val appId = "io.github.yamin8000.dooz"
 
 android {
     namespace = appId
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = appId
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 18
         versionName = "1.0.18"
         vectorDrawables.useSupportLibrary = true
@@ -91,7 +90,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.material3)
     implementation(libs.compose.material.icons.extended)
-    androidTestApi(platform(libs.compose.bom))
+    androidTestImplementation(platform(libs.compose.bom))
     debugApi(libs.compose.ui.tooling)
     debugApi(libs.compose.ui.test.manifest)
     implementation(libs.navigation.compose)

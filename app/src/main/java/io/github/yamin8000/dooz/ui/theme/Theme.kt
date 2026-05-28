@@ -20,7 +20,6 @@
 
 package io.github.yamin8000.dooz.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
@@ -30,11 +29,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 
 private val lightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -100,7 +95,6 @@ private val darkColors = darkColorScheme(
 @Composable
 fun DoozTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
-    isPreviewing: Boolean = false,
     isDynamicColor: Boolean,
     content: @Composable () -> Unit
 ) {
@@ -118,18 +112,6 @@ fun DoozTheme(
 
         isDarkTheme -> darkColors
         else -> lightColors
-    }
-
-    if (!isPreviewing) {
-        val activity = LocalView.current.context as Activity
-        SideEffect {
-            activity.window.statusBarColor = colors.surface.toArgb()
-            activity.window.navigationBarColor = colors.surface.toArgb()
-            val wic =
-                WindowCompat.getInsetsController(activity.window, activity.window.decorView)
-            wic.isAppearanceLightStatusBars = !isDarkTheme
-            wic.isAppearanceLightNavigationBars = !isDarkTheme
-        }
     }
 
     MaterialTheme(
@@ -156,7 +138,6 @@ fun PreviewTheme(
 ) {
     DoozTheme(
         isDarkTheme = isDarkTheme,
-        isPreviewing = true,
         isDynamicColor = false,
         content = content
     )
