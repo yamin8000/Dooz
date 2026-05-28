@@ -31,7 +31,7 @@ fun GameResult(
                 )
             }
             if (isGameDrew) {
-                SingleLinePersianText(stringResource(R.string.game_is_drew))
+                SingleLinePersianText(stringResource(R.string.draw))
             }
             if (winnerName != null) {
                 SingleLinePersianText(stringResource(R.string.x_is_winner, winnerName))

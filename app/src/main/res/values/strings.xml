@@ -30,7 +30,7 @@
     <string name="save">Save</string>
     <string name="new_game">New game</string>
     <string name="player_turn">Player\'s turn</string>
-    <string name="game_is_drew">Game\'s drew</string>
+    <string name="draw">Draw</string>
     <string name="first_player_name">First player\'s name</string>
     <string name="enter_name">Enter a name</string>
     <string name="second_player_name">Second player\'s name</string>

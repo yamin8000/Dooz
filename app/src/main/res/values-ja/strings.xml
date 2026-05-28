@@ -30,7 +30,7 @@
     <string name="save">保存</string>
     <string name="new_game">新しいゲーム</string>
     <string name="player_turn">プレイヤーのターン</string>
-    <string name="game_is_drew">引き分け</string>
+    <string name="draw">引き分け</string>
     <string name="first_player_name">一番手の名前</string>
     <string name="enter_name">名前を入力</string>
     <string name="second_player_name">二番手の名前</string>

@@ -31,7 +31,7 @@
     <string name="save">ذخیره</string>
     <string name="new_game">بازی جدید</string>
     <string name="player_turn">نوبت بازیکن</string>
-    <string name="game_is_drew">بازی مساوی شد</string>
+    <string name="draw">مساوی شد!</string>
     <string name="first_player_name">اسم بازیکن اول</string>
     <string name="enter_name">نامی بنویسید</string>
     <string name="second_player_name">نام بازیکن دوم</string>
