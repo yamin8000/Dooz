@@ -21,6 +21,7 @@
 package io.github.yamin8000.dooz.ui.settings
 
 import android.content.Context
+import android.content.res.Resources
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
@@ -30,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
@@ -44,7 +46,8 @@ import io.github.yamin8000.dooz.data.DataStoreHelper
 import kotlinx.coroutines.launch
 
 class SettingsState(
-    private val context: Context,
+    context: Context,
+    private val resources: Resources,
     private val scope: LifecycleCoroutineScope,
     private val _gamePlayersType: MutableState<GamePlayersType>,
     private val _gameSize: MutableIntState,
@@ -93,7 +96,7 @@ class SettingsState(
             if (isPairValid(value, secondPlayerShape)) {
                 _firstPlayerShape.value = value
                 scope.launch { dataStore.setString(Constants.firstPlayerShape, value) }
-            } else scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.player_shapes_equal)) }
+            } else scope.launch { snackbarHostState.showSnackbar(resources.getString(R.string.player_shapes_equal)) }
         }
 
     var secondPlayerShape: String
@@ -102,7 +105,7 @@ class SettingsState(
             if (isPairValid(firstPlayerShape, value)) {
                 _secondPlayerShape.value = value
                 scope.launch { dataStore.setString(Constants.secondPlayerShape, value) }
-            } else scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.player_shapes_equal)) }
+            } else scope.launch { snackbarHostState.showSnackbar(resources.getString(R.string.player_shapes_equal)) }
         }
 
     var aiDifficulty: AiDifficulty
@@ -145,9 +148,9 @@ class SettingsState(
             scope.launch {
                 dataStore.setString(Constants.firstPlayerName, _firstPlayerName.value.trim())
                 dataStore.setString(Constants.secondPlayerName, _secondPlayerName.value.trim())
-                snackbarHostState.showSnackbar(context.getString(R.string.data_saved))
+                snackbarHostState.showSnackbar(resources.getString(R.string.data_saved))
             }
-        } else scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.player_names_equal_or_empty)) }
+        } else scope.launch { snackbarHostState.showSnackbar(resources.getString(R.string.player_names_equal_or_empty)) }
     }
 
     private fun isPairValid(
@@ -160,8 +163,8 @@ class SettingsState(
     private val dataStore = DataStoreHelper(context.settings)
 
     init {
-        val defaultFirstPlayerName = context.getString(R.string.first_player_default_name)
-        val defaultSecondPlayerName = context.getString(R.string.second_player_default_name)
+        val defaultFirstPlayerName = resources.getString(R.string.first_player_default_name)
+        val defaultSecondPlayerName = resources.getString(R.string.second_player_default_name)
 
         scope.launch {
             _themeSetting.value = ThemeSetting.valueOf(
@@ -170,7 +173,8 @@ class SettingsState(
             _gamePlayersType.value = GamePlayersType.valueOf(
                 dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
             )
-            _gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GameConstants.GAME_DEFAULT_SIZE
+            _gameSize.intValue =
+                dataStore.getInt(Constants.gameSize) ?: GameConstants.GAME_DEFAULT_SIZE
             _firstPlayerName.value =
                 dataStore.getString(Constants.firstPlayerName) ?: defaultFirstPlayerName
             _secondPlayerName.value =
@@ -195,13 +199,14 @@ class SettingsState(
 @Composable
 fun rememberSettingsState(
     context: Context = LocalContext.current,
+    resources: Resources = LocalResources.current,
     coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
     gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
         mutableStateOf(GamePlayersType.PvC)
     },
     gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(GameConstants.GAME_DEFAULT_SIZE) },
-    firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.first_player_default_name)) },
-    secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(context.getString(R.string.second_player_default_name)) },
+    firstPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(resources.getString(R.string.first_player_default_name)) },
+    secondPlayerName: MutableState<String> = rememberSaveable { mutableStateOf(resources.getString(R.string.second_player_default_name)) },
     firstPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.xShape) },
     secondPlayerShape: MutableState<String> = rememberSaveable { mutableStateOf(Constants.Shapes.ringShape) },
     aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
@@ -212,7 +217,6 @@ fun rememberSettingsState(
     isSoundOn: MutableState<Boolean> = rememberSaveable { mutableStateOf(true) },
     isVibrationOn: MutableState<Boolean> = rememberSaveable { mutableStateOf(true) }
 ) = remember(
-    context,
     coroutineScope,
     gamePlayersType,
     gameSize,
@@ -228,6 +232,7 @@ fun rememberSettingsState(
 ) {
     SettingsState(
         context,
+        resources,
         coroutineScope,
         gamePlayersType,
         gameSize,
