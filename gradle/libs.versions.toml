@@ -4,7 +4,7 @@ coreKtx = "1.18.0"
 datastorePreferences = "1.2.1"
 material3 = "1.4.0"
 navigationCompose = "2.9.8"
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 android-application = "9.2.1"
 composeBom = "2026.05.01"
 
