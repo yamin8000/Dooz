@@ -1,6 +1,6 @@
 [versions]
 activityCompose = "1.13.0"
-coreKtx = "1.18.0"
+coreKtx = "1.19.0"
 datastorePreferences = "1.2.1"
 material3 = "1.4.0"
 navigationCompose = "2.9.8"
