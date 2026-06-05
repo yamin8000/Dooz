@@ -36,8 +36,8 @@ android {
         applicationId = appId
         minSdk = 24
         targetSdk = 37
-        versionCode = 19
-        versionName = "1.0.19"
+        versionCode = 20
+        versionName = "1.0.20"
         vectorDrawables.useSupportLibrary = true
         base.archivesName = "$applicationId-v$versionCode-n$versionName"
     }
@@ -53,8 +53,12 @@ android {
         }
         debug {
             isMinifyEnabled = false
-            isShrinkResources = false
         }
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     compileOptions {
@@ -95,7 +99,6 @@ dependencies {
     debugApi(libs.compose.ui.test.manifest)
     implementation(libs.navigation.compose)
     //material
-    implementation(libs.material.icons.extended)
     implementation(libs.material3)
     implementation(libs.compose.material3.window.size)
     //datastore
