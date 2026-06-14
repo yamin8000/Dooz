@@ -61,6 +61,7 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 import kotlin.random.nextInt
 import kotlin.random.nextLong
+import kotlin.time.Duration.Companion.milliseconds
 
 class GameState(
     private val hapticFeedback: HapticFeedback,
@@ -152,7 +153,7 @@ class GameState(
     }
 
     private suspend fun asyncPlayCellByAi() {
-        delay(Random.nextLong(aiPlayDelayRange))
+        delay(Random.nextLong(aiPlayDelayRange).milliseconds)
         playCellByAi()
     }
 
@@ -274,15 +275,15 @@ class GameState(
                 add(players.value.first().copy(diceIndex = Random.nextInt(1..6)))
                 add(players.value.last().copy(diceIndex = Random.nextInt(1..6)))
             }
-            delay(100)
+            delay(100.milliseconds)
         }
         players.value = buildList {
             add(players.value.first().copy(diceIndex = firstPlayerDice))
             add(players.value.last().copy(diceIndex = secondPlayerDice))
         }
-        delay(100)
+        delay(100.milliseconds)
 
-        delay(500)
+        delay(500.milliseconds)
         isRollingDices.value = false
     }
 
@@ -335,11 +336,40 @@ class GameState(
     private fun handleDrewGame() {
         finishGame()
         isGameDrew.value = true
+
+        playDrawSoundEffect()
+    }
+
+    private fun playDrawSoundEffect() {
+        if (isSoundOn) {
+            val player = MediaPlayer.create(context, R.raw.draw)
+            player.start()
+        }
     }
 
     private fun finishGame() {
         isGameFinished.value = true
         winnerCells.value = gameLogic?.winnerCells ?: listOf()
+
+        if (winner.value?.type == PlayerType.Human) {
+            playHumanWinSoundEffect()
+        } else {
+            playLoseSoundEffect()
+        }
+    }
+
+    private fun playLoseSoundEffect() {
+        if (isSoundOn) {
+            val player = MediaPlayer.create(context, R.raw.lose)
+            player.start()
+        }
+    }
+
+    private fun playHumanWinSoundEffect() {
+        if (isSoundOn) {
+            val player = MediaPlayer.create(context, R.raw.win)
+            player.start()
+        }
     }
 
     private fun findWinner(): Player? {
