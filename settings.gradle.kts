@@ -20,6 +20,9 @@
 
 pluginManagement {
     repositories {
+        if(settings.extra["usingMyket"].toString().toBoolean()) {
+            maven { url = uri("https://maven.myket.ir/") }
+        }
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -31,6 +34,9 @@ plugins {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        if(settings.extra["usingMyket"].toString().toBoolean()) {
+            maven { url = uri("https://maven.myket.ir/") }
+        }
         google()
         mavenCentral()
     }
