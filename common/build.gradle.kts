@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.plugin)
-    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
@@ -19,6 +19,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -26,21 +31,25 @@ dependencies {
     api(libs.androidx.core.ktx)
     //compose
     api(libs.androidx.activity.compose)
-    api(platform(libs.compose.bom))
-    api(libs.compose.ui)
-    api(libs.compose.graphics)
-    api(libs.compose.ui.tooling.preview)
-    api(libs.compose.material3)
-    api(libs.compose.material.icons.extended)
-    androidTestImplementation(platform(libs.compose.bom))
-    debugApi(libs.compose.ui.tooling)
-    debugApi(libs.compose.ui.test.manifest)
-    api(libs.navigation.compose)
+    api(platform(libs.androidx.compose.bom))
+    api(libs.androidx.compose.ui)
+    api(libs.androidx.compose.graphics)
+    api(libs.androidx.compose.ui.tooling.preview)
+    api(libs.androidx.compose.material3.group)
+    api(libs.androidx.compose.material.icons.extended)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    debugApi(libs.androidx.compose.ui.tooling)
+    debugApi(libs.androidx.compose.ui.test.manifest)
+    api(libs.androidx.navigation.compose)
+    api(libs.androidx.lifecycle.viewmodel.compose)
+    api(libs.androidx.lifecycle.runtime.compose)
     //material
-    api(libs.material3)
-    api(libs.compose.material3.window.size)
+    api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.material3.window)
     //hilt
     api(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     api(libs.hilt.lifecycle.compose)
+    //datastore
+    api(libs.androidx.datastore.preferences)
 }

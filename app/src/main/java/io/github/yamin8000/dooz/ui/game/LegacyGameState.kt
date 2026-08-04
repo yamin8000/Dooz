@@ -22,40 +22,28 @@ package io.github.yamin8000.dooz.ui.game
 
 import android.content.Context
 import android.media.MediaPlayer
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import io.github.yamin8000.dooz.R
-import io.github.yamin8000.dooz.core.settings
-import io.github.yamin8000.dooz.domain.FirstPlayerPolicy
-import io.github.yamin8000.dooz.domain.GameConstants.GAME_DEFAULT_SIZE
-import io.github.yamin8000.dooz.domain.logic.GameLogic
-import io.github.yamin8000.dooz.domain.logic.SimpleGameLogic
-import io.github.yamin8000.dooz.domain.model.AiDifficulty
-import io.github.yamin8000.dooz.domain.model.DoozCell
-import io.github.yamin8000.dooz.domain.model.GamePlayersType
-import io.github.yamin8000.dooz.domain.model.GameType
-import io.github.yamin8000.dooz.domain.model.Player
-import io.github.yamin8000.dooz.domain.model.PlayerType
-import io.github.yamin8000.dooz.ui.RingShape
-import io.github.yamin8000.dooz.ui.XShape
-import io.github.yamin8000.dooz.ui.toName
-import io.github.yamin8000.dooz.ui.toShape
-import io.github.yamin8000.dooz.util.Constants
+import io.github.yamin8000.dooz.common.R as commonR
+import io.github.yamin8000.dooz.common.domain.model.FirstPlayerPolicy
+import io.github.yamin8000.dooz.feature_game.domain.logic.GameLogic
+import io.github.yamin8000.dooz.feature_game.domain.logic.SimpleGameLogic
+import io.github.yamin8000.dooz.common.domain.model.AiDifficulty
+import io.github.yamin8000.dooz.common.domain.model.DoozCell
+import io.github.yamin8000.dooz.common.domain.model.GamePlayersType
+import io.github.yamin8000.dooz.common.domain.model.GameType
+import io.github.yamin8000.dooz.common.domain.model.Player
+import io.github.yamin8000.dooz.common.domain.model.PlayerType
+import io.github.yamin8000.dooz.common.ui.components.RingShape
+import io.github.yamin8000.dooz.common.ui.components.XShape
+import io.github.yamin8000.dooz.common.ui.components.toName
+import io.github.yamin8000.dooz.common.ui.components.toShape
 import io.github.yamin8000.dooz.util.Constants.aiPlayDelayRange
-import io.github.yamin8000.dooz.data.DataStoreHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -88,12 +76,11 @@ class LegacyGameState(
 
     private var gameLogic: GameLogic? = null
 
-    private val dataStore = DataStoreHelper(context.settings)
 
     init {
         scope.launch {
-            isSoundOn = dataStore.getBoolean(Constants.isSoundOn) ?: true
-            isVibrationOn = dataStore.getBoolean(Constants.isVibrationOn) ?: true
+            //isSoundOn = dataStore.getBoolean(Constants.isSoundOn) ?: true
+            //isVibrationOn = dataStore.getBoolean(Constants.isVibrationOn) ?: true
             prepareGame()
         }
     }
@@ -165,7 +152,7 @@ class LegacyGameState(
     }
 
     private suspend fun prepareGameRules() {
-        gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GAME_DEFAULT_SIZE
+        /*gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GAME_DEFAULT_SIZE
         gamePlayersType.value = GamePlayersType.valueOf(
             dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
         )
@@ -174,7 +161,7 @@ class LegacyGameState(
         )
         firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
             dataStore.getString(Constants.firstPlayerPolicy) ?: FirstPlayerPolicy.DiceRolling.name
-        )
+        )*/
     }
 
     private fun prepareGameLogic() {
@@ -196,10 +183,10 @@ class LegacyGameState(
     }
 
     private suspend fun preparePlayers() {
-        val firstPlayerName = dataStore.getString(Constants.firstPlayerName)
-            ?: context.getString(R.string.first_player_default_name)
+        /*val firstPlayerName = dataStore.getString(Constants.firstPlayerName)
+            ?: context.getString(commonR.string.first_player_default_name)
         val secondPlayerName = dataStore.getString(Constants.secondPlayerName)
-            ?: context.getString(R.string.second_player_default_name)
+            ?: context.getString(commonR.string.second_player_default_name)
 
         val firstPlayerShape =
             dataStore.getString(Constants.firstPlayerShape)?.toShape() ?: XShape
@@ -222,7 +209,7 @@ class LegacyGameState(
             setFirstPlayerToDiceWinner()
         } else {
             currentPlayer.value = players.value.first()
-        }
+        }*/
     }
 
     private fun setFirstPlayerToDiceWinner() {
@@ -243,7 +230,7 @@ class LegacyGameState(
         if (gamePlayersType.value == GamePlayersType.PvC) {
             add(
                 Player(
-                    name = context.getString(R.string.computer),
+                    name = context.getString(commonR.string.computer),
                     shape = secondPlayerShape.toName(),
                     type = PlayerType.Computer,
                     diceIndex = secondPlayerDice
@@ -417,74 +404,4 @@ class LegacyGameState(
             }
         }
     }
-}
-
-@Composable
-fun rememberHomeState(
-    hapticFeedback: HapticFeedback = LocalHapticFeedback.current,
-    context: Context = LocalContext.current,
-    coroutineScope: LifecycleCoroutineScope = LocalLifecycleOwner.current.lifecycleScope,
-    doozCells: MutableState<List<List<DoozCell>>> = rememberSaveable { mutableStateOf(emptyList()) },
-    gameSize: MutableIntState = rememberSaveable { mutableIntStateOf(GAME_DEFAULT_SIZE) },
-    currentPlayer: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
-    players: MutableState<List<Player>> = rememberSaveable { mutableStateOf(listOf()) },
-    gamePlayersType: MutableState<GamePlayersType> = rememberSaveable {
-        mutableStateOf(
-            GamePlayersType.PvC
-        )
-    },
-    isGameStarted: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
-    isGameFinished: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
-    winner: MutableState<Player?> = rememberSaveable { mutableStateOf(null) },
-    gameType: MutableState<GameType> = rememberSaveable { mutableStateOf(GameType.Simple) },
-    isGameDrew: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
-    winnerCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(emptyList()) },
-    aiDifficulty: MutableState<AiDifficulty> = rememberSaveable { mutableStateOf(AiDifficulty.Easy) },
-    isRollingDices: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) },
-    firstPlayerPolicy: MutableState<FirstPlayerPolicy> = rememberSaveable {
-        mutableStateOf(
-            FirstPlayerPolicy.DiceRolling
-        )
-    },
-    lastPlayedCells: MutableState<List<DoozCell>> = rememberSaveable { mutableStateOf(listOf()) }
-) = remember(
-    hapticFeedback,
-    context,
-    coroutineScope,
-    doozCells,
-    gameSize,
-    currentPlayer,
-    players,
-    gamePlayersType,
-    isGameStarted,
-    isGameFinished,
-    winner,
-    gameType,
-    isGameDrew,
-    winnerCells,
-    aiDifficulty,
-    isRollingDices,
-    firstPlayerPolicy,
-    lastPlayedCells
-) {
-    LegacyGameState(
-        hapticFeedback,
-        context,
-        coroutineScope,
-        doozCells,
-        gameSize,
-        currentPlayer,
-        players,
-        gamePlayersType,
-        isGameStarted,
-        isGameFinished,
-        winner,
-        gameType,
-        isGameDrew,
-        winnerCells,
-        aiDifficulty,
-        isRollingDices,
-        firstPlayerPolicy,
-        lastPlayedCells
-    )
 }

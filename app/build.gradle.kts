@@ -24,7 +24,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.plugin)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
@@ -88,8 +88,9 @@ android {
 dependencies {
     //core
     implementation(project(":common"))
-    //datastore
-    implementation(libs.androidx.datastore.preferences)
+    implementation(project(":feature_about"))
+    implementation(project(":feature_game"))
+    implementation(project(":feature_settings"))
     //hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

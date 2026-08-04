@@ -21,9 +21,13 @@
 package io.github.yamin8000.dooz.ui.navigation
 
 object Nav {
-    object Routes {
-        const val game = "game"
-        const val settings = "settings"
-        const val about = "about"
+    sealed interface Route {
+        data object Game : Route
+        data object Settings : Route
+        data object About : Route
+
+        operator fun invoke(): String {
+            return toString()
+        }
     }
 }

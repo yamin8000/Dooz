@@ -1,0 +1,41 @@
+package io.github.yamin8000.dooz.feature_game.ui.components
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import io.github.yamin8000.dooz.common.R
+import io.github.yamin8000.dooz.common.ui.components.AppText
+import io.github.yamin8000.dooz.common.ui.components.SingleLinePersianText
+import io.github.yamin8000.dooz.common.ui.theme.Sizes
+
+@Composable
+fun GameResult(
+    winnerName: String?,
+    isGameDrew: Boolean
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(Sizes.Small, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically,
+        content = {
+            AppText(
+                text = stringResource(R.string.game_result),
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (isGameDrew) {
+                SingleLinePersianText(stringResource(R.string.draw))
+            }
+            if (winnerName != null) {
+                SingleLinePersianText(stringResource(R.string.x_is_winner, winnerName))
+            }
+            if (!isGameDrew && winnerName == null) {
+                SingleLinePersianText(stringResource(R.string.undefined))
+            }
+        }
+    )
+}
