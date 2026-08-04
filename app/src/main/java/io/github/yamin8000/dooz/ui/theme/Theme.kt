@@ -93,7 +93,7 @@ private val darkColors = darkColorScheme(
 )
 
 @Composable
-fun DoozTheme(
+fun AppTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     isDynamicColor: Boolean,
     content: @Composable () -> Unit
@@ -136,7 +136,7 @@ fun PreviewTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    DoozTheme(
+    AppTheme(
         isDarkTheme = isDarkTheme,
         isDynamicColor = false,
         content = content

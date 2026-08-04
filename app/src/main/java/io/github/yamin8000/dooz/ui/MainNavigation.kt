@@ -39,7 +39,7 @@ import io.github.yamin8000.dooz.ui.settings.ThemeSetting
 import io.github.yamin8000.dooz.ui.settings.content.SettingsContent
 import io.github.yamin8000.dooz.core.settings
 import io.github.yamin8000.dooz.ui.navigation.Nav
-import io.github.yamin8000.dooz.ui.theme.DoozTheme
+import io.github.yamin8000.dooz.ui.theme.AppTheme
 import io.github.yamin8000.dooz.util.Constants
 import io.github.yamin8000.dooz.data.DataStoreHelper
 
@@ -54,7 +54,7 @@ internal fun MainNavigation() {
             dataStore.getString(Constants.theme) ?: ThemeSetting.System.name
         )
     }
-    DoozTheme(
+    AppTheme(
         isDarkTheme = isDarkTheme(theme, isSystemInDarkTheme()),
         isDynamicColor = theme == ThemeSetting.System,
         content = {

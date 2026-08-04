@@ -10,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import io.github.yamin8000.dooz.domain.model.DoozCell
 import io.github.yamin8000.dooz.domain.model.Player
@@ -26,7 +27,9 @@ internal fun GameBoard(
     shapeProvider: (Player?) -> Shape,
     onItemClick: (DoozCell) -> Unit
 ) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val screenWidth = with(LocalDensity.current) {
+        LocalWindowInfo.current.containerSize.width.toDp()
+    }
     val boxPadding = 16.dp
     val boxSize = remember(screenWidth) {
         screenWidth - (2 * boxPadding.value).dp

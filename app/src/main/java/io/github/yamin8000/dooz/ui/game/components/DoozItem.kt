@@ -83,6 +83,10 @@ internal fun DoozItem(
                                 .clip(shape)
                                 .background(contentColor),
                         )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                        )
                     }
                 }
             )

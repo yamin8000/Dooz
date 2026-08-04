@@ -10,14 +10,14 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 
 @Composable
 fun ClickableIcon(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: @Composable () -> Unit,
-    onClick: () -> Unit
+    content: @Composable () -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
     IconButton(
         modifier = modifier,
-        content = icon,
+        content = content,
         onClick = {
             haptic.performHapticFeedback(HapticFeedbackType.ContextClick)
             onClick()
@@ -27,15 +27,15 @@ fun ClickableIcon(
 
 @Composable
 fun ClickableIcon(
-    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
     imageVector: ImageVector,
     contentDescription: String,
-    onClick: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     ClickableIcon(
         modifier = modifier,
         onClick = onClick,
-        icon = {
+        content = {
             Icon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,

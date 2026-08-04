@@ -43,5 +43,10 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "Dooz"
 include(":app")
+include(":common")
+include(":feature_game")
+include(":feature_settings")
+include(":feature_about")

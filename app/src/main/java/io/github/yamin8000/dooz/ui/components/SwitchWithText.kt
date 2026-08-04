@@ -15,12 +15,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SwitchWithText(
-    caption: String,
+    onCheckedChange: (Boolean) -> Unit,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    caption: String,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp)
             .clickable(
                 role = Role.Switch,

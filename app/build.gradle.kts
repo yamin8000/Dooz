@@ -24,6 +24,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.plugin)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.hilt)
 }
 
 kotlin {
@@ -84,23 +86,12 @@ android {
 }
 
 dependencies {
-    //core android
-    implementation(libs.androidx.core.ktx)
-    //compose
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.graphics)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.material.icons.extended)
-    androidTestImplementation(platform(libs.compose.bom))
-    debugApi(libs.compose.ui.tooling)
-    debugApi(libs.compose.ui.test.manifest)
-    implementation(libs.navigation.compose)
-    //material
-    implementation(libs.material3)
-    implementation(libs.compose.material3.window.size)
+    //core
+    implementation(project(":common"))
     //datastore
     implementation(libs.androidx.datastore.preferences)
+    //hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.hilt.lifecycle.compose)
 }

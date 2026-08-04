@@ -80,8 +80,9 @@ internal fun ThemeChangerCard(
                     SingleLinePersianText(stringResource(currentTheme.persianNameStringResource))
                 }
             )
-            if (currentTheme == ThemeSetting.System && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            if (currentTheme == ThemeSetting.System && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 DynamicThemeNotice()
+            }
         }
     )
 }
@@ -151,14 +152,14 @@ internal fun EffectsCard(
         title = stringResource(R.string.effects),
         content = {
             SwitchWithText(
-                caption = stringResource(R.string.sound_effects),
+                onCheckedChange = isSoundOnChange,
                 checked = isSoundOn,
-                onCheckedChange = isSoundOnChange
+                caption = stringResource(R.string.sound_effects)
             )
             SwitchWithText(
-                caption = stringResource(R.string.haptic_feedback),
+                onCheckedChange = isVibrationOnChange,
                 checked = isVibrationOn,
-                onCheckedChange = isVibrationOnChange
+                caption = stringResource(R.string.haptic_feedback)
             )
         }
     )

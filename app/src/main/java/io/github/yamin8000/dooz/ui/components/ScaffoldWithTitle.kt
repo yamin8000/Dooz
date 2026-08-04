@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldWithTitle(
+    onBackClick: () -> Unit,
     title: String,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
-    onBackClick: () -> Unit,
     snackbarHost: @Composable () -> Unit = {},
     content: @Composable BoxScope.() -> Unit
 ) {
