@@ -1,5 +1,6 @@
 package io.github.yamin8000.dooz.feature_game.ui
 
+import android.util.Log
 import androidx.compose.ui.graphics.Shape
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +12,16 @@ import io.github.yamin8000.dooz.common.domain.model.GameType
 import io.github.yamin8000.dooz.common.domain.model.Player
 import io.github.yamin8000.dooz.common.domain.model.PlayerType
 import io.github.yamin8000.dooz.common.domain.repository.SettingsRepository
+import io.github.yamin8000.dooz.common.ui.components.RingShape
+import io.github.yamin8000.dooz.common.ui.components.XShape
+import io.github.yamin8000.dooz.common.ui.components.toName
+import io.github.yamin8000.dooz.common.ui.components.toShape
+import io.github.yamin8000.dooz.common.util.Constants
+import io.github.yamin8000.dooz.common.util.Constants.aiPlayDelayRange
 import io.github.yamin8000.dooz.feature_game.domain.logic.GameLogic
 import io.github.yamin8000.dooz.feature_game.domain.logic.SimpleGameLogic
-import io.github.yamin8000.dooz.common.ui.components.toName
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +29,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.toMutableList
+import kotlin.random.Random
+import kotlin.random.nextInt
+import kotlin.random.nextLong
 import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
@@ -32,13 +41,12 @@ class GameViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-
+        Log.d("", throwable.stackTraceToString())
     }
 
     private val scope = CoroutineScope(
         SupervisorJob() + viewModelScope.coroutineContext + exceptionHandler
     )
-    private val ioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO + exceptionHandler)
 
     private var _state = MutableStateFlow(GameState())
     val state = _state.asStateFlow()
@@ -49,7 +57,9 @@ class GameViewModel @Inject constructor(
     private var isVibrationOn = true
 
     init {
-
+        scope.launch {
+            prepareGame()
+        }
     }
 
     fun onAction(action: GameAction) {
@@ -71,18 +81,83 @@ class GameViewModel @Inject constructor(
             }
 
             is GameAction.PlayCell -> {
+                checkIfGameIsFinished()
+                changeCellOwner(action.cell)
+                checkIfGameIsFinished()
 
+                if (isAiTurnToPlay()) {
+                    scope.launch { asyncPlayCellByAi() }
+                }
             }
 
             GameAction.Undo -> {
                 if (state.value.gamePlayersType == GamePlayersType.PvC) {
                     //2 undo action
+                    undo()
+                    undo()
                 } else {
-                    //1 undo action}
+                    //1 undo action
+                    undo()
                 }
             }
         }
     }
+
+    private suspend fun asyncPlayCellByAi() {
+        delay(Random.nextLong(aiPlayDelayRange).milliseconds)
+        playCellByAi()
+    }
+
+    fun undo() {
+        if (state.value.lastPlayedCells.isNotEmpty()) {
+            val last = state.value.lastPlayedCells.last()
+            val mutatedRow = state.value.gameCells[last.x].toMutableList()
+            mutatedRow[last.y] = last.copy(owner = null)
+            val mutatedGameCells = state.value.gameCells.toMutableList()
+            mutatedGameCells[last.x] = mutatedRow
+            _state.update { it.copy(gameCells = mutatedGameCells) }
+
+            _state.update {
+                it.copy(
+                    lastPlayedCells = buildList {
+                        val new = state.value.lastPlayedCells.toMutableList()
+                        new.remove(new.lastOrNull())
+                        addAll(new)
+                    }
+                )
+            }
+            prepareGameLogic()
+            _state.update {
+                it.copy(
+                    winner = null,
+                    isGameFinished = false,
+                    isGameDraw = false,
+                    winnerCells = emptyList()
+                )
+            }
+
+            if (isAiTurnToPlay()) {
+                playCellByAi()
+            }
+
+            if (state.value.gamePlayersType == GamePlayersType.PvP) {
+                changePlayer()
+            }
+
+            if (state.value.lastPlayedCells.isEmpty()) {
+                val first = state.value.players.first()
+                val second = state.value.players.last()
+
+                _state.update {
+                    it.copy(currentPlayer = if (first.diceIndex > second.diceIndex) first else second)
+                }
+                if (isAiTurnToPlay()) {
+                    playCellByAi()
+                }
+            }
+        }
+    }
+
 
     private fun isAiTurnToPlay(): Boolean {
         return state.value.gamePlayersType == GamePlayersType.PvC &&
@@ -211,16 +286,24 @@ class GameViewModel @Inject constructor(
         val secondPlayerDice = state.value.players.last().diceIndex
 
         repeat(5) {
-            /*players.value = buildList {
-                add(players.value.first().copy(diceIndex = Random.nextInt(1..6)))
-                add(players.value.last().copy(diceIndex = Random.nextInt(1..6)))
-            }*/
+            _state.update {
+                it.copy(
+                    players = buildList {
+                        add(state.value.players.first().copy(diceIndex = Random.nextInt(1..6)))
+                        add(state.value.players.last().copy(diceIndex = Random.nextInt(1..6)))
+                    }
+                )
+            }
             delay(100.milliseconds)
         }
-        /*players.value = buildList {
-            add(players.value.first().copy(diceIndex = firstPlayerDice))
-            add(players.value.last().copy(diceIndex = secondPlayerDice))
-        }*/
+        _state.update {
+            it.copy(
+                players = buildList {
+                    add(state.value.players.first().copy(diceIndex = firstPlayerDice))
+                    add(state.value.players.last().copy(diceIndex = secondPlayerDice))
+                }
+            )
+        }
         delay(100.milliseconds)
 
         delay(500.milliseconds)
@@ -259,16 +342,14 @@ class GameViewModel @Inject constructor(
 
             )
         }
-        /*gameSize.intValue = dataStore.getInt(Constants.gameSize) ?: GAME_DEFAULT_SIZE
-        gamePlayersType.value = GamePlayersType.valueOf(
-            dataStore.getString(Constants.gamePlayersType) ?: GamePlayersType.PvC.name
-        )
-        aiDifficulty.value = AiDifficulty.valueOf(
-            dataStore.getString(Constants.aiDifficulty) ?: AiDifficulty.Easy.name
-        )
-        firstPlayerPolicy.value = FirstPlayerPolicy.valueOf(
-            dataStore.getString(Constants.firstPlayerPolicy) ?: FirstPlayerPolicy.DiceRolling.name
-        )*/
+        _state.update {
+            it.copy(
+                gameSize = settings.getGameSize(),
+                gamePlayersType = settings.getGamePlayersType(),
+                aiDifficulty = settings.getAiDifficulty(),
+                firstPlayerPolicy = settings.getFirstPlayerPolicy()
+            )
+        }
     }
 
     private fun prepareGameLogic() {
@@ -284,15 +365,11 @@ class GameViewModel @Inject constructor(
     }
 
     private suspend fun preparePlayers() {
-        /*val firstPlayerName = dataStore.getString(Constants.firstPlayerName)
-            ?: context.getString(commonR.string.first_player_default_name)
-        val secondPlayerName = dataStore.getString(Constants.secondPlayerName)
-            ?: context.getString(commonR.string.second_player_default_name)
+        val firstPlayerName = settings.getFirstPlayerName()
+        val secondPlayerName = settings.getSecondPlayerName()
 
-        val firstPlayerShape =
-            dataStore.getString(Constants.firstPlayerShape)?.toShape() ?: XShape
-        val secondPlayerShape =
-            dataStore.getString(Constants.secondPlayerShape)?.toShape() ?: RingShape
+        val firstPlayerShape = settings.getFirstPlayerShape().toShape() ?: XShape
+        val secondPlayerShape = settings.getSecondPlayerName().toShape() ?: RingShape
 
         val firstPlayerDice = Random.nextInt(Constants.diceRange)
         val secondPlayerDice = Random.nextInt(Constants.diceRange)
@@ -308,7 +385,7 @@ class GameViewModel @Inject constructor(
                     secondPlayerName
                 )
             )
-        }*/
+        }
 
         if (state.value.firstPlayerPolicy == FirstPlayerPolicy.DiceRolling) {
             setFirstPlayerToDiceWinner()
@@ -350,5 +427,13 @@ class GameViewModel @Inject constructor(
                 diceIndex = secondPlayerDice
             )
         )
+    }
+
+    fun getOwnerShape(
+        owner: Player?
+    ) = if (owner == state.value.players.first()) {
+        owner.shape?.toShape() ?: XShape
+    } else {
+        owner?.shape?.toShape() ?: RingShape
     }
 }

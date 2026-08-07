@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -28,16 +29,22 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.yamin8000.dooz.common.R
+import io.github.yamin8000.dooz.common.domain.model.Player
 import io.github.yamin8000.dooz.common.ui.components.SingleLinePersianText
+import io.github.yamin8000.dooz.common.ui.components.XShape
 import io.github.yamin8000.dooz.common.ui.theme.AppTheme
 import io.github.yamin8000.dooz.common.ui.theme.Sizes
+import io.github.yamin8000.dooz.feature_game.ui.components.GameBoard
+import io.github.yamin8000.dooz.feature_game.ui.components.GameInfoCard
 import io.github.yamin8000.dooz.feature_game.ui.components.GameTopAppBar
+import io.github.yamin8000.dooz.feature_game.ui.components.PlayerCards
 import io.github.yamin8000.dooz.feature_game.util.Utility.LockScreenOrientation
 
 @Preview(showBackground = true)
@@ -48,7 +55,8 @@ private fun Preview() {
             state = GameState(),
             onAction = {},
             onNavigateToSettings = {},
-            onNavigateToAbout = {}
+            onNavigateToAbout = {},
+            shapeProvider = { XShape }
         )
     }
 }
@@ -69,7 +77,8 @@ fun GameScreen(
         onNavigateToAbout = onNavigateToAbout,
         onNavigateToSettings = onNavigateToSettings,
         state = state,
-        onAction = { vm.onAction(it) }
+        onAction = { vm.onAction(it) },
+        shapeProvider = { vm.getOwnerShape(it) }
     )
 }
 
@@ -79,6 +88,7 @@ internal fun GameContent(
     state: GameState,
     onNavigateToSettings: () -> Unit,
     onNavigateToAbout: () -> Unit,
+    shapeProvider: (Player?) -> Shape,
     onAction: (GameAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -141,13 +151,13 @@ internal fun GameContent(
                                     animationSpec = tween(300)
                                 ),
                                 content = {
-                                    /*GameInfoCard(
+                                    GameInfoCard(
                                         modifier = Modifier.fillMaxWidth(),
                                         playersType = state.gamePlayersType,
                                         aiDifficulty = state.aiDifficulty,
                                         winnerName = state.winner?.name,
                                         isGameDrew = state.isGameDraw
-                                    )*/
+                                    )
                                 }
                             )
 
@@ -158,11 +168,11 @@ internal fun GameContent(
                                     animationSpec = tween(300)
                                 ),
                                 content = {
-                                    /*PlayerCards(
+                                    PlayerCards(
                                         firstPlayerPolicy = state.firstPlayerPolicy,
                                         players = state.players,
                                         currentPlayer = state.currentPlayer
-                                    )*/
+                                    )
                                 }
                             )
 
@@ -171,19 +181,15 @@ internal fun GameContent(
                                 enter = scaleIn(),
                                 exit = scaleOut(),
                                 content = {
-                                    /*GameBoard(
+                                    GameBoard(
                                         gameSize = state.gameSize,
                                         gameCells = state.gameCells,
                                         winnerCells = state.winnerCells,
                                         isGameFinished = state.isGameFinished,
                                         currentPlayerType = state.currentPlayer?.type,
-                                        shapeProvider = {
-                                            //state::getOwnerShape
-                                        },
-                                        onItemClick = {
-                                            //state::playCell
-                                        }
-                                    )*/
+                                        shapeProvider = shapeProvider,
+                                        onItemClick = { onAction(GameAction.PlayCell(it)) }
+                                    )
                                 }
                             )
                             Spacer(modifier = Modifier.height(Sizes.xxLarge))
