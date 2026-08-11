@@ -3,6 +3,7 @@ package io.github.yamin8000.dooz.feature_game.util
 import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import io.github.yamin8000.dooz.common.domain.model.DoozCell
 
 object Utility {
 
@@ -45,5 +46,15 @@ object Utility {
         for (i in this.indices)
             diagonal.add(this[i][i])
         return diagonal
+    }
+
+    fun List<DoozCell>.to3D(): List<List<DoozCell>> {
+        val original = this
+        val size = original.maxOf { it.x }
+        return buildList {
+            for (i in 0..size) {
+                add(original.filter { it.x == i })
+            }
+        }
     }
 }

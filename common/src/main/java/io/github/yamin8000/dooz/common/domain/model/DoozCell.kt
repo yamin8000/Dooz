@@ -20,6 +20,9 @@
 
 package io.github.yamin8000.dooz.common.domain.model
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class DoozCell(
     val x: Int,
     val y: Int,

@@ -159,29 +159,30 @@ fun ClickableShapes(
                         horizontalArrangement = Arrangement.spacedBy(
                             Sizes.Large,
                             Alignment.CenterHorizontally
-                        )
-                    ) {
-                        shapes.forEachIndexed { index, shape ->
-                            ClickableShape(
-                                shape = shape,
-                                color = colors.value[index],
-                                size = size,
-                                onClick = {
-                                    selectedIndex.intValue = index
-                                    if (selectedIndex.intValue != -1 && selectedIndex.intValue == index) {
-                                        onShapeSelected(shapes[index])
-                                        colors.value = buildList {
-                                            for (i in shapes.indices) {
-                                                if (i == selectedIndex.intValue)
-                                                    add(selected)
-                                                else add(other)
+                        ),
+                        content = {
+                            shapes.forEachIndexed { index, shape ->
+                                ClickableShape(
+                                    shape = shape,
+                                    color = colors.value[index],
+                                    size = size,
+                                    onClick = {
+                                        selectedIndex.intValue = index
+                                        if (selectedIndex.intValue != -1 && selectedIndex.intValue == index) {
+                                            onShapeSelected(shapes[index])
+                                            colors.value = buildList {
+                                                for (i in shapes.indices) {
+                                                    if (i == selectedIndex.intValue)
+                                                        add(selected)
+                                                    else add(other)
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
-                    }
+                    )
                 }
             )
         }

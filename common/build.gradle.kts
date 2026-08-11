@@ -52,4 +52,6 @@ dependencies {
     api(libs.hilt.lifecycle.compose)
     //datastore
     api(libs.androidx.datastore.preferences)
+    //
+    api(libs.kotlinx.collections.immutable)
 }

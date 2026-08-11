@@ -1,6 +1,7 @@
 package io.github.yamin8000.dooz.feature_game.ui
 
 import android.content.pm.ActivityInfo
+import android.media.MediaPlayer
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
@@ -29,23 +30,26 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.yamin8000.dooz.common.R
-import io.github.yamin8000.dooz.common.domain.model.Player
 import io.github.yamin8000.dooz.common.ui.components.SingleLinePersianText
-import io.github.yamin8000.dooz.common.ui.components.XShape
 import io.github.yamin8000.dooz.common.ui.theme.AppTheme
 import io.github.yamin8000.dooz.common.ui.theme.Sizes
+import io.github.yamin8000.dooz.common.util.Utility.ObserverEvent
 import io.github.yamin8000.dooz.feature_game.ui.components.GameBoard
 import io.github.yamin8000.dooz.feature_game.ui.components.GameInfoCard
 import io.github.yamin8000.dooz.feature_game.ui.components.GameTopAppBar
 import io.github.yamin8000.dooz.feature_game.ui.components.PlayerCards
 import io.github.yamin8000.dooz.feature_game.util.Utility.LockScreenOrientation
+import kotlinx.collections.immutable.toImmutableList
+import io.github.yamin8000.dooz.feature_game.R as moduleR
 
 @Preview(showBackground = true)
 @Composable
@@ -55,8 +59,7 @@ private fun Preview() {
             state = GameState(),
             onAction = {},
             onNavigateToSettings = {},
-            onNavigateToAbout = {},
-            shapeProvider = { XShape }
+            onNavigateToAbout = {}
         )
     }
 }
@@ -72,13 +75,47 @@ fun GameScreen(
 
     val state = vm.state.collectAsStateWithLifecycle().value
 
+    val context = LocalContext.current
+    val hapticFeedback = LocalHapticFeedback.current
+
+    ObserverEvent(vm.eventFlow) { event ->
+        when (event) {
+            GameEvent.PlayDiceSound -> {
+                MediaPlayer.create(context, moduleR.raw.dice)
+                    .start()
+            }
+
+            GameEvent.PlayDrawSound -> {
+                val player = MediaPlayer.create(context, moduleR.raw.draw)
+                player.start()
+            }
+
+            GameEvent.PlayLoseSound -> {
+                val player = MediaPlayer.create(context, moduleR.raw.lose)
+                player.start()
+            }
+
+            GameEvent.PlayPencilSound -> {
+                MediaPlayer.create(context, moduleR.raw.pencil).start()
+            }
+
+            GameEvent.PlayWinSound -> {
+                val player = MediaPlayer.create(context, moduleR.raw.win)
+                player.start()
+            }
+
+            GameEvent.Vibrate -> {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
+            }
+        }
+    }
+
     GameContent(
         modifier = modifier,
         onNavigateToAbout = onNavigateToAbout,
         onNavigateToSettings = onNavigateToSettings,
         state = state,
-        onAction = { vm.onAction(it) },
-        shapeProvider = { vm.getOwnerShape(it) }
+        onAction = { vm.onAction(it) }
     )
 }
 
@@ -88,7 +125,6 @@ internal fun GameContent(
     state: GameState,
     onNavigateToSettings: () -> Unit,
     onNavigateToAbout: () -> Unit,
-    shapeProvider: (Player?) -> Shape,
     onAction: (GameAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -170,7 +206,7 @@ internal fun GameContent(
                                 content = {
                                     PlayerCards(
                                         firstPlayerPolicy = state.firstPlayerPolicy,
-                                        players = state.players,
+                                        players = listOf(state.firstPlayer, state.secondPlayer),
                                         currentPlayer = state.currentPlayer
                                     )
                                 }
@@ -184,10 +220,9 @@ internal fun GameContent(
                                     GameBoard(
                                         gameSize = state.gameSize,
                                         gameCells = state.gameCells,
-                                        winnerCells = state.winnerCells,
+                                        winnerCells = state.winnerCells.toImmutableList(),
                                         isGameFinished = state.isGameFinished,
                                         currentPlayerType = state.currentPlayer?.type,
-                                        shapeProvider = shapeProvider,
                                         onItemClick = { onAction(GameAction.PlayCell(it)) }
                                     )
                                 }

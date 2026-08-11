@@ -1,6 +1,7 @@
 package io.github.yamin8000.dooz.feature_game.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,8 +22,8 @@ import io.github.yamin8000.dooz.common.ui.theme.Sizes
 @Composable
 internal fun GameInfoCard(
     modifier: Modifier = Modifier,
-    playersType: GamePlayersType = GamePlayersType.PvP,
-    aiDifficulty: AiDifficulty = AiDifficulty.Easy,
+    playersType: GamePlayersType,
+    aiDifficulty: AiDifficulty,
     winnerName: String?,
     isGameDrew: Boolean
 ) {
@@ -49,6 +50,10 @@ internal fun GameInfoCard(
                                 R.string.ai_difficulty_var,
                                 stringResource(aiDifficulty.persianNameStringResource)
                             )
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
                         )
                     }
                     GameResult(
