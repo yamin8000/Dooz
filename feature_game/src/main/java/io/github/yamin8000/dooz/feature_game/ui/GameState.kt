@@ -25,5 +25,5 @@ data class GameState(
     val aiDifficulty: AiDifficulty = AiDifficulty.Easy,
     val firstPlayerPolicy: FirstPlayerPolicy = FirstPlayerPolicy.DiceRolling,
     val lastPlayedCells: SnapshotStateList<DoozCell> = mutableStateListOf(),
-    val gameCells: SnapshotStateList<DoozCell> = mutableStateListOf()
+    val gameCells: SnapshotStateList<DoozCell> = mutableStateListOf(),
 )

@@ -257,6 +257,8 @@ class GameViewModel @Inject constructor(
     }
 
     private suspend fun prepareGame() {
+        isSoundOn = settings.getSoundState()
+        isVibrationOn = settings.getVibrationState()
         resetGame()
         prepareGameRules()
         preparePlayers()
@@ -268,7 +270,7 @@ class GameViewModel @Inject constructor(
             scope.launch { eventChannel.send(GameEvent.PlayDrawSound) }
         }
         if (isVibrationOn) {
-            scope.launch { eventChannel.send(GameEvent.PlayDrawSound) }
+            scope.launch { eventChannel.send(GameEvent.Vibrate) }
         }
         _state.update { it.copy(isRollingDices = true) }
 

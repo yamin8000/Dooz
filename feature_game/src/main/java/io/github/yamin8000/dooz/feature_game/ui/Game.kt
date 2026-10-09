@@ -81,18 +81,15 @@ fun GameScreen(
     ObserverEvent(vm.eventFlow) { event ->
         when (event) {
             GameEvent.PlayDiceSound -> {
-                MediaPlayer.create(context, moduleR.raw.dice)
-                    .start()
+                MediaPlayer.create(context, moduleR.raw.dice).start()
             }
 
             GameEvent.PlayDrawSound -> {
-                val player = MediaPlayer.create(context, moduleR.raw.draw)
-                player.start()
+                MediaPlayer.create(context, moduleR.raw.draw).start()
             }
 
             GameEvent.PlayLoseSound -> {
-                val player = MediaPlayer.create(context, moduleR.raw.lose)
-                player.start()
+                MediaPlayer.create(context, moduleR.raw.lose).start()
             }
 
             GameEvent.PlayPencilSound -> {
@@ -100,8 +97,7 @@ fun GameScreen(
             }
 
             GameEvent.PlayWinSound -> {
-                val player = MediaPlayer.create(context, moduleR.raw.win)
-                player.start()
+                MediaPlayer.create(context, moduleR.raw.win).start()
             }
 
             GameEvent.Vibrate -> {

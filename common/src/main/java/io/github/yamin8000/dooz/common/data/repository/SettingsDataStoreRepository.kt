@@ -52,7 +52,7 @@ class SettingsDataStoreRepository(
     }
 
     override suspend fun getFirstPlayerName(): String {
-        return helper.getString(SettingsKeys.FIRST_PLAYER_NAME) ?: ""
+        return helper.getString(SettingsKeys.FIRST_PLAYER_NAME) ?: "Player 1"
     }
 
     override suspend fun setFirstPlayerName(name: String) {
@@ -68,7 +68,7 @@ class SettingsDataStoreRepository(
     }
 
     override suspend fun getSecondPlayerName(): String {
-        return helper.getString(SettingsKeys.SECOND_PLAYER_NAME) ?: ""
+        return helper.getString(SettingsKeys.SECOND_PLAYER_NAME) ?: "Player 2"
     }
 
     override suspend fun setSecondPlayerName(name: String) {
